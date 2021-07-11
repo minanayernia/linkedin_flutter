@@ -6,14 +6,37 @@ import 'package:sqflite/sqflite.dart';
 import 'package:dbproject/database.dart';
 import 'package:dbproject/models/post.dart';
 import 'package:floor/floor.dart';
+// import 'package:dbproject/navigationBar.dart';
+
+
+//import 'package:path/path.dart';
+//import 'package:sqflite/sqflite.dart';
+import 'package:dbproject/database.dart';
+import 'package:dbproject/models/post.dart';
+import 'package:floor/floor.dart';
+// import 'package:dbproject/views/homeView.dart';
+import 'package:dbproject/widgets/accomplishments.dart';
+import 'package:dbproject/widgets/additionalinformation.dart';
+import 'package:dbproject/widgets/direct.dart';
+import 'package:dbproject/widgets/editintro.dart';
+import 'package:dbproject/widgets/introduction.dart';
+import 'package:dbproject/widgets/navigationBar.dart';
+import 'package:dbproject/widgets/notification.dart';
+import 'package:dbproject/widgets/postCard.dart';
+
+import 'package:dbproject/widgets/supportedLanguage.dart';
+import 'package:flutter/material.dart';
+import 'package:dbproject/widgets/skillsAndEndorsement.dart';
 
 void main() async {
   final database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+  
   runApp(MyApp(database));
 }
 
 class MyApp extends StatelessWidget {
   final database ;
+  
   const MyApp(this.database);
   @override
   Widget build(BuildContext context) {
@@ -25,6 +48,7 @@ class MyApp extends StatelessWidget {
         
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+      
       home: MyHomePage(database),
     );
   }
@@ -55,30 +79,27 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
    
     return Scaffold(
-      appBar: AppBar(
-        
-        // title: Text(widget.title),
-      ),
-      body: Center(
-        
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
+      backgroundColor: Colors.red,
+  body: SingleChildScrollView(
+    child: Column(
+
+      crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      NavigationBar(),
+          Intro(),
+          AboutCard(),
+          AddSkill(),
+          AddAccomplish(),
+          PostList(),
+          NotifList(),
+          EditIntrCard(),
+          LanguageList(),
+          Message()
+          
+  ],
+    ),
+    ),
+      
     );
   }
 }
