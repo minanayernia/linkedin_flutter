@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+// final dataKey = new GlobalKey();
 class Message extends StatelessWidget {
   const Message({ Key ? key }) : super(key: key);
 
@@ -22,6 +22,7 @@ class Message extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                 Container(
+                  // key: dataKey,
                   padding: EdgeInsets.only(left: 10),
                   child:Text("Messaging" , style: TextStyle(color: Colors.white),)  ,),
                 

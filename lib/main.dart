@@ -19,6 +19,8 @@ import 'package:dbproject/widgets/postCard.dart';
 import 'package:dbproject/widgets/supportedLanguage.dart';
 import 'package:dbproject/widgets/skillsAndEndorsement.dart';
 
+
+
 void main() async {
   final database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
   
@@ -46,6 +48,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  
   final AppDatabase db ;
 
   MyHomePage(this.db);
