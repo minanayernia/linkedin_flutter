@@ -180,9 +180,18 @@ class NewMessage extends StatelessWidget {
               ],),
 
               TextField(
+                
                 decoration: InputDecoration(
                   hintText: "Search messages",
-                  hintStyle: TextStyle(color: Colors.redAccent)
+                  
+                  contentPadding: EdgeInsets.only(left: 10 , top: 15),
+                  hintStyle: TextStyle(color: Colors.redAccent),
+                  suffixIcon: IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.search),
+                    
+                    
+             ),
                 ),
               ),
 

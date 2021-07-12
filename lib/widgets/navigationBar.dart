@@ -31,7 +31,7 @@ class NavigationBar extends StatelessWidget {
             children: <Widget>[
               Container(
                 color: Colors.white,
-                    height: 30,
+                    height: 40,
                     width: 400,
                     child: TextField(
                     controller: searchUserController,
@@ -39,7 +39,7 @@ class NavigationBar extends StatelessWidget {
                     decoration: InputDecoration(
                     hintText: "Search user...",
                     
-                    contentPadding: EdgeInsets.only(left: 10),
+                    contentPadding: EdgeInsets.only(left: 10 , top: 9),
                     hintStyle: TextStyle(color: Colors.redAccent),
                     suffixIcon: IconButton(
                     onPressed: () {},

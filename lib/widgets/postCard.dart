@@ -408,3 +408,43 @@ class _AddCommentState extends State<AddComment> {
     );
   }
 }
+
+
+class OtherPost extends StatelessWidget {
+  const OtherPost({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 20),
+      height: MediaQuery.of(context).size.height*0.8,
+      width: MediaQuery.of(context).size.width*0.9,
+      color: Colors.black87,
+      child : Column(children: [
+        Container(
+          height: 30,
+          alignment: Alignment.centerLeft,
+          margin: EdgeInsets.only(left: 10 , top: 7),
+          child:Text("POSTS" , style: TextStyle(color: Colors.white , fontSize: 15),) 
+        ,),
+        
+        /*Flexible(child: ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (_,index) => list[index]))*/
+        Container(
+          height: 500,
+          child:SingleChildScrollView(child: Column(children: [
+          PostCard(),
+        ],),
+        ) ,)
+        
+        
+        
+
+      ],)
+      
+      
+      
+    );
+  }
+}

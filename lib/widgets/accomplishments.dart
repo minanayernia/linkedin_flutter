@@ -26,7 +26,7 @@ class AcomplishCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-        Text("project") ,
+        Text("project" , style: TextStyle(color: Colors.white),) ,
         TextButton(onPressed: (){}, child: Text("Edit")),
 
       ],)
@@ -118,6 +118,73 @@ class EditAccomplishCard extends StatelessWidget {
     
       )
 
+      
+    );
+  }
+}
+
+
+class OtherAccomplish extends StatelessWidget {
+  const OtherAccomplish({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+
+         margin: EdgeInsets.only(top: 20),
+
+      height: 200,
+      width: MediaQuery.of(context).size.width*0.9,
+      color: Colors.black87,
+      child: 
+      Column(children: [
+        Container(
+          color: Colors.redAccent,
+          child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+        Container(
+          
+          height: 30,
+          margin: EdgeInsets.only(left: 10 , top: 7),
+          child: Text("ACCOMPLISHMENTS",
+          style: TextStyle(color: Colors.white , fontSize: 15),
+          ),
+        ),
+
+      ],) ,),
+        
+
+      /*Flexible(child: ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (_,index) => list[index]))*/
+      OtherAccomplishCard() ,
+
+      ], 
+      )
+
+      
+    );
+  }
+}
+
+class OtherAccomplishCard extends StatelessWidget {
+  const OtherAccomplishCard({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      height: 50,
+      width: MediaQuery.of(context).size.width*0.88,
+      color: Colors.redAccent,
+      child: Container(margin: EdgeInsets.only(left: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+        Text("project" , style: TextStyle(color: Colors.white),) ,
+      ],)
+      )
       
     );
   }
