@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:dbproject/models/User.dart';
 import '../database.dart';
 
+
+TextEditingController signupUserController = TextEditingController();
+TextEditingController signupPassController = TextEditingController();
+
+
+
 // class SignUpCard extends StatefulWidget {
 //   final AppDatabase db ;
 //   const SignUpCard(this.db);
@@ -71,6 +77,7 @@ class SignUpCard extends StatelessWidget {
         Container(
           color: Colors.redAccent,
           child:TextField(
+          controller: signupUserController,
           
           style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
@@ -85,6 +92,7 @@ class SignUpCard extends StatelessWidget {
         Container(
           color: Colors.redAccent,
           child:TextField(
+          controller: signupPassController,
           decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: 'Password',

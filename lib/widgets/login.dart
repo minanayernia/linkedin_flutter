@@ -1,7 +1,11 @@
 import 'package:dbproject/views/homeView.dart';
 import 'package:flutter/material.dart';
 
+
 import '../database.dart';
+TextEditingController loginUserController = TextEditingController();
+TextEditingController loginPassController = TextEditingController();
+
 
 
 
@@ -35,6 +39,7 @@ class LogInCard extends StatelessWidget {
         Container(
           color: Colors.white,
           child:TextField(
+            controller: loginUserController,
           
           style: TextStyle(color: Colors.redAccent),
           decoration: InputDecoration(
@@ -49,6 +54,7 @@ class LogInCard extends StatelessWidget {
         Container(
           color: Colors.white,
           child:TextField(
+          controller: loginPassController,
           decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: 'Password',

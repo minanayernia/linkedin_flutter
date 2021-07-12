@@ -16,6 +16,8 @@ addSkillCard(){
   );
   setState((){});
 }
+  bool showTextField = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -80,6 +82,39 @@ class LanguageCard extends StatelessWidget {
         
 
       ],),
+      
+    );
+  }
+}
+
+
+TextEditingController languageController = TextEditingController();
+
+class EditLanguageCard extends StatelessWidget {
+  const EditLanguageCard({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      height: 50,
+      width: MediaQuery.of(context).size.width*0.88,
+      color: Colors.redAccent,
+      child: Container(margin: EdgeInsets.only(left: 5),
+      child: 
+        TextField(
+            controller: languageController,
+            decoration: InputDecoration(
+            hintText: "Edit field",
+            suffixIcon: IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.check),
+             ),
+              ),
+              ),
+
+    
+      )
       
     );
   }
