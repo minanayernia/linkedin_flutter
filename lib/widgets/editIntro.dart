@@ -7,7 +7,7 @@ class EditIntrCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 20),
-      height: MediaQuery.of(context).size.height*0.45,
+      height: MediaQuery.of(context).size.height*0.35,
       width: MediaQuery.of(context).size.width * 0.9,
       color: Colors.black87,
       child: Column(

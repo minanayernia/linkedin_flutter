@@ -1,31 +1,22 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:dbproject/database.dart';
-import 'package:dbproject/models/post.dart';
-import 'package:floor/floor.dart';
-// import 'package:dbproject/navigationBar.dart';
-
+//import 'dart:async';
 
 //import 'package:path/path.dart';
 //import 'package:sqflite/sqflite.dart';
 import 'package:dbproject/database.dart';
-import 'package:dbproject/models/post.dart';
-import 'package:floor/floor.dart';
-// import 'package:dbproject/views/homeView.dart';
 import 'package:dbproject/widgets/accomplishments.dart';
-import 'package:dbproject/widgets/additionalinformation.dart';
 import 'package:dbproject/widgets/direct.dart';
-import 'package:dbproject/widgets/editintro.dart';
+import 'package:dbproject/widgets/editIntro.dart';
+// import 'package:dbproject/navigationBar.dart';
+import 'package:dbproject/widgets/additionalinformation.dart';
+//import 'package:path/path.dart';
+//import 'package:sqflite/sqflite.dart';
+// import 'package:dbproject/views/homeView.dart';
 import 'package:dbproject/widgets/introduction.dart';
 import 'package:dbproject/widgets/navigationBar.dart';
 import 'package:dbproject/widgets/notification.dart';
 import 'package:dbproject/widgets/postCard.dart';
-
 import 'package:dbproject/widgets/supportedLanguage.dart';
-import 'package:flutter/material.dart';
 import 'package:dbproject/widgets/skillsAndEndorsement.dart';
 
 void main() async {
@@ -91,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ],
     ),
     ),
-      
+
     );
   }
 }

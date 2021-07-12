@@ -1,6 +1,5 @@
 
 
-// import 'package:dbproject/models/profile.dart';
 import 'package:flutter/material.dart';
 
 class Intro extends StatelessWidget {
