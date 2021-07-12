@@ -62,6 +62,8 @@ class _$AppDatabase extends AppDatabase {
 
   PostDao? _postDaoInstance;
 
+  UserDao? _userDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -81,7 +83,9 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Post` (`PostId` INTEGER, `PostCaption` TEXT, `owner` INTEGER, `USerId` INTEGER, PRIMARY KEY (`PostId`))');
+            'CREATE TABLE IF NOT EXISTS `Post` (`PostId` INTEGER NOT NULL, `PostCaption` TEXT NOT NULL, `owner` INTEGER NOT NULL, `USerId` INTEGER NOT NULL, PRIMARY KEY (`PostId`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `User` (`userId` INTEGER NOT NULL, `password` INTEGER NOT NULL, `userName` TEXT NOT NULL, PRIMARY KEY (`userId`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -93,6 +97,11 @@ class _$AppDatabase extends AppDatabase {
   PostDao get postDao {
     return _postDaoInstance ??= _$PostDao(database, changeListener);
   }
+
+  @override
+  UserDao get userDao {
+    return _userDaoInstance ??= _$UserDao(database, changeListener);
+  }
 }
 
 class _$PostDao extends PostDao {
@@ -101,4 +110,49 @@ class _$PostDao extends PostDao {
   final sqflite.DatabaseExecutor database;
 
   final StreamController<String> changeListener;
+}
+
+class _$UserDao extends UserDao {
+  _$UserDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database, changeListener),
+        _userInsertionAdapter = InsertionAdapter(
+            database,
+            'User',
+            (User item) => <String, Object?>{
+                  'userId': item.userId,
+                  'password': item.password,
+                  'userName': item.userName
+                },
+            changeListener);
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<User> _userInsertionAdapter;
+
+  @override
+  Stream<User?> findUaerByUsernamePassword(int password, String userName) {
+    return _queryAdapter.queryStream(
+        'SELECT * from User where password = ?1 and userName = ?2',
+        mapper: (Map<String, Object?> row) => User(row['userId'] as int,
+            row['password'] as int, row['userName'] as String),
+        arguments: [password, userName],
+        queryableName: 'User',
+        isView: false);
+  }
+
+  @override
+  Future<List<User>> findAllusers() async {
+    return _queryAdapter.queryList('SELECT * FROM User',
+        mapper: (Map<String, Object?> row) => User(row['userId'] as int,
+            row['password'] as int, row['userName'] as String));
+  }
+
+  @override
+  Future<void> insertUser(User user) async {
+    await _userInsertionAdapter.insert(user, OnConflictStrategy.abort);
+  }
 }
