@@ -33,12 +33,13 @@ class SignUpCard extends StatelessWidget {
   void _signUp() async {
 
     final userDao = db.userDao ;
-    final result = await userDao.findAllusers();
-    print(result);
-    // final mina = User(22 , 6723 , "mina");
-    // await userDao.insertUser(mina);
-    // final result = await userDao.findUaerByUsernamePassword(123, "mina");
+    
     // print(result);
+    final mina = User(1 , 6723 , "mina");
+    await userDao.insertUser(mina);
+    final result = await userDao.findAllusers();
+    // final result = await userDao.findUaerByUsernamePassword(6723, "mina");
+    print(result);
   }
 
   @override
