@@ -44,10 +44,10 @@ class AddAccomplish extends StatefulWidget {
 }
 
 class _AddAccomplishState extends State<AddAccomplish> {
-       List<AcomplishCard> list = [];
+       List<EditAccomplishCard> list = [];
 addSkillCard(){
   
-  list.add(new AcomplishCard()
+  list.add(new EditAccomplishCard()
   );
   setState((){});
 }
@@ -86,6 +86,36 @@ addSkillCard(){
       ], 
       )
       
+      
+    );
+  }
+}
+class EditAccomplishCard extends StatelessWidget {
+  const EditAccomplishCard({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      height: 50,
+      width: MediaQuery.of(context).size.width*0.88,
+      color: Colors.redAccent,
+      child: Container(margin: EdgeInsets.only(left: 5),
+      child: 
+        TextField(
+            //controller: _controller,
+            decoration: InputDecoration(
+            hintText: "Edit field",
+            suffixIcon: IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.check),
+             ),
+              ),
+              ),
+
+    
+      )
+
       
     );
   }

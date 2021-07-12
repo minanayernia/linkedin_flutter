@@ -9,7 +9,7 @@ class SignUpCard extends StatelessWidget {
       alignment: Alignment.center,
       child : Container(
       margin: EdgeInsets.only(top: 50),
-      height: MediaQuery.of(context).size.height*0.2,
+      height: MediaQuery.of(context).size.height*0.5,
       width: MediaQuery.of(context).size.width * 0.6,
       color: Colors.black87,
       child: Column(
@@ -50,7 +50,11 @@ class SignUpCard extends StatelessWidget {
           
         ) ,),
         
-
+      ButtonTheme(
+          height: 40,
+          minWidth: MediaQuery.of(context).size.width*0.55,
+          buttonColor: Colors.white,
+          child: RaisedButton(onPressed: (){}, child: Text("SignUp" , style: TextStyle(color: Colors.redAccent),)))
 
         ],
       ),
