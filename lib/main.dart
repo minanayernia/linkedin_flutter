@@ -1,3 +1,4 @@
+import 'package:dbproject/views/signUpLoginView.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
 
@@ -44,7 +45,8 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       
-      home: MyHomePage(database),
+      home:SignUpLogIn(database)
+      //  MyHomePage(database),
     );
   }
 }
@@ -84,6 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
           EditIntrCard(),
           LanguageList(),
           Message()
+      // SignUpLogIn()
       
           
   ],

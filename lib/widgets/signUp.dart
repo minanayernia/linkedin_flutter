@@ -1,7 +1,11 @@
+import 'package:dbproject/views/homeView.dart';
 import 'package:flutter/material.dart';
 
+import '../database.dart';
+
 class SignUpCard extends StatelessWidget {
-  const SignUpCard({ Key ?key }) : super(key: key);
+  final AppDatabase db ;
+  const SignUpCard(this.db);
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +58,12 @@ class SignUpCard extends StatelessWidget {
           height: 40,
           minWidth: MediaQuery.of(context).size.width*0.55,
           buttonColor: Colors.white,
-          child: RaisedButton(onPressed: (){}, child: Text("SignUp" , style: TextStyle(color: Colors.redAccent),)))
+          child: RaisedButton(onPressed: (){
+            Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomeView()),);
+          },
+           child: Text("SignUp" , style: TextStyle(color: Colors.redAccent),)))
 
         ],
       ),
