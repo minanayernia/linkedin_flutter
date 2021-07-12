@@ -34,7 +34,7 @@ class HomeView extends StatelessWidget {
           NotifList(),
           EditIntrCard(),
           LanguageList(),
-          Message()
+          NewMessage()
   ],
     ),
     ),

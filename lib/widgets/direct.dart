@@ -144,3 +144,135 @@ class UserCard extends StatelessWidget {
     );
   }
 }
+
+
+class NewMessage extends StatelessWidget {
+  const NewMessage({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+
+      margin: EdgeInsets.only(top: 20),
+      height: 600,
+      width: MediaQuery.of(context).size.width*0.9,
+      color: Colors.black87,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+            
+        Container(
+         width: MediaQuery.of(context).size.width*0.45,
+
+          child: Column(children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                Container(
+                  // key: dataKey,
+                  padding: EdgeInsets.only(left: 10),
+                  child:Text("Messaging" , style: TextStyle(color: Colors.white),)  ,),
+
+                Container(
+                  color: Colors.redAccent,
+                  child: TextButton(onPressed: (){}, child: Text("New Message" , style: TextStyle(color: Colors.white),)),)
+                
+              ],),
+
+              TextField(
+                decoration: InputDecoration(
+                  hintText: "Search messages",
+                  hintStyle: TextStyle(color: Colors.redAccent)
+                ),
+              ),
+
+
+              Container(
+                height: 500,
+                child:
+               SingleChildScrollView(
+                child: Column(children: [
+
+                  UserCard(),
+                  UserCard(),
+                  UserCard(),
+          
+                  UserCard(),
+                  UserCard(),
+                  UserCard(),
+                   UserCard(),
+                  UserCard(),
+                ],),
+              ) ,) ,
+              
+
+
+            ]),),
+
+            Container(
+            color: Colors.white,
+
+          width: MediaQuery.of(context).size.width*0.45,
+
+          child: Column(children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                Container(
+                  
+                  padding: EdgeInsets.only(left: 10),
+                  child:Text("New message" , style: TextStyle(color: Colors.redAccent),textAlign: TextAlign.center,)  ,),
+                
+                
+              ],),
+
+              Container(
+                color: Colors.white,
+                    height: 30,
+                    width: 400,
+                    child: TextField(
+                    textAlign: TextAlign.left,
+                    decoration: InputDecoration(
+                    hintText: "Type a name...",
+                    
+                    contentPadding: EdgeInsets.only(left: 10),
+                    hintStyle: TextStyle(color: Colors.redAccent),
+                    suffixIcon: IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.search),
+                    
+             ),
+              ),
+              ),),
+              Container(
+                margin: EdgeInsets.only(top: 400),
+                child:TextField(
+                decoration: InputDecoration(
+                  hintText: "Write a message...",
+                  hintStyle: TextStyle(color: Colors.redAccent)
+                ),
+              ) 
+              ,),
+              
+
+              ButtonTheme(
+          height: 40,
+          minWidth: MediaQuery.of(context).size.width*0.55,
+          buttonColor: Colors.redAccent,
+          child: RaisedButton(onPressed: (){}
+          ,
+           child: Text("Send" , style: TextStyle(color: Colors.white),))
+           )
+
+              
+
+
+            ]),),
+            
+
+      ],),
+
+      
+    );
+  }
+}

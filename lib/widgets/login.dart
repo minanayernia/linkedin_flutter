@@ -84,7 +84,9 @@ class LogInCard extends StatelessWidget {
             MaterialPageRoute(builder: (context) => HomeView()),
   );
           },
-           child: Text("LogIn" , style: TextStyle(color: Colors.white),)))
+           child: Text("LogIn" , style: TextStyle(color: Colors.white),))
+           )
+
         
 
 

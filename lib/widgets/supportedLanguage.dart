@@ -9,10 +9,10 @@ class LanguageList extends StatefulWidget {
 }
 
 class _LanguageListState extends State<LanguageList> {
-         List<LanguageCard> list = [];
+         List<AddLanguage> list = [];
 addSkillCard(){
   
-  list.add(new LanguageCard()
+  list.add(new AddLanguage()
   );
   setState((){});
 }
@@ -115,6 +115,45 @@ class EditLanguageCard extends StatelessWidget {
 
     
       )
+      
+    );
+  }
+}
+
+
+TextEditingController addLanguageController = TextEditingController();
+class AddLanguage extends StatelessWidget {
+  const AddLanguage({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100,
+      width: MediaQuery.of(context).size.width*0.88,
+      color: Colors.white,
+      margin: EdgeInsets.only(top: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+        Container(
+          color: Colors.white,
+          width: MediaQuery.of(context).size.width*0.86,
+          margin: EdgeInsets.only(left: 10),
+          child: TextField(
+            controller: addLanguageController,
+            decoration: InputDecoration(
+            hintText: "Language name",
+            hintStyle: TextStyle(color: Colors.redAccent),
+            suffixIcon: IconButton(onPressed: (){}, icon : Icon(Icons.check)),
+            
+            ),
+            
+            
+          )
+        ),
+        
+
+      ],),
       
     );
   }
