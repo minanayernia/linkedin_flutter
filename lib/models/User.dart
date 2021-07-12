@@ -2,11 +2,25 @@ import 'dart:ffi';
 
 import 'package:floor/floor.dart';
 import 'package:flutter/cupertino.dart';
+// import 'package:intl/intl.dart';
+
+// CREATE TABLE users (
+//     userId INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+//     userName VARCHAR (50),
+//     Userpassword VARCHAR (50),
+//     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+// )
+
+
 
 @entity
 class  User {
   @PrimaryKey (autoGenerate: true , ) 
   int? userId ;
+  // DateTime createdAt = DateTime.now() ;
+  // var milliseconds = DateTime.now().millisecondsSinceEpoch ;
+  // var createdAt = DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch) ;
+
   @required final String password;
   @required final String userName ;
 

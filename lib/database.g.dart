@@ -64,6 +64,8 @@ class _$AppDatabase extends AppDatabase {
 
   UserDao? _userDaoInstance;
 
+  UserProfileDao? _userProfileDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -86,6 +88,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `Post` (`PostId` INTEGER NOT NULL, `PostCaption` TEXT NOT NULL, `owner` INTEGER NOT NULL, `USerId` INTEGER NOT NULL, PRIMARY KEY (`PostId`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `User` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT, `password` TEXT NOT NULL, `userName` TEXT NOT NULL)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `UserProfile` (`ProfileId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER, `FirstName` TEXT NOT NULL, `LastName` TEXT NOT NULL, `UserName` TEXT NOT NULL, `About` TEXT NOT NULL, `AdditionalInfo` TEXT NOT NULL, `location` TEXT NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -101,6 +105,12 @@ class _$AppDatabase extends AppDatabase {
   @override
   UserDao get userDao {
     return _userDaoInstance ??= _$UserDao(database, changeListener);
+  }
+
+  @override
+  UserProfileDao get userProfileDao {
+    return _userProfileDaoInstance ??=
+        _$UserProfileDao(database, changeListener);
   }
 }
 
@@ -154,5 +164,73 @@ class _$UserDao extends UserDao {
   @override
   Future<void> insertUser(User user) async {
     await _userInsertionAdapter.insert(user, OnConflictStrategy.abort);
+  }
+}
+
+class _$UserProfileDao extends UserProfileDao {
+  _$UserProfileDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _userProfileInsertionAdapter = InsertionAdapter(
+            database,
+            'UserProfile',
+            (UserProfile item) => <String, Object?>{
+                  'ProfileId': item.ProfileId,
+                  'userId': item.userId,
+                  'FirstName': item.FirstName,
+                  'LastName': item.LastName,
+                  'UserName': item.UserName,
+                  'About': item.About,
+                  'AdditionalInfo': item.AdditionalInfo,
+                  'location': item.location
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<UserProfile> _userProfileInsertionAdapter;
+
+  @override
+  Future<UserProfile?> findProfileByUserId(int userId) async {
+    return _queryAdapter.query('SELECT * FROM userProfile WHERE userId = ?1',
+        mapper: (Map<String, Object?> row) => UserProfile(
+            location: row['location'] as String,
+            FirstName: row['FirstName'] as String,
+            LastName: row['LastName'] as String,
+            UserName: row['UserName'] as String,
+            AdditionalInfo: row['AdditionalInfo'] as String,
+            About: row['About'] as String),
+        arguments: [userId]);
+  }
+
+  @override
+  Future<UserProfile?> editAbout(int userId, String about) async {
+    return _queryAdapter.query(
+        'UPDATE userProfile SET about = ?2 WHERE userId = ?1',
+        mapper: (Map<String, Object?> row) => UserProfile(
+            location: row['location'] as String,
+            FirstName: row['FirstName'] as String,
+            LastName: row['LastName'] as String,
+            UserName: row['UserName'] as String,
+            AdditionalInfo: row['AdditionalInfo'] as String,
+            About: row['About'] as String),
+        arguments: [userId, about]);
+  }
+
+  @override
+  Future<UserProfile?> editAllProfile(int userId, String firstname,
+      String lastname, String about, String additionalInfo) async {
+    return _queryAdapter.query(
+        'UPDATE userProfile SET firstName = ?2 , lastName = ?3, about =  ?4 , additionalInfo = ?5  WHERE userId =  ?1',
+        mapper: (Map<String, Object?> row) => UserProfile(location: row['location'] as String, FirstName: row['FirstName'] as String, LastName: row['LastName'] as String, UserName: row['UserName'] as String, AdditionalInfo: row['AdditionalInfo'] as String, About: row['About'] as String),
+        arguments: [userId, firstname, lastname, about, additionalInfo]);
+  }
+
+  @override
+  Future<void> insertUserProfile(UserProfile userProfile) async {
+    await _userProfileInsertionAdapter.insert(
+        userProfile, OnConflictStrategy.abort);
   }
 }
