@@ -2,6 +2,7 @@ import 'package:dbproject/views/homeView.dart';
 import 'package:flutter/material.dart';
 import 'package:dbproject/models/User.dart';
 import '../database.dart';
+import '../main.dart';
 
 
 TextEditingController signupUserController = TextEditingController();
@@ -36,23 +37,26 @@ class SignUpCard extends StatelessWidget {
   final AppDatabase db ;
   
   const SignUpCard(this.db);
-  
-  void _signUp(String username , int password ) async {
-    final userDao = db.userDao ;
-    final mina = User( 6723 , "mina");
-    await userDao.insertUser(mina);
-    final result = await userDao.findAllusers();
-    // final result = await userDao.findUaerByUsernamePassword(6723, "mina");
-    print(result);
-  }
-
-  void _login(String username , int password)async{
-    final userDao = db.userDao ;
-    final user = await userDao.findUserByUsernamePassword(password, username); 
-  }
 
   @override
   Widget build(BuildContext context) {
+
+    void _signUp(String username , String password ) async {
+    final userDao = db.userDao ;
+    final user = User( password , username);
+    print(username + password);
+    await userDao.insertUser(user);
+    // print("111111111111111111111111111111111111");
+    // final result = await userDao.findAllusers();
+    // print("2222222222222222222222222222222");
+    final result = await userDao.findUserByUsernamePassword(password, username);
+    print(result);
+    Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) =>  MyHomePage(this.db , result)),);
+    
+    // print(signupPassController.text);
+  }
     
     return Align(
       alignment: Alignment.center,
@@ -78,13 +82,14 @@ class SignUpCard extends StatelessWidget {
           color: Colors.redAccent,
           child:TextField(
           controller: signupUserController,
-          
           style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
             fillColor: Colors.white,
           border: OutlineInputBorder(),
           hintText: 'UserName' , 
-          hintStyle: TextStyle(color: Colors.white)
+          hintStyle: TextStyle(color: Colors.white),
+          // print("hi"),
+          // print(signupUserController),
   ),
           
         ) ,),
@@ -106,10 +111,10 @@ class SignUpCard extends StatelessWidget {
           minWidth: MediaQuery.of(context).size.width*0.55,
           buttonColor: Colors.white,
           child: RaisedButton(onPressed: (){
-            // _signUp();
-            Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HomeView()),);
+            _signUp(signupUserController.text , signupPassController.text );
+            // Navigator.push(
+            // context,
+            // MaterialPageRoute(builder: (context) => HomeView()),);
           },
            child: Text("SignUp" , style: TextStyle(color: Colors.redAccent),)))
 

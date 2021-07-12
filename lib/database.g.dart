@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Post` (`PostId` INTEGER NOT NULL, `PostCaption` TEXT NOT NULL, `owner` INTEGER NOT NULL, `USerId` INTEGER NOT NULL, PRIMARY KEY (`PostId`))');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `User` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT, `password` INTEGER NOT NULL, `userName` TEXT NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `User` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT, `password` TEXT NOT NULL, `userName` TEXT NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -134,11 +134,11 @@ class _$UserDao extends UserDao {
   final InsertionAdapter<User> _userInsertionAdapter;
 
   @override
-  Stream<User?> findUserByUsernamePassword(int password, String userName) {
+  Stream<User?> findUserByUsernamePassword(String password, String userName) {
     return _queryAdapter.queryStream(
-        'SELECT * from User where password = ?1 and userName = ?2',
+        'SELECT userId FROM User where password = ?1 and userName = ?2',
         mapper: (Map<String, Object?> row) =>
-            User(row['password'] as int, row['userName'] as String),
+            User(row['password'] as String, row['userName'] as String),
         arguments: [password, userName],
         queryableName: 'User',
         isView: false);
@@ -148,7 +148,7 @@ class _$UserDao extends UserDao {
   Future<List<User>> findAllusers() async {
     return _queryAdapter.queryList('SELECT * FROM User',
         mapper: (Map<String, Object?> row) =>
-            User(row['password'] as int, row['userName'] as String));
+            User(row['password'] as String, row['userName'] as String));
   }
 
   @override
