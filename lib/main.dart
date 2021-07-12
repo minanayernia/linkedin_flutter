@@ -18,6 +18,8 @@ import 'package:dbproject/widgets/notification.dart';
 import 'package:dbproject/widgets/postCard.dart';
 import 'package:dbproject/widgets/supportedLanguage.dart';
 import 'package:dbproject/widgets/skillsAndEndorsement.dart';
+import 'package:dbproject/widgets/login.dart';
+import 'package:dbproject/widgets/signUp.dart';
 
 
 
@@ -65,13 +67,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
    
     return Scaffold(
-      backgroundColor: Colors.red,
+      backgroundColor: Colors.white,
   body: SingleChildScrollView(
     child: Column(
 
       crossAxisAlignment: CrossAxisAlignment.center,
     children: [
       NavigationBar(),
+          
           Intro(),
           AboutCard(),
           AddSkill(),
@@ -81,6 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
           EditIntrCard(),
           LanguageList(),
           Message()
+      
           
   ],
     ),
