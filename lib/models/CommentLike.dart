@@ -1,23 +1,45 @@
+import 'package:dbproject/models/User.dart';
 import 'package:floor/floor.dart';
 
-// CREATE TABLE CommentsLike  (
-//     CommentLikeId INT PRIMARY KEY IDENTITY (1, 1),
-//     CommentLikedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-//     UserId INT NOT NULL,
-//     CommentId INT NOT NULL,
-//     FOREIGN KEY (UserId) REFERENCES Users (UserId),
-//     FOREIGN KEY (CommentId) REFERENCES Comments (CommentId)
+import 'Comment.dart';
 
-// );
+// CREATE TABLE commentsLike  (
+//     commentLikeId INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+//     commentLikedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+//     userId INT NOT NULL,
+//     commentId INT NOT NULL,
+//     FOREIGN KEY (userId) REFERENCES Users (userId),
+//     FOREIGN KEY (commentId) REFERENCES Comments (commentId)
 
-@entity 
+// )
+
+@Entity(foreignKeys:[
+    ForeignKey(childColumns: ['userId'],
+     parentColumns: ['userId'],
+      entity: User ),
+      ForeignKey(childColumns: ['commentId'],
+      parentColumns: ['commentId'],
+      entity: Comment ),
+] )
 class CommentLike {
-  @primaryKey
-  final int CommentLikeId ;
-  final DateTime CommentLikedAt ;
-  final int UserId ;
-  final int CommentId ;
+  @PrimaryKey  (autoGenerate: true , ) 
+  int? commentLikeId ;
+  // final DateTime CommentLikedAt ;
+  @ColumnInfo(name: 'userId')
+  int userId ;
+
+  @ColumnInfo(name: 'commentId')
+  int commentId ;
 
 
-  CommentLike(this.CommentLikeId , this.UserId , this.CommentId , this.CommentLikedAt) ;
+  CommentLike( this.userId , this.commentId ) ;
+}
+
+@dao abstract class CommentLikeDao {
+
+  @Query('SELECT COUNT(commentLikeId) FROM commentLike WHERE commentId = :commentId')
+  Future<int> commentLikenNumber(int commentId);
+  
+  @insert
+  Future<void> insertCommentLike(CommentLike commentLike);
 }

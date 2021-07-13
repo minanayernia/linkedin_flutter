@@ -1,27 +1,43 @@
+import 'dart:ffi';
+
+import 'package:dbproject/models/Skill.dart';
+import 'package:dbproject/models/User.dart';
 import 'package:floor/floor.dart';
 
-// CREATE TABLE Endorse (
-//     EndorseId INT PRIMARY KEY IDENTITY (1, 1),
-//     EndorseAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-//     UserId INT NOT NULL,
-//     SkillId INT NOT NULL,
-//     FOREIGN KEY (UserId) REFERENCES Users (UserId),
-//     FOREIGN KEY (SkillId) REFERENCES Skills (SkillId)
-// );
+// CREATE TABLE endorse (
+//     endorseId INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+//     endorseAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+//     userId INT NOT NULL,
+//     skillId INT NOT NULL,
+//     FOREIGN KEY (userId) REFERENCES Users (userId),
+//     FOREIGN KEY (skillId) REFERENCES Skills (skillId)
 
-@entity 
+// )
+
+@Entity(foreignKeys:[
+    ForeignKey(childColumns: ['userId'],
+     parentColumns: ['userId'],
+      entity: User ),
+      ForeignKey(childColumns: ['skillId'],
+      parentColumns: ['skillId'],
+      entity: Skill ),
+] )
 class Endorse  {
-  @primaryKey
-  final int EndorseId ;
-  final DateTime EndorseAt;
-  final int UserId;
-  final int SkillId;
+  @PrimaryKey  (autoGenerate: true , ) 
+  int? endorseId ;
+  // final DateTime EndorseAt;
+  @ColumnInfo(name: 'userId')
+  int userId;
+
+  @ColumnInfo(name: 'skillId')
+  int skillId;
 
 
-  Endorse(this.EndorseId , this.EndorseAt , this.UserId , this.SkillId);
+  Endorse( this.userId , this.skillId);
 }
 
 @dao 
 abstract class EndorseDao {
-  
+  @insert
+  Future<void> insertEndorse(Endorse endorse);
 }

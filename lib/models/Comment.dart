@@ -1,27 +1,63 @@
+import 'dart:html';
+
+import 'package:dbproject/models/post.dart';
 import 'package:floor/floor.dart';
 
-// CREATE TABLE Comments (
-//     CommentId INT PRIMARY KEY IDENTITY (1, 1),
-//     CommentText VARCHAR (500) ,
-//     CommentedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-//     UserId INT NOT NULL,
-//     PostId INT NOT NULL,
-//     ReplyCommentId INT NOT NULL,
-//     FOREIGN KEY (ReplyCommentId) REFERENCES comments(CommentId)
-//     FOREIGN KEY (UserId) REFERENCES Users (UserId),
-//     FOREIGN KEY (PostId) REFERENCES Posts (PostId)
+import 'User.dart';
 
-// );
+// CREATE TABLE comments (
+//     commentId INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+//     commentText VARCHAR (500) ,
+//     commentedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+//     userId INT NOT NULL,
+//     postId INT NOT NULL,
+//     FOREIGN KEY (userId) REFERENCES Users (userId),
+//     FOREIGN KEY (postId) REFERENCES Posts (postId)
+
+// )
 
 
-@entity 
+
+@Entity(foreignKeys:[
+    ForeignKey(childColumns: ['userId'],
+     parentColumns: ['userId'],
+      entity: User ),
+      ForeignKey(childColumns: ['postId'],
+     parentColumns: ['postId'],
+      entity: Post ),
+      ForeignKey(childColumns: ['ReplyCommentId'],
+      parentColumns: ['commentId'],
+      entity: Comment ),
+] )
 class Comment {
-  @primaryKey 
-  final int CommentId ;
-  final String CommentText;
-  final DateTime CommentedAt;
-  final int UserId ;
-  final int PostId ;
-  final int ReplyCommentId ;
-  Comment(this.CommentId , this.PostId , this.UserId , this.CommentText , this.CommentedAt , this.ReplyCommentId );
+  @PrimaryKey  (autoGenerate: true , ) 
+  int? commentId ;
+
+  String commentText;
+  // final DateTime CommentedAt;
+  @ColumnInfo(name: 'userId')
+  int userId ;
+
+  @ColumnInfo(name: 'postId')
+  int postId ;
+
+  @ColumnInfo(name: 'ReplyCommentId')
+  int? ReplyCommentId ;
+  Comment( this.postId , this.userId , this.commentText );
+}
+
+@dao 
+abstract class CommentDao {
+  @Query('SELECT COUNT(commentId) FROM comment WHERE postId = :postId')
+  Future<int> commentNumber(int postId);
+
+  @Query('SELECT * FROM comments  WHERE postId = :postId')
+  Future<List<Comment>> findAllComment(int postId);
+
+  @insert
+  Future<void> insertCommentReply(Comment comment);
+
+  @insert 
+  Future<void> insertComment(int postId , int userId);
+  
 }
