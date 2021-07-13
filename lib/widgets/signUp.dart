@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+TextEditingController signupUserController = TextEditingController();
+TextEditingController signupPassController = TextEditingController();
 class SignUpCard extends StatelessWidget {
   const SignUpCard({ Key ?key }) : super(key: key);
 
@@ -28,6 +30,7 @@ class SignUpCard extends StatelessWidget {
         Container(
           color: Colors.redAccent,
           child:TextField(
+          controller: signupUserController,
           
           style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
@@ -42,6 +45,7 @@ class SignUpCard extends StatelessWidget {
         Container(
           color: Colors.redAccent,
           child:TextField(
+          controller: signupPassController,
           decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: 'Password',

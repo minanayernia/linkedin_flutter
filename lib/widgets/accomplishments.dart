@@ -90,6 +90,8 @@ addSkillCard(){
     );
   }
 }
+TextEditingController accomplishController = TextEditingController();
+
 class EditAccomplishCard extends StatelessWidget {
   const EditAccomplishCard({ Key? key }) : super(key: key);
 
@@ -103,7 +105,7 @@ class EditAccomplishCard extends StatelessWidget {
       child: Container(margin: EdgeInsets.only(left: 5),
       child: 
         TextField(
-            //controller: _controller,
+            controller: accomplishController,
             decoration: InputDecoration(
             hintText: "Edit field",
             suffixIcon: IconButton(

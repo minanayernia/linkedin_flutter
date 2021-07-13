@@ -46,6 +46,7 @@ class AboutCard extends StatelessWidget {
 }
 
 
+TextEditingController infoController = TextEditingController();
 class EditInfoCard extends StatelessWidget {
   const EditInfoCard({ Key? key }) : super(key: key);
 
@@ -59,7 +60,7 @@ class EditInfoCard extends StatelessWidget {
       child: Container(margin: EdgeInsets.only(left: 5),
       child: 
         TextField(
-            //controller: _controller,
+            controller: infoController,
             decoration: InputDecoration(
             hintText: "Edit field",
             suffixIcon: IconButton(

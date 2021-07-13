@@ -78,7 +78,24 @@ class Message extends StatelessWidget {
                   padding: EdgeInsets.only(left: 10),
                   child:Text("User" , style: TextStyle(color: Colors.redAccent),)  ,),
                 
-                TextButton(onPressed: (){}, child: Text("...")),
+                PopupMenuButton(
+                icon: Icon(Icons.more_horiz),
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    child: Text("Archieve"),
+                    value: 1,
+                  ),
+                  PopupMenuItem(
+                    child: Text("Mark unread"),
+                    value: 2,
+                  ),
+                  PopupMenuItem(
+                    child: Text("Delete"),
+                    value: 3,
+                  )
+                   
+                ]
+            ),
               ],),
 
               Container(
