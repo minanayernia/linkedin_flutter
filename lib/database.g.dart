@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Post` (`PostId` INTEGER NOT NULL, `PostCaption` TEXT NOT NULL, `owner` INTEGER NOT NULL, `USerId` INTEGER NOT NULL, PRIMARY KEY (`PostId`))');
+            'CREATE TABLE IF NOT EXISTS `Post` (`PostId` INTEGER PRIMARY KEY AUTOINCREMENT, `PostCaption` TEXT NOT NULL, `userId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `User` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT, `password` TEXT NOT NULL, `userName` TEXT NOT NULL)');
         await database.execute(
@@ -115,11 +115,37 @@ class _$AppDatabase extends AppDatabase {
 }
 
 class _$PostDao extends PostDao {
-  _$PostDao(this.database, this.changeListener);
+  _$PostDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _postInsertionAdapter = InsertionAdapter(
+            database,
+            'Post',
+            (Post item) => <String, Object?>{
+                  'PostId': item.PostId,
+                  'PostCaption': item.PostCaption,
+                  'userId': item.userId
+                });
 
   final sqflite.DatabaseExecutor database;
 
   final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Post> _postInsertionAdapter;
+
+  @override
+  Future<List<Post>> findAllPosts(int userId) async {
+    return _queryAdapter.queryList('SELECT * FROM Post WHERE userId = ?1',
+        mapper: (Map<String, Object?> row) => Post(row['PostId'] as int?,
+            row['PostCaption'] as String, row['userId'] as int),
+        arguments: [userId]);
+  }
+
+  @override
+  Future<void> insertPost(Post post) async {
+    await _postInsertionAdapter.insert(post, OnConflictStrategy.abort);
+  }
 }
 
 class _$UserDao extends UserDao {

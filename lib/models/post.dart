@@ -4,26 +4,34 @@ import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:floor/floor.dart';
 
+import 'User.dart';
 
-// CREATE TABLE Posts (
-//     PostId INT PRIMARY KEY IDENTITY (1, 1),
-//     PostCaption VARCHAR (500) ,
-//     PostImage VARCHAR (500) ,
-//     USerId INT NOT NULL,
-//     EndorseAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-//     FOREIGN KEY (UserId) REFERENCES Users (UserId)
-// );
 
-@entity
+// CREATE TABLE posts (
+//     postId INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+//     postCaption VARCHAR (500) ,
+//     postImage VARCHAR (500) ,
+//     userId INT NOT NULL,
+//     postAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+//     FOREIGN KEY (userId) REFERENCES users (userId)
+// )
+
+@Entity(foreignKeys:[
+    ForeignKey(childColumns: ['userId'],
+     parentColumns: ['userId'],
+      entity: User ),
+] )
 class Post {
-  @primaryKey
-  final int PostId ;
-  final String PostCaption ;
-  final int owner ;
-  final int USerId ;
+  @PrimaryKey  (autoGenerate: true , ) 
+  int? PostId ;
+
+  String PostCaption ;
+
+  @ColumnInfo(name: 'userId')
+  int userId ;
   // final DateTime EndorseAt;
 
-  Post(this.PostId, this.PostCaption ,this.owner , this.USerId);
+  Post(this.PostId, this.PostCaption , this.userId);
 }
 
 
@@ -31,35 +39,9 @@ class Post {
 
 @dao
 abstract class PostDao {
-  // @Query('SELECT * FROM Person')
-  // Future<List<Post>> findAllPersons();
+  @Query('SELECT * FROM Post WHERE userId = :userId')
+  Future<List<Post>> findAllPosts(int userId);
 
-  // @Query('SELECT * FROM Person WHERE id = :id')
-  // // Stream<Post?> findPersonById(int id);
-
-  // @insert
-  // Future<void> insertPerson(Post post);
+  @insert
+  Future<void> insertPost(Post post);
 }
-
-// class Post{
-//   final int post_id ;
-//   final String caption ;
-//   final int owner ;
-
-//   Post({
-//     @required this.post_id ,
-//     @required this.caption ,
-//     @required this.owner ,
-//   });
-//   Map<String , dynamic> toMap(){
-//     return {
-//      'post_id' : post_id ,
-//      'caption' : caption ,
-//      'owner': owner ,
-//     };
-//     @override
-//     String toString(){
-//       return 'Post{post_id : $post_id , caption : $caption , $owner : owner }' ;
-//     }
-//   }
-// }

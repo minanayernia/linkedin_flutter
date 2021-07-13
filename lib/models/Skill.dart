@@ -1,5 +1,7 @@
 import 'package:floor/floor.dart';
 
+import 'UserProfile.dart';
+
 // CREATE TABLE Skill (
 //     SkillId INT PRIMARY KEY IDENTITY (1, 1),
 //     SkillText VARCHAR (255) NOT NULL,
@@ -7,17 +9,32 @@ import 'package:floor/floor.dart';
 //     FOREIGN KEY (ProfileId) REFERENCES UserProfile (ProfileId)
 // );
 
-@entity 
+@Entity(foreignKeys:[
+    ForeignKey(childColumns: ['profileId'],
+     parentColumns: ['profileId'],
+      entity: UserProfile ),
+] )
 class Skill {
-  @primaryKey
-  final int SkillId ;
-  final String SkillText ;
-  final int ProfileId ;
+  @PrimaryKey  (autoGenerate: true , ) 
+  int? SkillId ;
 
-  Skill(this.SkillId , this.SkillText , this.ProfileId);
+  String SkillText ;
+  
+  @ColumnInfo(name: 'profileId')
+  int profileId ;
+
+  Skill(this.SkillId , this.SkillText , this.profileId);
 }
 
 @dao 
 abstract class SkillDao {
+
+  @Query('SELECT * FROM Skill WHERE profileId = :profileId')
+  Future<List<Skill>> allSkills (int profileId);
+
+  @Query('UPDATE skill SET skillText = :skillText WHERE profileId in (SELECT profileId From userProfile WHERE userId = :userId')
+  Future<Skill> editSkill(String skillText , int userId);
+  @insert 
+  Future<void>insertSkill(Skill skill);
   
 }
