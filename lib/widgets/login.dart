@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 
 import '../database.dart';
+import '../main.dart';
 TextEditingController loginUserController = TextEditingController();
 TextEditingController loginPassController = TextEditingController();
 
@@ -17,6 +18,16 @@ class LogInCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    void _login(String username , String password)async{
+    final userDao = db.userDao ;
+    final user = await userDao.findUserByUsernamePassword(password, username);
+    Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) =>  MyHomePage(this.db , user)),);
+
+  }
+
     return Align(
       alignment: Alignment.center,
       child : Container(

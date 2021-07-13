@@ -1,3 +1,4 @@
+import 'package:dbproject/models/User.dart';
 import 'package:dbproject/views/signUpLoginView.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
@@ -56,10 +57,10 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  
+  final Stream<User?> user ;
   final AppDatabase db ;
 
-  MyHomePage(this.db);
+  MyHomePage(this.db , this.user);
 
   // final String title;
 

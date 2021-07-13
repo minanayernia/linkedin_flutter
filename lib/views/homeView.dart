@@ -26,7 +26,6 @@ class HomeView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
     children: [
           NavigationBar(),
-          
           Intro(),
           AboutCard(),
           AddSkill(),
