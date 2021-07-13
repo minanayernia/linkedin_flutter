@@ -34,22 +34,26 @@ TextEditingController signupPassController = TextEditingController();
 // }
 class SignUpCard extends StatelessWidget {
   final AppDatabase db ;
+  
   const SignUpCard(this.db);
   
-  void _signUp() async {
-
+  void _signUp(String username , int password ) async {
     final userDao = db.userDao ;
-    
-    // print(result);
-    final mina = User(1 , 6723 , "mina");
+    final mina = User( 6723 , "mina");
     await userDao.insertUser(mina);
     final result = await userDao.findAllusers();
     // final result = await userDao.findUaerByUsernamePassword(6723, "mina");
     print(result);
   }
 
+  void _login(String username , int password)async{
+    final userDao = db.userDao ;
+    final user = await userDao.findUserByUsernamePassword(password, username); 
+  }
+
   @override
   Widget build(BuildContext context) {
+    
     return Align(
       alignment: Alignment.center,
       child : Container(
@@ -102,7 +106,7 @@ class SignUpCard extends StatelessWidget {
           minWidth: MediaQuery.of(context).size.width*0.55,
           buttonColor: Colors.white,
           child: RaisedButton(onPressed: (){
-            _signUp();
+            // _signUp();
             Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => HomeView()),);
