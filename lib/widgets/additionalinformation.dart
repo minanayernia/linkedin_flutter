@@ -6,40 +6,75 @@ class AboutCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 20),
-      color: Colors.black87,
-      height: 100,
-      width: MediaQuery.of(context).size.width * 0.9,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      margin: EdgeInsets.only(top: 10),
+      height: 50,
+      width: MediaQuery.of(context).size.width*0.88,
+      color: Colors.redAccent,
+      child: Container(margin: EdgeInsets.only(left: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-        
+        Text("project" , style: TextStyle(color: Colors.white),) ,
+        TextButton(onPressed: (){}, child: Text("Edit")),
+
+      ],)
+      )
+      
+      
+    );
+  }
+}
+
+
+class AdditionalInfoList extends StatefulWidget {
+  const AdditionalInfoList({ Key? key }) : super(key: key);
+
+  @override
+  _AdditionalInfoListState createState() => _AdditionalInfoListState();
+}
+
+class _AdditionalInfoListState extends State<AdditionalInfoList> {
+List<AboutCard> list = [];
+addSkillCard(){
+  
+  list.add(new AboutCard()
+  );
+  setState((){});
+}
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 20),
+
+      height: 200,
+      width: MediaQuery.of(context).size.width*0.9,
+      color: Colors.black87,
+      child: 
+      Column(children: [
         Container(
-          height: 30,
           color: Colors.redAccent,
-          child: Row(children: [
-            Container(
+          child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+        Container(
+          
           margin: EdgeInsets.only(left: 10),
-          child:  Text("ADDITIONALINFO",
+          child: Text("ADDITIONALINFO",
           style: TextStyle(color: Colors.white , fontSize: 15),
           ),
-
         ),
-        ],),),
-        
-        Container(
-          margin: EdgeInsets.only(left: 10 , top: 5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-            Text("data" , 
-            style: TextStyle(color: Colors.white , fontSize: 13),
-            ) ,
-            TextButton(onPressed: (){}, child: Text("Edit"))
+        TextButton(onPressed: addSkillCard, child: Text("Add")) ,
 
-          ],),
-        )
-      ],)
+      ],) ,),
+        
+
+      Flexible(child: ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (_,index) => list[index]))
+      
+
+      ], 
+      )
       
     );
   }
@@ -93,7 +128,6 @@ class OtherAdditionalInfo extends StatelessWidget {
         children: [
         
         Container(
-          height: 30,
           color: Colors.redAccent,
           child: Row(children: [
             Container(
@@ -103,6 +137,7 @@ class OtherAdditionalInfo extends StatelessWidget {
           ),
 
         ),
+        
         ],),),
         
         Container(

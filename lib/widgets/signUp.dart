@@ -115,9 +115,9 @@ class SignUpCard extends StatelessWidget {
           buttonColor: Colors.white,
           child: RaisedButton(onPressed: (){
             _signUp(signupUserController.text , signupPassController.text );
-            // Navigator.push(
+            //Navigator.push(
             // context,
-            // MaterialPageRoute(builder: (context) => HomeView()),);
+            //MaterialPageRoute(builder: (context) => HomeView()),);
           },
            child: Text("SignUp" , style: TextStyle(color: Colors.redAccent),)))
 

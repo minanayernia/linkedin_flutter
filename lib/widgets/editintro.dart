@@ -65,11 +65,15 @@ class EditIntrCard extends StatelessWidget {
           child:TextField(
           decoration: InputDecoration(
           border: OutlineInputBorder(),
-          labelText: "Enter Date",
+          hintText: "Enter Date",
+          suffixIcon: IconButton(
+            onPressed: (){},
+         // onPressed: () => _controller.clear(),
           icon: Icon(Icons.calendar_today),
+    ),
           hintStyle: TextStyle(color: Colors.white)
   ),
-          readOnly: true,
+          //readOnly: true,
           /*onTap: () async{
             DateTime pickedDate = await showDatePicker(
                       context: context, initialDate: DateTime.now(),

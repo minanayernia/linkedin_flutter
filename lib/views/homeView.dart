@@ -28,14 +28,15 @@ class HomeView extends StatelessWidget {
     children: [
           NavigationBar(),
           Intro(),
+          EditIntrCard(),
           AboutCard(),
           AddSkill(),
           AddAccomplish(),
           PostList(),
           NotifList(),
-          EditIntrCard(),
           LanguageList(),
           NewMessage(),
+          
           
   ],
     ),

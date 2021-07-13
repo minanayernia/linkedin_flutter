@@ -82,7 +82,7 @@ class PostList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 20),
-      height: MediaQuery.of(context).size.height*0.8,
+      height: MediaQuery.of(context).size.height*1.2,
       width: MediaQuery.of(context).size.width*0.9,
       color: Colors.black87,
       child : Column(children: [
@@ -90,13 +90,19 @@ class PostList extends StatelessWidget {
           child:Align(alignment: Alignment.centerRight,
         child: TextButton(onPressed: (){}, child: Text("NEW POST")),) ,),
         
-        SingleChildScrollView(
+
+
+        Container(
+        height: MediaQuery.of(context).size.height*1.1,
+          child: SingleChildScrollView(
         
         child: Column(children: [
-          NewCommentCard()
+         NewPostCard(),
+        NewCommentCard()
           
         ],),
-      ),
+      ),)
+        
         
 
       ],)
@@ -209,12 +215,12 @@ class NewPostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 20),
-      height: MediaQuery.of(context).size.height*0.4,
+      height: MediaQuery.of(context).size.height*0.8,
       width: MediaQuery.of(context).size.width * 0.9,
       color: Colors.redAccent,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
 
         Container(
@@ -238,6 +244,7 @@ class NewPostCard extends StatelessWidget {
         
         ),
         Container(
+          
           color: Colors.white12,
           child:TextField(
           
@@ -253,13 +260,14 @@ class NewPostCard extends StatelessWidget {
         ),
         
 
-        Container(
-          color: Colors.white38,
-          width: MediaQuery.of(context).size.width*0.9,
-          alignment: Alignment.center,
-          child:TextButton(onPressed: (){}, child: Text("Create" , style: TextStyle(color: Colors.white),))
-        
-         ,)
+          ButtonTheme(
+          height: 50,
+          minWidth: MediaQuery.of(context).size.width*0.88,
+          buttonColor: Colors.redAccent[100],
+          child: RaisedButton(onPressed: (){}
+          ,
+           child: Text("Send" , style: TextStyle(color: Colors.white),))
+           )
         
 
 
@@ -278,7 +286,8 @@ class NewCommentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 140,
+      margin: EdgeInsets.only(top: 20),
+      height: 130,
       width: MediaQuery.of(context).size.width*0.86,
       color: Colors.white30,
       child: Column(

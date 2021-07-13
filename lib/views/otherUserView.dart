@@ -42,8 +42,7 @@ class _OtherUserViewState extends State<OtherUserView> {
             OtherSkill() ,
             OtherLanguage(),
             OtherPost() ,
-            InvitationList(),
-            PeopleYouMayKnowList(),
+            
 
           ],
         ),

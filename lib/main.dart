@@ -1,5 +1,6 @@
 import 'package:dbproject/models/User.dart';
 import 'package:dbproject/views/signUpLoginView.dart';
+import 'package:dbproject/widgets/featured.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
 
@@ -22,7 +23,7 @@ import 'package:dbproject/widgets/supportedLanguage.dart';
 import 'package:dbproject/widgets/skillsAndEndorsement.dart';
 import 'package:dbproject/widgets/login.dart';
 import 'package:dbproject/widgets/signUp.dart';
-
+import 'package:dbproject/widgets/myNetwork.dart';
 import 'database.dart';
 
 
@@ -82,13 +83,19 @@ class _MyHomePageState extends State<MyHomePage> {
       NavigationBar(),
           
           Intro(),
-          AboutCard(),
+          EditIntrCard(),
+          AdditionalInfoList(),
           AddSkill(),
           AddAccomplish(),
+          FeaturedList(),
+          AddPost(),
           PostList(),
           NotifList(),
-          EditIntrCard(),
           LanguageList(),
+          Message() ,
+          NewMessage() ,
+          InvitationList(),
+          PeopleYouMayKnowList(),
       // SignUpLogIn()
       
           
