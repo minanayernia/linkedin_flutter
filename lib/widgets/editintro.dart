@@ -7,7 +7,7 @@ class EditIntrCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 20),
-      height: MediaQuery.of(context).size.height*0.45,
+      height: MediaQuery.of(context).size.height*0.55,
       width: MediaQuery.of(context).size.width * 0.9,
       color: Colors.black87,
       child: Column(
@@ -60,6 +60,27 @@ class EditIntrCard extends StatelessWidget {
           
         ) ,),
         
+        Container(
+          color: Colors.redAccent,
+          child:TextField(
+          decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: "Enter Date",
+          icon: Icon(Icons.calendar_today),
+          hintStyle: TextStyle(color: Colors.white)
+  ),
+          readOnly: true,
+          /*onTap: () async{
+            DateTime pickedDate = await showDatePicker(
+                      context: context, initialDate: DateTime.now(),
+                      firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
+                      lastDate: DateTime(2101)
+                  );
+
+          },*/
+          
+        ) ,),
+
 
         Container(
           color: Colors.redAccent,

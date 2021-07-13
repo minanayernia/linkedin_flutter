@@ -7,6 +7,7 @@ import 'package:dbproject/widgets/skillsAndEndorsement.dart';
 import 'package:dbproject/widgets/supportedLanguage.dart';
 import 'package:flutter/material.dart';
 import '../database.dart';
+import 'package:dbproject/widgets/myNetwork.dart';
 
 
 
@@ -41,6 +42,8 @@ class _OtherUserViewState extends State<OtherUserView> {
             OtherSkill() ,
             OtherLanguage(),
             OtherPost() ,
+            InvitationList(),
+            PeopleYouMayKnowList(),
 
           ],
         ),

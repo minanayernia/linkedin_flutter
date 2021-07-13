@@ -3,6 +3,7 @@ import 'package:dbproject/widgets/additionalInformation.dart';
 import 'package:dbproject/widgets/direct.dart';
 import 'package:dbproject/widgets/editIntro.dart';
 import 'package:dbproject/widgets/introduction.dart';
+import 'package:dbproject/widgets/myNetwork.dart';
 import 'package:dbproject/widgets/navigationBar.dart';
 import 'package:dbproject/widgets/notification.dart';
 import 'package:dbproject/widgets/postCard.dart';
@@ -34,7 +35,8 @@ class HomeView extends StatelessWidget {
           NotifList(),
           EditIntrCard(),
           LanguageList(),
-          NewMessage()
+          NewMessage(),
+          
   ],
     ),
     ),
