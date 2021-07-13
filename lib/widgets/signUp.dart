@@ -1,3 +1,4 @@
+import 'package:dbproject/models/UserProfile.dart';
 import 'package:dbproject/views/homeView.dart';
 import 'package:flutter/material.dart';
 import 'package:dbproject/models/User.dart';
@@ -43,14 +44,21 @@ class SignUpCard extends StatelessWidget {
 
     void _signUp(String username , String password ) async {
     final userDao = db.userDao ;
-    final user = User( password , username);
+
+    // await userDao.deleteAllUsers();
+
+    final user = User(  password , username , 2222156);
     print(username + password);
-    await userDao.insertUser(user);
+    // await userDao.insertUser(user);
     // print("111111111111111111111111111111111111");
-    // final result = await userDao.findAllusers();
-    // print("2222222222222222222222222222222");
-    final result = await userDao.findUserByUsernamePassword(password, username);
-    print(result);
+    final result = await userDao.findAllusers();
+    print("2222222222222222222222222222222");
+    // final result = await userDao.findUserByUsernamePassword(password, username);
+    print("jojoooooooooooo");
+    print(result[0].toString());
+    final userProfileDao = db.userProfileDao ;
+    // final userProfile = UserProfile(userId : result?.userId);
+    // await userProfileDao.insertUserProfile(userProfile) ;
     Navigator.push(
             context,
             MaterialPageRoute(builder: (context) =>  MyHomePage(this.db , result)),);

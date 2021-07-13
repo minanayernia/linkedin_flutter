@@ -87,7 +87,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Post` (`PostId` INTEGER PRIMARY KEY AUTOINCREMENT, `PostCaption` TEXT NOT NULL, `userId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `User` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT, `password` TEXT NOT NULL, `userName` TEXT NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `User` (`userId` INTEGER NOT NULL, `password` TEXT NOT NULL, `userName` TEXT NOT NULL, PRIMARY KEY (`userId`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `UserProfile` (`ProfileId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER, `FirstName` TEXT NOT NULL, `LastName` TEXT NOT NULL, `UserName` TEXT NOT NULL, `About` TEXT NOT NULL, `AdditionalInfo` TEXT NOT NULL, `location` TEXT NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
 
@@ -150,7 +150,7 @@ class _$PostDao extends PostDao {
 
 class _$UserDao extends UserDao {
   _$UserDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database, changeListener),
+      : _queryAdapter = QueryAdapter(database),
         _userInsertionAdapter = InsertionAdapter(
             database,
             'User',
@@ -158,8 +158,7 @@ class _$UserDao extends UserDao {
                   'userId': item.userId,
                   'password': item.password,
                   'userName': item.userName
-                },
-            changeListener);
+                });
 
   final sqflite.DatabaseExecutor database;
 
@@ -170,21 +169,25 @@ class _$UserDao extends UserDao {
   final InsertionAdapter<User> _userInsertionAdapter;
 
   @override
-  Stream<User?> findUserByUsernamePassword(String password, String userName) {
-    return _queryAdapter.queryStream(
+  Future<void> deleteAllUsers() async {
+    await _queryAdapter.queryNoReturn('Delete FROM User');
+  }
+
+  @override
+  Future<User?> findUserByUsernamePassword(
+      String password, String userName) async {
+    return _queryAdapter.query(
         'SELECT userId FROM User where password = ?1 and userName = ?2',
-        mapper: (Map<String, Object?> row) =>
-            User(row['password'] as String, row['userName'] as String),
-        arguments: [password, userName],
-        queryableName: 'User',
-        isView: false);
+        mapper: (Map<String, Object?> row) => User(row['password'] as String,
+            row['userName'] as String, row['userId'] as int),
+        arguments: [password, userName]);
   }
 
   @override
   Future<List<User>> findAllusers() async {
     return _queryAdapter.queryList('SELECT * FROM User',
-        mapper: (Map<String, Object?> row) =>
-            User(row['password'] as String, row['userName'] as String));
+        mapper: (Map<String, Object?> row) => User(row['password'] as String,
+            row['userName'] as String, row['userId'] as int));
   }
 
   @override
@@ -222,6 +225,7 @@ class _$UserProfileDao extends UserProfileDao {
   Future<UserProfile?> findProfileByUserId(int userId) async {
     return _queryAdapter.query('SELECT * FROM userProfile WHERE userId = ?1',
         mapper: (Map<String, Object?> row) => UserProfile(
+            userId: row['userId'] as int?,
             location: row['location'] as String,
             FirstName: row['FirstName'] as String,
             LastName: row['LastName'] as String,
@@ -236,6 +240,7 @@ class _$UserProfileDao extends UserProfileDao {
     return _queryAdapter.query(
         'UPDATE userProfile SET about = ?2 WHERE userId = ?1',
         mapper: (Map<String, Object?> row) => UserProfile(
+            userId: row['userId'] as int?,
             location: row['location'] as String,
             FirstName: row['FirstName'] as String,
             LastName: row['LastName'] as String,
@@ -250,7 +255,7 @@ class _$UserProfileDao extends UserProfileDao {
       String lastname, String about, String additionalInfo) async {
     return _queryAdapter.query(
         'UPDATE userProfile SET firstName = ?2 , lastName = ?3, about =  ?4 , additionalInfo = ?5  WHERE userId =  ?1',
-        mapper: (Map<String, Object?> row) => UserProfile(location: row['location'] as String, FirstName: row['FirstName'] as String, LastName: row['LastName'] as String, UserName: row['UserName'] as String, AdditionalInfo: row['AdditionalInfo'] as String, About: row['About'] as String),
+        mapper: (Map<String, Object?> row) => UserProfile(userId: row['userId'] as int?, location: row['location'] as String, FirstName: row['FirstName'] as String, LastName: row['LastName'] as String, UserName: row['UserName'] as String, AdditionalInfo: row['AdditionalInfo'] as String, About: row['About'] as String),
         arguments: [userId, firstname, lastname, about, additionalInfo]);
   }
 
