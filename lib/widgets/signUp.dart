@@ -1,16 +1,52 @@
 import 'package:dbproject/views/homeView.dart';
 import 'package:flutter/material.dart';
-
+import 'package:dbproject/models/User.dart';
 import '../database.dart';
+
 
 TextEditingController signupUserController = TextEditingController();
 TextEditingController signupPassController = TextEditingController();
 
 
 
+// class SignUpCard extends StatefulWidget {
+//   final AppDatabase db ;
+//   const SignUpCard(this.db);
+
+//   void _signUp() async {
+
+//     final userDao = widget.db.userDao ;
+//     final User mina = User(1 , 123 , "mina");
+//     await userDao.insertUser(mina);
+//   }
+
+//   @override
+//   _SignUpCardState createState() => _SignUpCardState();
+// }
+
+// class _SignUpCardState extends State<SignUpCard> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+      
+//     );
+//   }
+// }
 class SignUpCard extends StatelessWidget {
   final AppDatabase db ;
   const SignUpCard(this.db);
+  
+  void _signUp() async {
+
+    final userDao = db.userDao ;
+    
+    // print(result);
+    final mina = User(1 , 6723 , "mina");
+    await userDao.insertUser(mina);
+    final result = await userDao.findAllusers();
+    // final result = await userDao.findUaerByUsernamePassword(6723, "mina");
+    print(result);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +102,7 @@ class SignUpCard extends StatelessWidget {
           minWidth: MediaQuery.of(context).size.width*0.55,
           buttonColor: Colors.white,
           child: RaisedButton(onPressed: (){
+            _signUp();
             Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => HomeView()),);

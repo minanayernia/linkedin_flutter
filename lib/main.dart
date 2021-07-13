@@ -22,11 +22,15 @@ import 'package:dbproject/widgets/skillsAndEndorsement.dart';
 import 'package:dbproject/widgets/login.dart';
 import 'package:dbproject/widgets/signUp.dart';
 
+import 'database.dart';
+
 
 
 void main() async {
   final database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
-  
+  // final userDao = database.userDao ;
+  //   final result = await userDao.findAllusers();
+    // print(result);
   runApp(MyApp(database));
 }
 
@@ -64,10 +68,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
-   
+  
     return Scaffold(
       backgroundColor: Colors.white,
   body: SingleChildScrollView(
