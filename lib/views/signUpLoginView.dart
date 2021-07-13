@@ -2,9 +2,12 @@ import 'package:dbproject/widgets/logIn.dart';
 import 'package:dbproject/widgets/signUp.dart';
 import 'package:flutter/material.dart';
 
+import '../database.dart';
+
 
 class SignUpLogIn extends StatelessWidget {
-  const SignUpLogIn({ Key? key }) : super(key: key);
+  const SignUpLogIn( this.db) ;
+  final AppDatabase db ;
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +19,8 @@ class SignUpLogIn extends StatelessWidget {
 
       crossAxisAlignment: CrossAxisAlignment.center,
     children: [
-      LogInCard(),
-      SignUpCard(),
+      LogInCard(db),
+      SignUpCard(db),
           
   ],
     ),

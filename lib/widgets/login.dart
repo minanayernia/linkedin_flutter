@@ -1,11 +1,18 @@
+import 'package:dbproject/views/homeView.dart';
 import 'package:flutter/material.dart';
 
+
+import '../database.dart';
 TextEditingController loginUserController = TextEditingController();
 TextEditingController loginPassController = TextEditingController();
 
 
+
+
 class LogInCard extends StatelessWidget {
-  const LogInCard({ Key? key }) : super(key: key);
+  
+  const LogInCard(this.db) ;
+  final AppDatabase db ;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +67,13 @@ class LogInCard extends StatelessWidget {
           height: 40,
           minWidth: MediaQuery.of(context).size.width*0.55,
           buttonColor: Colors.redAccent,
-          child: RaisedButton(onPressed: (){}, child: Text("LogIn" , style: TextStyle(color: Colors.white),)))
+          child: RaisedButton(onPressed: (){
+            Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomeView()),
+  );
+          },
+           child: Text("LogIn" , style: TextStyle(color: Colors.white),)))
         
 
 

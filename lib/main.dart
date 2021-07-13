@@ -1,3 +1,4 @@
+import 'package:dbproject/views/signUpLoginView.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
 
@@ -21,6 +22,8 @@ import 'package:dbproject/widgets/skillsAndEndorsement.dart';
 import 'package:dbproject/widgets/login.dart';
 import 'package:dbproject/widgets/signUp.dart';
 
+
+
 void main() async {
   final database = await $FloorAppDatabase.databaseBuilder('app_database.db').build();
   
@@ -42,12 +45,14 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       
-      home: MyHomePage(database),
+      home:SignUpLogIn(database)
+      //  MyHomePage(database),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  
   final AppDatabase db ;
 
   MyHomePage(this.db);
@@ -81,6 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
           EditIntrCard(),
           LanguageList(),
           Message()
+      // SignUpLogIn()
       
           
   ],
