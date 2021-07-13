@@ -47,15 +47,17 @@ class SignUpCard extends StatelessWidget {
 
     // await userDao.deleteAllUsers();
 
-    final user = User(  password , username , 2222156);
+    final user = User( password : password , userName: username );
     print(username + password);
-    // await userDao.insertUser(user);
+    await userDao.insertUser(user);
     // print("111111111111111111111111111111111111");
     // final result = await userDao.findAllusers();
-    print("2222222222222222222222222222222");
+    // print("2222222222222222222222222222222");
     final result = await userDao.findUserByUsernamePassword(password, username);
     print("jojoooooooooooo");
-    print(result);
+    print(result?.userName);
+    // final chert = await userDao.findUserNameByUserId();
+    // print(await  db.userProfileDao.findProfileByUserId(result?.userId));
     final userProfileDao = db.userProfileDao ;
     // final userProfile = UserProfile(userId : result?.userId);
     // await userProfileDao.insertUserProfile(userProfile) ;
@@ -123,9 +125,6 @@ class SignUpCard extends StatelessWidget {
           buttonColor: Colors.white,
           child: RaisedButton(onPressed: (){
             _signUp(signupUserController.text , signupPassController.text );
-            //Navigator.push(
-            // context,
-            //MaterialPageRoute(builder: (context) => HomeView()),);
           },
            child: Text("SignUp" , style: TextStyle(color: Colors.redAccent),)))
 

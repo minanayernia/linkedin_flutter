@@ -87,7 +87,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Post` (`PostId` INTEGER PRIMARY KEY AUTOINCREMENT, `PostCaption` TEXT NOT NULL, `userId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `User` (`userId` INTEGER NOT NULL, `password` TEXT NOT NULL, `userName` TEXT NOT NULL, PRIMARY KEY (`userId`))');
+            'CREATE TABLE IF NOT EXISTS `User` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT, `password` TEXT NOT NULL, `userName` TEXT NOT NULL)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `UserProfile` (`ProfileId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER, `FirstName` TEXT NOT NULL, `LastName` TEXT NOT NULL, `UserName` TEXT NOT NULL, `About` TEXT NOT NULL, `AdditionalInfo` TEXT NOT NULL, `location` TEXT NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
 
@@ -174,20 +174,31 @@ class _$UserDao extends UserDao {
   }
 
   @override
+  Future<String?> findUserNameByUserId(int userId) async {
+    await _queryAdapter.queryNoReturn(
+        'SELECT userName FROM User WHERE userId = ?1',
+        arguments: [userId]);
+  }
+
+  @override
   Future<User?> findUserByUsernamePassword(
       String password, String userName) async {
     return _queryAdapter.query(
-        'SELECT userId FROM User where password = ?1 and userName = ?2',
-        mapper: (Map<String, Object?> row) => User(row['password'] as String,
-            row['userName'] as String, row['userId'] as int),
+        'SELECT * FROM User where password = ?1 and userName = ?2',
+        mapper: (Map<String, Object?> row) => User(
+            userId: row['userId'] as int?,
+            password: row['password'] as String,
+            userName: row['userName'] as String),
         arguments: [password, userName]);
   }
 
   @override
   Future<List<User>> findAllusers() async {
     return _queryAdapter.queryList('SELECT * FROM User',
-        mapper: (Map<String, Object?> row) => User(row['password'] as String,
-            row['userName'] as String, row['userId'] as int));
+        mapper: (Map<String, Object?> row) => User(
+            userId: row['userId'] as int?,
+            password: row['password'] as String,
+            userName: row['userName'] as String));
   }
 
   @override
