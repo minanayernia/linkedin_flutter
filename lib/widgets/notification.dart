@@ -38,7 +38,21 @@ class NotifList extends StatelessWidget {
       height: 400,
       width: MediaQuery.of(context).size.width*0.9,
       color: Colors.black87,
-      child: SingleChildScrollView(
+      child:Column(
+        children: [
+          Container(
+            margin: EdgeInsets.only(left: 10 , top: 4),
+            height: 30 ,
+            child : Align(
+              alignment: Alignment.centerLeft,
+              child: Text("NOTIFICATION" , style: TextStyle(color: Colors.white , fontSize: 15 ),) ,)
+           
+            
+            ),
+          
+          Container(
+        height: 350 ,    
+        child:SingleChildScrollView(
         child: Column(children: [
           NotificationCard(),
           NotificationCard(),
@@ -47,7 +61,10 @@ class NotifList extends StatelessWidget {
           NotificationCard(),
           NotificationCard(),
         ],),
-      ),
+      ) ,)
+          
+        ],
+      ) 
 
       
     );

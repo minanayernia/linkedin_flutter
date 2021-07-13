@@ -1,4 +1,5 @@
 import 'package:dbproject/views/homeView.dart';
+import 'package:dbproject/views/otherUserView.dart';
 import 'package:flutter/material.dart';
 
 
@@ -54,6 +55,7 @@ class LogInCard extends StatelessWidget {
         Container(
           color: Colors.white,
           child:TextField(
+          obscureText: true,
           controller: loginPassController,
           decoration: InputDecoration(
           border: OutlineInputBorder(),
@@ -70,7 +72,7 @@ class LogInCard extends StatelessWidget {
           child: RaisedButton(onPressed: (){
             Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => HomeView()),
+            MaterialPageRoute(builder: (context) => OtherUserView(db)),
   );
           },
            child: Text("LogIn" , style: TextStyle(color: Colors.white),))

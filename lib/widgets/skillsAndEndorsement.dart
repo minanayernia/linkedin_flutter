@@ -101,3 +101,72 @@ addSkillCard(){
   }
 }
 
+
+
+class OtherSkill extends StatelessWidget {
+  const OtherSkill({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 20),
+
+      height: 200,
+      width: MediaQuery.of(context).size.width*0.9,
+      color: Colors.black87,
+      child:
+      Column(children: [
+
+        Container(
+          color: Colors.redAccent,
+          child:Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+        Container(
+          height: 30 ,
+          margin: EdgeInsets.only(left: 10 , top: 7),
+          child: Text("SKILLS&ENDORSEMENTS",
+          style: TextStyle(color: Colors.white , fontSize: 15),
+          ),
+        ),
+
+      ],) ,),
+        
+      OtherSkillCard(),
+      /*Flexible(child: ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (_,index) => list[index]))*/
+      
+      ] 
+      ,)
+      
+    );
+  }
+}
+
+class OtherSkillCard extends StatelessWidget {
+  const OtherSkillCard({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 10 , bottom: 5),
+      height: 50,
+      width: MediaQuery.of(context).size.width*0.88,
+      color: Colors.redAccent,
+      child: Container(margin: EdgeInsets.only(left: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+        Text("Skill" , style: TextStyle(color: Colors.white),),
+        Row(children: [
+          TextButton(onPressed: (){}, child: Text("Endorse")),
+        ],)
+
+      ],),
+      )
+      
+    );
+  }
+}
+

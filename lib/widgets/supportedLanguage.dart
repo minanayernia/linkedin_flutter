@@ -158,3 +158,73 @@ class AddLanguage extends StatelessWidget {
     );
   }
 }
+
+class OtherLanguage extends StatelessWidget {
+  const OtherLanguage({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+
+      margin: EdgeInsets.only(top: 20),
+
+      height: 200,
+      width: MediaQuery.of(context).size.width*0.9,
+      color: Colors.black87,
+      child: 
+      Column(children: [
+        Container(
+          color: Colors.redAccent,
+          child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+        Container(
+          height: 30,
+          margin: EdgeInsets.only(left: 10 , top: 7),
+          child: Text("LANGUAGES",
+          style: TextStyle(color: Colors.white , fontSize: 15),
+          ),
+        ),
+
+      ],) ,),
+      OtherLanguageCard(),
+
+      /*Flexible(child: ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (_,index) => list[index]))*/
+      
+
+      ], 
+      )
+
+      
+    );
+  }
+}
+
+class OtherLanguageCard extends StatelessWidget {
+  const OtherLanguageCard({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: 100,
+      width: MediaQuery.of(context).size.width*0.88,
+      color: Colors.redAccent,
+      margin: EdgeInsets.only(top: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+        Container(
+          margin: EdgeInsets.only(left: 10),
+          child: Text("data" , 
+          style: TextStyle(color: Colors.white , fontSize: 13),
+          ),
+        ),
+        
+
+      ],),
+      
+    );
+  }
+}

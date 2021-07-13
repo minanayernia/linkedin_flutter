@@ -1,6 +1,10 @@
+import 'package:dbproject/widgets/accomplishments.dart';
 import 'package:dbproject/widgets/additionalinformation.dart';
 import 'package:dbproject/widgets/introduction.dart';
 import 'package:dbproject/widgets/navigationBar.dart';
+import 'package:dbproject/widgets/postCard.dart';
+import 'package:dbproject/widgets/skillsAndEndorsement.dart';
+import 'package:dbproject/widgets/supportedLanguage.dart';
 import 'package:flutter/material.dart';
 import '../database.dart';
 
@@ -33,7 +37,10 @@ class _OtherUserViewState extends State<OtherUserView> {
             NavigationBar(),
             //OtherIntro(db),
             OtherAdditionalInfo() ,
-
+            OtherAccomplish(),
+            OtherSkill() ,
+            OtherLanguage(),
+            OtherPost() ,
 
           ],
         ),

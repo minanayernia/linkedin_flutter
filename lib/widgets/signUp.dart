@@ -92,9 +92,12 @@ class SignUpCard extends StatelessWidget {
         Container(
           color: Colors.redAccent,
           child:TextField(
+          obscureText: true,
           controller: signupPassController,
           decoration: InputDecoration(
           border: OutlineInputBorder(),
+          fillColor: Colors.white,
+
           hintText: 'Password',
           hintStyle: TextStyle(color: Colors.white)
   ),
