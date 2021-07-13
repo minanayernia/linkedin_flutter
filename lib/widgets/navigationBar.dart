@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 
 // final dataKey = new GlobalKey();
+TextEditingController searchUserController = TextEditingController();
+
 class NavigationBar extends StatelessWidget {
   const NavigationBar({ Key? key }) : super(key: key);
 
@@ -23,12 +25,33 @@ class NavigationBar extends StatelessWidget {
           
           
           ),
+          
+          
           Row(
             children: <Widget>[
+              Container(
+                color: Colors.white,
+                    height: 30,
+                    width: 400,
+                    child: TextField(
+                    controller: searchUserController,
+                    textAlign: TextAlign.left,
+                    decoration: InputDecoration(
+                    hintText: "Search user...",
+                    
+                    contentPadding: EdgeInsets.only(left: 10),
+                    hintStyle: TextStyle(color: Colors.redAccent),
+                    suffixIcon: IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.search),
+                    
+             ),
+              ),
+              ),
+          ),
                 TextButton(onPressed: (){},
                  child:Text("My Network")),
-                 TextButton(onPressed: (){},
-                 child:Text("Direct"))
+                 
             ],
           )
         ],

@@ -88,7 +88,6 @@ class _MyHomePageState extends State<MyHomePage> {
           NotifList(),
           EditIntrCard(),
           LanguageList(),
-          Message()
       // SignUpLogIn()
       
           
