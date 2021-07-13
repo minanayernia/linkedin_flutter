@@ -51,17 +51,17 @@ class SignUpCard extends StatelessWidget {
     print(username + password);
     // await userDao.insertUser(user);
     // print("111111111111111111111111111111111111");
-    final result = await userDao.findAllusers();
+    // final result = await userDao.findAllusers();
     print("2222222222222222222222222222222");
-    // final result = await userDao.findUserByUsernamePassword(password, username);
+    final result = await userDao.findUserByUsernamePassword(password, username);
     print("jojoooooooooooo");
-    print(result[0].toString());
+    print(result);
     final userProfileDao = db.userProfileDao ;
     // final userProfile = UserProfile(userId : result?.userId);
     // await userProfileDao.insertUserProfile(userProfile) ;
     Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>  MyHomePage(this.db , result)),);
+            MaterialPageRoute(builder: (context) =>  MyHomePage(this.db , result?.userId)),);
     
     // print(signupPassController.text);
   }
