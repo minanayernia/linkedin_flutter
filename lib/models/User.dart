@@ -47,6 +47,9 @@ abstract class UserDao {
   @Query('SELECT * FROM User where password = :password and userName = :userName ')
   Future<User?> findUserByUsernamePassword(String password , String userName);
 
+  @Query('SELECT * FROM User WHERE userName = :userName')
+  Future<User?> findeUserByUserName(String userName);
+
   @Query('SELECT * FROM User')
   Future<List<User>>findAllusers();
 

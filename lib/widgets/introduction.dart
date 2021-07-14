@@ -52,13 +52,11 @@ class _IntroState extends State<Intro> {
         if (val != null){
           _textFromFile = val.userName;
         } else {
-          _textFromFile = "kir";
+          // _textFromFile = "kir";
         }
-          print("ooooooooooooooooooooooooooooooooooooooo");
-          print(_textFromFile);
         }));
     } else {
-      _textFromFile = "kos";
+      // _textFromFile = "kos";
     }
       
   }
