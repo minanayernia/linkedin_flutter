@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 // final dataKey = new GlobalKey();
+
+TextEditingController sendMessageController = TextEditingController();
+TextEditingController searchMessageController = TextEditingController();
+
 class Message extends StatelessWidget {
   const Message({ Key ? key }) : super(key: key);
 
@@ -30,6 +34,7 @@ class Message extends StatelessWidget {
               ],),
 
               TextField(
+                controller: searchMessageController,
                 decoration: InputDecoration(
                   hintText: "Search messages"
                 ),
@@ -106,6 +111,7 @@ class Message extends StatelessWidget {
                 child: Text("mesage"),),
 
               TextField(
+                controller: sendMessageController,
                 decoration: InputDecoration(
                   hintText: "type..."
                 ),
@@ -145,7 +151,9 @@ class UserCard extends StatelessWidget {
   }
 }
 
-
+TextEditingController newMessageController = TextEditingController();
+TextEditingController searchNewMessageController = TextEditingController();
+TextEditingController searchUserController = TextEditingController();
 class NewMessage extends StatelessWidget {
   const NewMessage({ Key? key }) : super(key: key);
 
@@ -180,7 +188,7 @@ class NewMessage extends StatelessWidget {
               ],),
 
               TextField(
-                
+                controller: searchNewMessageController,
                 decoration: InputDecoration(
                   hintText: "Search messages",
                   
@@ -240,6 +248,7 @@ class NewMessage extends StatelessWidget {
                     height: 30,
                     width: 400,
                     child: TextField(
+                    controller: searchUserController,
                     textAlign: TextAlign.left,
                     decoration: InputDecoration(
                     hintText: "Type a name...",
@@ -256,6 +265,7 @@ class NewMessage extends StatelessWidget {
               Container(
                 margin: EdgeInsets.only(top: 400),
                 child:TextField(
+                  controller: newMessageController,
                 decoration: InputDecoration(
                   hintText: "Write a message...",
                   hintStyle: TextStyle(color: Colors.redAccent)

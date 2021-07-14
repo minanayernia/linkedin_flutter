@@ -1,3 +1,4 @@
+import 'package:dbproject/widgets/editintro.dart';
 import 'package:flutter/material.dart';
 
 import '../database.dart';
@@ -8,6 +9,13 @@ var lasttname ;
 var about ;
 var birthdate ;
 var location ;
+
+
+TextEditingController firstNameController = TextEditingController();
+TextEditingController lastNameController = TextEditingController();
+TextEditingController aboutController = TextEditingController();
+TextEditingController birthDateController = TextEditingController();
+TextEditingController locationController = TextEditingController();
 
 class EditIntrCard extends StatelessWidget {
   final AppDatabase db ;
@@ -65,6 +73,7 @@ void edit()async{
         Container(
           color: Colors.redAccent,
           child:TextField(
+          controller: firstNameController,
           
           style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
@@ -79,6 +88,7 @@ void edit()async{
         Container(
           color: Colors.redAccent,
           child:TextField(
+            controller: lastNameController,
           decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: 'LastName',
@@ -91,6 +101,7 @@ void edit()async{
          Container(
           color: Colors.redAccent,
           child:TextField(
+            controller: aboutController,
           decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: about,
@@ -102,6 +113,7 @@ void edit()async{
         Container(
           color: Colors.redAccent,
           child:TextField(
+            controller: birthDateController,
           decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: "Enter Date",
@@ -128,6 +140,7 @@ void edit()async{
         Container(
           color: Colors.redAccent,
           child:TextField(
+          controller: locationController,
           decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: 'Location',
