@@ -1,8 +1,47 @@
 import 'package:flutter/material.dart';
 
-class EditIntrCard extends StatelessWidget {
-  const EditIntrCard({ Key? key }) : super(key: key);
+import '../database.dart';
 
+var temp ;
+var firstname ;
+var lasttname ;
+var about ;
+var birthdate ;
+var location ;
+
+class EditIntrCard extends StatelessWidget {
+  final AppDatabase db ;
+  //final user ;
+  final String userName ; 
+  final String password ; 
+  const EditIntrCard( this.db , this.userName , this.password) ;
+
+  void getIntro() async {
+    print("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT") ;
+    final id = await db.userDao.findUserByUsernamePassword(password, userName) ;
+
+    temp = id ; 
+    print("jjjjjjjjjjjjjjjjjjjjj") ;
+    print(temp) ;
+    final res = await db.userProfileDao.findProfileByUserId(temp.userId) ;
+    firstname = res?.FirstName ;
+    print("hhhhhhhhhhhhhhhhhhh") ;
+
+  }
+void edit()async{
+
+  getIntro();
+
+  print("oooooooooooooooooooooooooooo") ;
+  final res = await db.userProfileDao.editAbout(temp, "gkgmdlg") ;
+
+
+  about = res?.About ;
+  print("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR") ;
+  print(about) ;
+
+
+}
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,7 +70,7 @@ class EditIntrCard extends StatelessWidget {
           decoration: InputDecoration(
             fillColor: Colors.white,
           border: OutlineInputBorder(),
-          hintText: 'FisrtName' , 
+          hintText: firstname , 
           hintStyle: TextStyle(color: Colors.white)
   ),
           
@@ -54,7 +93,7 @@ class EditIntrCard extends StatelessWidget {
           child:TextField(
           decoration: InputDecoration(
           border: OutlineInputBorder(),
-          hintText: 'About',
+          hintText: about,
           hintStyle: TextStyle(color: Colors.white)
   ),
           
@@ -98,7 +137,7 @@ class EditIntrCard extends StatelessWidget {
         ) ,),
         Container(
           alignment: Alignment.centerRight,
-          child:TextButton(onPressed: (){}, child: Text("Save" , style: TextStyle(color: Colors.white),))
+          child:TextButton(onPressed: edit , child: Text("Save" , style: TextStyle(color: Colors.white),))
         
          ,)
         

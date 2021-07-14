@@ -24,7 +24,7 @@ class LogInCard extends StatelessWidget {
     final user = await userDao.findUserByUsernamePassword(password, username);
     Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>  MyHomePage(this.db , user)),);
+            MaterialPageRoute(builder: (context) =>  MyHomePage(this.db , username , password)),);
 
   }
 

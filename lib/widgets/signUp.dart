@@ -63,7 +63,7 @@ class SignUpCard extends StatelessWidget {
     // await userProfileDao.insertUserProfile(userProfile) ;
     Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>  MyHomePage(this.db , result?.userId)),);
+            MaterialPageRoute(builder: (context) =>  MyHomePage(this.db ,username , password)),);
     
     // print(signupPassController.text);
   }

@@ -2,15 +2,24 @@
 
 import 'package:flutter/material.dart';
 import '../database.dart';
+
+var id ;
+
 class Intro extends StatelessWidget {
   final AppDatabase db ;
-  final user ;
-  const Intro( this.db , this.user) ;
+  //final user ;
+  final String userName ; 
+  final String password ; 
+  const Intro( this.db , this.userName , this.password) ;
 
   void fuck()async{
-    final res = await db.userDao.findUserNameByUserId(user);
+    // final res = await db.userDao.findUserNameByUserId(user);
+    final res = await db.userDao.findUserByUsernamePassword(password, userName) ;
     print("fuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuck");
-    print(res);
+    id = res?.userId ;
+    print("iddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd") ;
+    print(id) ;
+    print(res?.userId);
     // final res2= res?.userName ;
     // return res2 ;
   }
@@ -52,21 +61,24 @@ class Intro extends StatelessWidget {
           
           Container(
           margin: EdgeInsets.only(left: 10 ),
-          child: 
-          FutureBuilder(
-            future: db.userDao.findUserNameByUserId(user),
-            builder:  (context, snapshot) {
-              // print(user);
-              // final result = db.userDao.findUserNameByUserId(user);
-              // print( result);
-              // print("33333333333333333333");
-              fuck();
-                if (snapshot.hasError) {
-                  return Text("Errror ${snapshot.error}");
-                }
-                print(Text(snapshot.data.toString()));
-                return Text(snapshot.data.toString());
-              },)
+          child: Text(userName , style: TextStyle(color: Colors.white),),
+          // FutureBuilder(
+          //   future: db.userDao.findUserByUsernamePassword(password, userName),
+          //   // future: db.userDao.findUserNameByUserId(user),
+          //   builder:  (context, snapshot) {
+          //     // print(user);
+          //     // final result = db.userDao.findUserNameByUserId(user);
+          //     // print( result);
+          //     print("33333333333333333333");
+          //     fuck();
+          //       if (snapshot.hasError) {
+          //         return Text("Errror ${snapshot.error}");
+          //       }
+          //       print(Text(snapshot.data.toString()));
+          //       return Text(snapshot.data.toString());
+          //     }
+          //     ,
+          //     )
           // Text( db.userProfileDao.findProfileByUserId(user).toString())
           // FutureBuilder(
           //   future: db.userProfileDao.findProfileByUserId(user),
@@ -158,3 +170,7 @@ class OtherIntro extends StatelessWidget {
     );
   }
 }
+
+
+
+

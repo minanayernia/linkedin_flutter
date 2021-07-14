@@ -58,10 +58,12 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  final user ;
+  //final user ;
+  final String userName;
+  final String password;
   final AppDatabase db ;
 
-  MyHomePage(this.db , this.user);
+  MyHomePage(this.db , this.userName , this.password);
 
   // final String title;
 
@@ -82,8 +84,8 @@ class _MyHomePageState extends State<MyHomePage> {
     children: [
       NavigationBar(),
           
-          Intro(widget.db , widget.user),
-          EditIntrCard(),
+          Intro(widget.db , widget.userName , widget.password),
+          EditIntrCard(widget.db , widget.userName , widget.password),
           AdditionalInfoList(),
           EditInfoCard(),
           AddSkill(),
