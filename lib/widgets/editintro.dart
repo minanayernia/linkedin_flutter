@@ -53,7 +53,7 @@ class _EditIntrCardState extends State<EditIntrCard> {
   void editIntro()async{
     var a = widget.user;
     if (a != null){
-      widget.db.userProfileDao.editAllProfile(a, firstNameController.toString(), lastNameController.toString(), aboutController.toString()).then((val) => setState((){
+      widget.db.userProfileDao.editAllProfile(a, firstNameController.toString(), lastNameController.toString(), aboutController.toString() , locationController.toString()).then((val) => setState((){
         if (val != null){
           firstname= val.FirstName;
           lasttname = val.LastName ;

@@ -270,12 +270,12 @@ class _$UserProfileDao extends UserProfileDao {
   }
 
   @override
-  Future<UserProfile?> editAllProfile(
-      int userId, String firstname, String lastname, String about) async {
+  Future<UserProfile?> editAllProfile(int userId, String firstname,
+      String lastname, String about, String location) async {
     return _queryAdapter.query(
-        'UPDATE UserProfile SET firstName = ?2 , lastName = ?3, about =  ?4   WHERE userId =  ?1',
+        'UPDATE UserProfile SET firstName = ?2 , lastName = ?3, about =  ?4 , location = ?5   WHERE userId =  ?1',
         mapper: (Map<String, Object?> row) => UserProfile(userId: row['userId'] as int?, location: row['location'] as String, FirstName: row['FirstName'] as String, LastName: row['LastName'] as String, UserName: row['UserName'] as String, AdditionalInfo: row['AdditionalInfo'] as String, About: row['About'] as String),
-        arguments: [userId, firstname, lastname, about]);
+        arguments: [userId, firstname, lastname, about, location]);
   }
 
   @override

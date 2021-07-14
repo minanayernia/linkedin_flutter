@@ -1,6 +1,7 @@
 
 
 import 'package:dbproject/models/User.dart';
+import 'package:dbproject/widgets/editintro.dart';
 import 'package:flutter/material.dart';
 import '../database.dart';
 
@@ -27,6 +28,7 @@ class Intro extends StatefulWidget {
 
 class _IntroState extends State<Intro> {
   String _textFromFile = 'im empty' ;
+  String about = 'you have not filled about';
   var username = '';
 
   _IntroState() {
@@ -38,6 +40,12 @@ class _IntroState extends State<Intro> {
     // var b = widget.db.userDao.findUserNameByUserId;
     // print('intro db is: $b');
     if (a != null){
+      widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
+        if (val != null){
+          about = val.About;
+          }
+      }));
+
       print("i reached here");
         widget.db.userDao.findUserNameByUserId(a).then((val) => setState(() {
         print('val is : $val');
@@ -144,7 +152,7 @@ class _IntroState extends State<Intro> {
         
         Container(
           margin: EdgeInsets.only(left: 10 , top: 5),
-          child: Text("profile.about" ,
+          child: Text(about,
           style: TextStyle(color: Colors.white , fontSize: 13),
           ),
         )
