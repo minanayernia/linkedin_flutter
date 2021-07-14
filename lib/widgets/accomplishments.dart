@@ -108,7 +108,7 @@ class EditAccomplishCard extends StatelessWidget {
     return Container(
           margin: EdgeInsets.only(top: 20),
 
-      height: 150,
+      height: 250,
       width: MediaQuery.of(context).size.width*0.9,
       color: Colors.black87,
       child: 
@@ -121,7 +121,7 @@ class EditAccomplishCard extends StatelessWidget {
         Container(
           
           margin: EdgeInsets.only(left: 10),
-          child: Text("Edit ACCOMPLISHMENT",
+          child: Text("ADD/EDIT ACCOMPLISHMENT",
           style: TextStyle(color: Colors.white , fontSize: 15),
           ),
         ),
@@ -131,11 +131,56 @@ class EditAccomplishCard extends StatelessWidget {
 
 
       
-      EditedCard(),
+      Container(
+        
+        child: SingleChildScrollView(child: Column(children: [
+              NewAccomplish(),
+              EditedCard(),
+      ],),),)
 
       ], 
       )
 
+      
+    );
+  }
+}
+
+
+TextEditingController addAccomplishController = TextEditingController();
+
+class NewAccomplish extends StatelessWidget {
+  const NewAccomplish({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+       height: 100,
+      width: MediaQuery.of(context).size.width*0.88,
+      color: Colors.white,
+      margin: EdgeInsets.only(top: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+        Container(
+          color: Colors.white,
+          width: MediaQuery.of(context).size.width*0.86,
+          margin: EdgeInsets.only(left: 10),
+          child: TextField(
+            controller: addAccomplishController,
+            decoration: InputDecoration(
+            hintText: "Accomplishment name",
+            hintStyle: TextStyle(color: Colors.redAccent),
+            suffixIcon: IconButton(onPressed: (){}, icon : Icon(Icons.check)),
+            
+            ),
+            
+            
+          )
+        ),
+        
+
+      ],),
       
     );
   }

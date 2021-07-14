@@ -100,7 +100,7 @@ class EditInfoCard extends StatelessWidget {
     return Container(
              margin: EdgeInsets.only(top: 20),
 
-      height: 150,
+      height: 250,
       width: MediaQuery.of(context).size.width*0.9,
       color: Colors.black87,
       child: 
@@ -113,7 +113,7 @@ class EditInfoCard extends StatelessWidget {
         Container(
           
           margin: EdgeInsets.only(left: 10),
-          child: Text("EDIT ADDITIONALINFO",
+          child: Text("ADD/EDIT ADDITIONALINFO",
           style: TextStyle(color: Colors.white , fontSize: 15),
           ),
         ),
@@ -123,10 +123,53 @@ class EditInfoCard extends StatelessWidget {
 
 
       
-      EditedCard(),
+      Container(
+        
+        child: SingleChildScrollView(child: Column(children: [
+              NewInfo(),
+              EditedCard(),
+      ],),),)
 
       ], 
       )
+      
+    );
+  }
+}
+TextEditingController addInfoController = TextEditingController();
+
+class NewInfo extends StatelessWidget {
+  const NewInfo({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100,
+      width: MediaQuery.of(context).size.width*0.88,
+      color: Colors.white,
+      margin: EdgeInsets.only(top: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+        Container(
+          color: Colors.white,
+          width: MediaQuery.of(context).size.width*0.86,
+          margin: EdgeInsets.only(left: 10),
+          child: TextField(
+            controller: addInfoController,
+            decoration: InputDecoration(
+            hintText: "AdditionalInfo name",
+            hintStyle: TextStyle(color: Colors.redAccent),
+            suffixIcon: IconButton(onPressed: (){}, icon : Icon(Icons.check)),
+            
+            ),
+            
+            
+          )
+        ),
+        
+
+      ],),
       
     );
   }

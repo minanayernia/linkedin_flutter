@@ -101,7 +101,7 @@ class EditFeaturedCard extends StatelessWidget {
     return Container(
             margin: EdgeInsets.only(top: 20),
 
-      height: 150,
+      height: 250,
       width: MediaQuery.of(context).size.width*0.9,
       color: Colors.black87,
       child: 
@@ -114,7 +114,7 @@ class EditFeaturedCard extends StatelessWidget {
         Container(
           
           margin: EdgeInsets.only(left: 10),
-          child: Text("EDIT FEATURED",
+          child: Text("ADD/EDIT FEATURED",
           style: TextStyle(color: Colors.white , fontSize: 15),
           ),
         ),
@@ -124,10 +124,53 @@ class EditFeaturedCard extends StatelessWidget {
 
 
       
-      EditedCard(),
+      Container(
+        
+        child: SingleChildScrollView(child: Column(children: [
+              NewFeature(),
+              EditedCard(),
+      ],),),)
 
       ], 
       )
+    );
+  }
+}
+TextEditingController addFeatureController = TextEditingController();
+
+class NewFeature extends StatelessWidget {
+  const NewFeature({ Key? key }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100,
+      width: MediaQuery.of(context).size.width*0.88,
+      color: Colors.white,
+      margin: EdgeInsets.only(top: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+        Container(
+          color: Colors.white,
+          width: MediaQuery.of(context).size.width*0.86,
+          margin: EdgeInsets.only(left: 10),
+          child: TextField(
+            controller: addFeatureController,
+            decoration: InputDecoration(
+            hintText: "Feature name",
+            hintStyle: TextStyle(color: Colors.redAccent),
+            suffixIcon: IconButton(onPressed: (){}, icon : Icon(Icons.check)),
+            
+            ),
+            
+            
+          )
+        ),
+        
+
+      ],),
+      
     );
   }
 }
