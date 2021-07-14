@@ -70,8 +70,8 @@ abstract class UserProfileDao {
   @Query('UPDATE UserProfile SET about = :about WHERE userId = :userId ')
   Future<UserProfile?> editAbout(int userId , String about);
 
-  @Query('UPDATE UserProfile SET firstName = :firstname , lastName = :lastname, about =  :about , additionalInfo = :additionalInfo  WHERE userId =  :userId')
-  Future<UserProfile?> editAllProfile(int userId, String firstname , String lastname , String about , String additionalInfo );
+  @Query('UPDATE UserProfile SET firstName = :firstname , lastName = :lastname, about =  :about   WHERE userId =  :userId')
+  Future<UserProfile?> editAllProfile(int userId, String firstname , String lastname , String about  );
 
   @insert
   Future<void> insertUserProfile(UserProfile userProfile);

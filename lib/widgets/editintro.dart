@@ -50,7 +50,19 @@ class _EditIntrCardState extends State<EditIntrCard> {
       print("profile not found");
     }
   }
-
+  void editIntro()async{
+    var a = widget.user;
+    if (a != null){
+      widget.db.userProfileDao.editAllProfile(a, firstNameController.toString(), lastNameController.toString(), aboutController.toString()).then((val) => setState((){
+        if (val != null){
+          firstname= val.FirstName;
+          lasttname = val.LastName ;
+          about = val.About;
+          location = val.location;
+          }
+      }));
+    }
+  }
   // void editIntro()async {
   //   var a = widget.user;
   //   if (a != null){
@@ -62,7 +74,6 @@ class _EditIntrCardState extends State<EditIntrCard> {
   //         lasttname = val.LastName ;
   //         about = val.About;
   //         location = val.location;
-
   // }
   @override
   void initState() {
@@ -170,7 +181,7 @@ class _EditIntrCardState extends State<EditIntrCard> {
         ) ,),
         Container(
           alignment: Alignment.centerRight,
-          child:TextButton(onPressed: null , child: Text("Save" , style: TextStyle(color: Colors.white),))
+          child:TextButton(onPressed:()=>editIntro() , child: Text("Save" , style: TextStyle(color: Colors.white),))
         
          ,)
         
