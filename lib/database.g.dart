@@ -255,9 +255,23 @@ class _$UserProfileDao extends UserProfileDao {
   }
 
   @override
+  Future<UserProfile?> fetUserProfile(int userId) async {
+    return _queryAdapter.query('SELECT * FROM UserProfile WHERE userId = ?1',
+        mapper: (Map<String, Object?> row) => UserProfile(
+            userId: row['userId'] as int?,
+            location: row['location'] as String,
+            FirstName: row['FirstName'] as String,
+            LastName: row['LastName'] as String,
+            UserName: row['UserName'] as String,
+            AdditionalInfo: row['AdditionalInfo'] as String,
+            About: row['About'] as String),
+        arguments: [userId]);
+  }
+
+  @override
   Future<UserProfile?> editAbout(int userId, String about) async {
     return _queryAdapter.query(
-        'UPDATE userProfile SET about = ?2 WHERE userId = ?1',
+        'UPDATE UserProfile SET about = ?2 WHERE userId = ?1',
         mapper: (Map<String, Object?> row) => UserProfile(
             userId: row['userId'] as int?,
             location: row['location'] as String,
@@ -273,7 +287,7 @@ class _$UserProfileDao extends UserProfileDao {
   Future<UserProfile?> editAllProfile(int userId, String firstname,
       String lastname, String about, String additionalInfo) async {
     return _queryAdapter.query(
-        'UPDATE userProfile SET firstName = ?2 , lastName = ?3, about =  ?4 , additionalInfo = ?5  WHERE userId =  ?1',
+        'UPDATE UserProfile SET firstName = ?2 , lastName = ?3, about =  ?4 , additionalInfo = ?5  WHERE userId =  ?1',
         mapper: (Map<String, Object?> row) => UserProfile(userId: row['userId'] as int?, location: row['location'] as String, FirstName: row['FirstName'] as String, LastName: row['LastName'] as String, UserName: row['UserName'] as String, AdditionalInfo: row['AdditionalInfo'] as String, About: row['About'] as String),
         arguments: [userId, firstname, lastname, about, additionalInfo]);
   }

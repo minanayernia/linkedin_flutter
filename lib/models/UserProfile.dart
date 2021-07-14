@@ -64,10 +64,13 @@ abstract class UserProfileDao {
   @Query('DELETE FROM UserProfile')
   Future<void> deletAllProfile();
 
-  @Query('UPDATE userProfile SET about = :about WHERE userId = :userId ')
+  // @Query('SELECT * FROM UserProfile WHERE userId = :userId')
+  // Future<UserProfile?> getUserProfile(int userId);
+
+  @Query('UPDATE UserProfile SET about = :about WHERE userId = :userId ')
   Future<UserProfile?> editAbout(int userId , String about);
 
-  @Query('UPDATE userProfile SET firstName = :firstname , lastName = :lastname, about =  :about , additionalInfo = :additionalInfo  WHERE userId =  :userId')
+  @Query('UPDATE UserProfile SET firstName = :firstname , lastName = :lastname, about =  :about , additionalInfo = :additionalInfo  WHERE userId =  :userId')
   Future<UserProfile?> editAllProfile(int userId, String firstname , String lastname , String about , String additionalInfo );
 
   @insert
