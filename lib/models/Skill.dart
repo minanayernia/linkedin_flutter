@@ -23,17 +23,20 @@ class Skill {
   @ColumnInfo(name: 'profileId')
   int profileId ;
 
-  Skill(this.SkillId , this.SkillText , this.profileId);
+  Skill( this.SkillText , this.profileId);
 }
 
 @dao 
 abstract class SkillDao {
 
-  @Query('SELECT * FROM Skill WHERE profileId = :profileId')
-  Future<List<Skill>> allSkills (int profileId);
+
+  @Query('SELECT * FROM skill WHERE profileId = :profileId')
+  Future<List<Skill?>> allSkills (int profileId);
+
+  
 
   @Query('UPDATE skill SET skillText = :skillText WHERE profileId in (SELECT profileId From userProfile WHERE userId = :userId')
-  Future<Skill> editSkill(String skillText , int userId);
+  Future<Skill?> editSkill(String skillText , int userId);
   @insert 
   Future<void>insertSkill(Skill skill);
   

@@ -66,6 +66,8 @@ class _$AppDatabase extends AppDatabase {
 
   UserProfileDao? _userProfileDaoInstance;
 
+  SkillDao? _skillDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -90,6 +92,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `User` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT, `password` TEXT NOT NULL, `userName` TEXT NOT NULL)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `UserProfile` (`ProfileId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER, `FirstName` TEXT NOT NULL, `LastName` TEXT NOT NULL, `UserName` TEXT NOT NULL, `About` TEXT NOT NULL, `AdditionalInfo` TEXT NOT NULL, `location` TEXT NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Skill` (`SkillId` INTEGER PRIMARY KEY AUTOINCREMENT, `SkillText` TEXT NOT NULL, `profileId` INTEGER NOT NULL, FOREIGN KEY (`profileId`) REFERENCES `UserProfile` (`profileId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -111,6 +115,11 @@ class _$AppDatabase extends AppDatabase {
   UserProfileDao get userProfileDao {
     return _userProfileDaoInstance ??=
         _$UserProfileDao(database, changeListener);
+  }
+
+  @override
+  SkillDao get skillDao {
+    return _skillDaoInstance ??= _$SkillDao(database, changeListener);
   }
 }
 
@@ -292,5 +301,47 @@ class _$UserProfileDao extends UserProfileDao {
   Future<void> insertUserProfile(UserProfile userProfile) async {
     await _userProfileInsertionAdapter.insert(
         userProfile, OnConflictStrategy.abort);
+  }
+}
+
+class _$SkillDao extends SkillDao {
+  _$SkillDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _skillInsertionAdapter = InsertionAdapter(
+            database,
+            'Skill',
+            (Skill item) => <String, Object?>{
+                  'SkillId': item.SkillId,
+                  'SkillText': item.SkillText,
+                  'profileId': item.profileId
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Skill> _skillInsertionAdapter;
+
+  @override
+  Future<List<Skill?>> allSkills(int profileId) async {
+    return _queryAdapter.queryList('SELECT * FROM Skill WHERE profileId = ?1',
+        mapper: (Map<String, Object?> row) =>
+            Skill(row['SkillText'] as String, row['profileId'] as int),
+        arguments: [profileId]);
+  }
+
+  @override
+  Future<Skill?> editSkill(String skillText, int userId) async {
+    return _queryAdapter.query(
+        'UPDATE skill SET skillText = ?1 WHERE profileId in (SELECT profileId From userProfile WHERE userId = ?2',
+        mapper: (Map<String, Object?> row) => Skill(row['SkillText'] as String, row['profileId'] as int),
+        arguments: [skillText, userId]);
+  }
+
+  @override
+  Future<void> insertSkill(Skill skill) async {
+    await _skillInsertionAdapter.insert(skill, OnConflictStrategy.abort);
   }
 }

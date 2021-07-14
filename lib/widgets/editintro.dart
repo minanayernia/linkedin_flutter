@@ -108,7 +108,7 @@ class _EditIntrCardState extends State<EditIntrCard> {
           decoration: InputDecoration(
             fillColor: Colors.white,
           border: OutlineInputBorder(),
-          hintText: firstNameController.toString(),
+          hintText: firstNameController.text,
           hintStyle: TextStyle(color: Colors.white)
   ),
           //readOnly: true,
@@ -140,7 +140,7 @@ class _EditIntrCardState extends State<EditIntrCard> {
           decoration: InputDecoration(
             fillColor: Colors.white,
           border: OutlineInputBorder(),
-          hintText:lastNameController.toString(),
+          hintText:lastNameController.text,
           hintStyle: TextStyle(color: Colors.white)
   ),
           //readOnly: true,
@@ -173,7 +173,7 @@ class _EditIntrCardState extends State<EditIntrCard> {
           decoration: InputDecoration(
             fillColor: Colors.white,
           border: OutlineInputBorder(),
-          hintText: "Enter About",
+          hintText: aboutController.text,
           hintStyle: TextStyle(color: Colors.white)
   ),
           //readOnly: true,
@@ -243,7 +243,7 @@ class _EditIntrCardState extends State<EditIntrCard> {
           decoration: InputDecoration(
             fillColor: Colors.white,
           border: OutlineInputBorder(),
-          hintText: "Enter Location",
+          hintText: locationController.text,
           hintStyle: TextStyle(color: Colors.white)
   ),
           //readOnly: true,

@@ -169,8 +169,8 @@ class _SignUpState extends State<SignUp> {
    void _signUp(String username , String password ) async {
     final userDao = widget.db.userDao ;
     final prifileDao = widget.db.userProfileDao;
-    await prifileDao.deletAllProfile();
-    await userDao.deleteAllUsers();
+    // await prifileDao.deletAllProfile();
+    // await userDao.deleteAllUsers();
 
     setState(() {
       if (username == ""){
