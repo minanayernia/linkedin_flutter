@@ -62,6 +62,7 @@ class _EditIntrCardState extends State<EditIntrCard> {
           }
       }));
     }
+    
   }
   // void editIntro()async {
   //   var a = widget.user;
@@ -139,7 +140,7 @@ class _EditIntrCardState extends State<EditIntrCard> {
           decoration: InputDecoration(
             fillColor: Colors.white,
           border: OutlineInputBorder(),
-          hintText: "Enter LastName",
+          hintText:lastNameController.toString(),
           hintStyle: TextStyle(color: Colors.white)
   ),
           //readOnly: true,
