@@ -174,9 +174,12 @@ class _$UserDao extends UserDao {
   }
 
   @override
-  Future<String?> findUserNameByUserId(int userId) async {
-    await _queryAdapter.queryNoReturn(
-        'SELECT userName FROM User WHERE userId = ?1',
+  Future<User?> findUserNameByUserId(int userId) async {
+    return _queryAdapter.query('SELECT * FROM User where userId = ?1',
+        mapper: (Map<String, Object?> row) => User(
+            userId: row['userId'] as int?,
+            password: row['password'] as String,
+            userName: row['userName'] as String),
         arguments: [userId]);
   }
 
@@ -244,6 +247,11 @@ class _$UserProfileDao extends UserProfileDao {
             AdditionalInfo: row['AdditionalInfo'] as String,
             About: row['About'] as String),
         arguments: [userId]);
+  }
+
+  @override
+  Future<void> deletAllProfile() async {
+    await _queryAdapter.queryNoReturn('DELETE FROM UserProfile');
   }
 
   @override

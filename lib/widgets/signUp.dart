@@ -44,26 +44,27 @@ class SignUpCard extends StatelessWidget {
 
     void _signUp(String username , String password ) async {
     final userDao = db.userDao ;
-
-    // await userDao.deleteAllUsers();
+    final prifileDao = db.userProfileDao;
+    await prifileDao.deletAllProfile();
+    await userDao.deleteAllUsers();
+    
 
     final user = User( password : password , userName: username );
-    print(username + password);
-    await userDao.insertUser(user);
-    // print("111111111111111111111111111111111111");
+    // print(username + password);
+    await userDao.insertUser(user); //kar mikone
     // final result = await userDao.findAllusers();
-    // print("2222222222222222222222222222222");
     final result = await userDao.findUserByUsernamePassword(password, username);
     print("jojoooooooooooo");
-    print(result?.userName);
-    // final chert = await userDao.findUserNameByUserId();
+    print(result?.userId);
+    final out = result?.userId;
+    // final chert = await userDao.findUserNameByUserId(result?.userId);
     // print(await  db.userProfileDao.findProfileByUserId(result?.userId));
     final userProfileDao = db.userProfileDao ;
-    // final userProfile = UserProfile(userId : result?.userId);
-    // await userProfileDao.insertUserProfile(userProfile) ;
+    final userProfile = UserProfile(userId : result?.userId);
+    await userProfileDao.insertUserProfile(userProfile) ;
     Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>  MyHomePage(this.db , result?.userId)),);
+            MaterialPageRoute(builder: (context) =>  MyHomePage(this.db , out)),);
     
     // print(signupPassController.text);
   }
