@@ -101,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
       NavigationBar(),
           
           Intro( db : widget.db , user :widget.user),
-          EditIntrCard(),
+          EditIntrCard( db : widget.db , user :widget.user),
           AdditionalInfoList(),
           EditInfoCard(),
           AddSkill(),
