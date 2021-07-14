@@ -7,6 +7,14 @@ class Intro extends StatelessWidget {
   final user ;
   const Intro( this.db , this.user) ;
 
+  void fuck()async{
+    final res = await db.userDao.findUserNameByUserId(user);
+    print("fuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuck");
+    print(res);
+    // final res2= res?.userName ;
+    // return res2 ;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -45,17 +53,32 @@ class Intro extends StatelessWidget {
           Container(
           margin: EdgeInsets.only(left: 10 ),
           child: 
-          // Text( db.userProfileDao.findProfileByUserId(user).toString())
           FutureBuilder(
-            future: db.userProfileDao.findProfileByUserId(user),
+            future: db.userDao.findUserNameByUserId(user),
             builder:  (context, snapshot) {
-              print("33333333333333333333");
+              // print(user);
+              // final result = db.userDao.findUserNameByUserId(user);
+              // print( result);
+              // print("33333333333333333333");
+              fuck();
                 if (snapshot.hasError) {
                   return Text("Errror ${snapshot.error}");
                 }
+                print(Text(snapshot.data.toString()));
                 return Text(snapshot.data.toString());
-              },
-          )
+              },)
+          // Text( db.userProfileDao.findProfileByUserId(user).toString())
+          // FutureBuilder(
+          //   future: db.userProfileDao.findProfileByUserId(user),
+          //   builder:  (context, snapshot) {
+          //     print(user);
+          //     print("33333333333333333333");
+          //       if (snapshot.hasError) {
+          //         return Text("Errror ${snapshot.error}");
+          //       }
+          //       return Text(snapshot.data.toString());
+          //     },
+          // )
         ),
 
         TextButton(onPressed: (){}, child: Text("Edit"))
