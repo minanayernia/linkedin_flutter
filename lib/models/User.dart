@@ -22,8 +22,8 @@ class  User {
   // var milliseconds = DateTime.now().millisecondsSinceEpoch ;
   // var createdAt = DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch) ;
 
-  @required final String password;
-  @required final String userName ;
+  String password;
+  String userName ;
 
   User( {
     this.userId  , 
@@ -41,8 +41,8 @@ abstract class UserDao {
   @Query('Delete FROM User')
   Future<void> deleteAllUsers();
 
-  @Query('SELECT userName FROM User where userId = :userId')
-  Future<String?> findUserNameByUserId(int userId);
+  @Query('SELECT * FROM User where userId = :userId')
+  Future<User?> findUserNameByUserId(int userId);
 
   @Query('SELECT * FROM User where password = :password and userName = :userName ')
   Future<User?> findUserByUsernamePassword(String password , String userName);

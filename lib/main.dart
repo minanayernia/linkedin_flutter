@@ -1,6 +1,7 @@
 import 'package:dbproject/models/User.dart';
 import 'package:dbproject/views/signUpLoginView.dart';
 import 'package:dbproject/widgets/featured.dart';
+import 'package:dbproject/widgets/test.dart';
 import 'package:flutter/material.dart';
 //import 'dart:async';
 
@@ -51,29 +52,44 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       
-      home:SignUpLogIn(database)
+      home:
+      // StatefullWidgetDemo(),
+      SignUpLogIn(database)
       //  MyHomePage(database),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  //final user ;
-  final String userName;
-  final String password;
+  // final String userName ;
+  // final String password ;
+  final int? user ;
   final AppDatabase db ;
 
-  MyHomePage(this.db , this.userName , this.password);
+  MyHomePage(this.db , this.user);
 
   // final String title;
 
   @override
+
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  _MyHomePageState(){
+    // print("here is home page");
+    // if(widget.user==null){
+    //   print("leave me alooooneeeeeeeee");
+    // }
+    // if (widget.user != null){
+    //   print("this is not null") ;
+    //   print(widget.user);
+    // }
+  }
   @override
   Widget build(BuildContext context) {
+    var a = widget.user;
+    print('this is userid in myhome: $a');
   
     return Scaffold(
       backgroundColor: Colors.white,
@@ -84,8 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
     children: [
       NavigationBar(),
           
-          Intro(widget.db , widget.userName , widget.password),
-          EditIntrCard(widget.db , widget.userName , widget.password),
+          Intro( db : widget.db , user :widget.user),
+          EditIntrCard(),
           AdditionalInfoList(),
           EditInfoCard(),
           AddSkill(),

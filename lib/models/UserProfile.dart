@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:dbproject/models/User.dart';
@@ -59,6 +60,9 @@ abstract class UserProfileDao {
 
   @Query('SELECT * FROM userProfile WHERE userId = :userId')
   Future<UserProfile?> findProfileByUserId(int userId);
+
+  @Query('DELETE FROM UserProfile')
+  Future<void> deletAllProfile();
 
   @Query('UPDATE userProfile SET about = :about WHERE userId = :userId ')
   Future<UserProfile?> editAbout(int userId , String about);
