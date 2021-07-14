@@ -164,33 +164,55 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   bool checkUser = false ;
   bool checkPass = false ;
+  bool checkCopyUser = false ; 
   @override
   Widget build(BuildContext context) {
    void _signUp(String username , String password ) async {
     final userDao = widget.db.userDao ;
     final prifileDao = widget.db.userProfileDao;
-    // await prifileDao.deletAllProfile();
-    // await userDao.deleteAllUsers();
-
+    await prifileDao.deletAllProfile();
+    await userDao.deleteAllUsers();
+    final checkUserName = await userDao.findeUserByUserName(username) ;
+    print("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
+    print(username);
     setState(() {
-      if (username == ""){
-        checkUser = !checkUser ;
-        print("boooooz") ;
-      if (password == ""){
-        checkPass = !checkPass ;
+      if (username == "" && password == ""){
+        checkUser = true ;
+        checkPass = true ;
+        print("boooooz") ;  
 
-      }
         
     }
     });
+    setState(() {
+      if (username != "" && password == ""){
+        checkUser = false ;
+        checkPass = true ;
+      }
+    });
 
-    if (username != "" && password != ""){
-    checkUser = !checkUser ;
+    setState(() {
+      if (username == "" && password != ""){
+        checkUser = true ;
+        checkPass = false ;
+      }
+    });
+
+
+    setState(() {
+            if (checkUserName != null) {
+          checkCopyUser = !checkCopyUser ;
+
+      }
+    });
+
+    if (username != "" && password != "" && checkUserName == null ){
    final user = User( password : password , userName: username );
     // print(username + password);
     await userDao.insertUser(user); //kar mikone
     // final result = await userDao.findAllusers();
     final result = await userDao.findUserByUsernamePassword(password, username);
+    
     print("jojoooooooooooo");
     print(result?.userId);
     final out = result?.userId;
@@ -246,6 +268,10 @@ class _SignUpState extends State<SignUp> {
         Visibility(
           visible: checkUser,
           child: Container(child: Text("User name can't be an empty field" , style: TextStyle(color: Colors.redAccent),),),),
+
+          Visibility(
+          visible: checkCopyUser,
+          child: Container(child: Text("This user name already exists!" , style: TextStyle(color: Colors.redAccent),),),),
         
         
         Container(
