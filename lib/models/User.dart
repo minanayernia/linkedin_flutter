@@ -15,8 +15,9 @@ import 'package:flutter/cupertino.dart';
 
 @entity
 class  User {
-  @PrimaryKey (autoGenerate: true , ) 
-  int? userId ;
+    // (autoGenerate: true , ) 
+  @primaryKey 
+  int userId ;
   // DateTime createdAt = DateTime.now() ;
   // var milliseconds = DateTime.now().millisecondsSinceEpoch ;
   // var createdAt = DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch) ;
@@ -28,6 +29,7 @@ class  User {
     // this.userId  , 
      this.password ,
     this.userName ,
+    this.userId
     
   );
   
@@ -35,8 +37,12 @@ class  User {
 
 @dao
 abstract class UserDao {
+
+  @Query('Delete FROM User')
+  Future<void> deleteAllUsers();
+  
   @Query('SELECT userId FROM User where password = :password and userName = :userName ')
-  Stream<User?> findUserByUsernamePassword(String password , String userName);
+  Future<User?> findUserByUsernamePassword(String password , String userName);
 
   @Query('SELECT * FROM User')
   Future<List<User>>findAllusers();

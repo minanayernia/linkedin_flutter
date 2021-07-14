@@ -42,6 +42,7 @@ class UserProfile {
 
   UserProfile({
     // this.picture = "not_fileed" ,
+    required this.userId ,
     this.location = "not_filled" ,
     // this.ProfileId = "not_filled" ,
     this.FirstName = "not_filled" ,

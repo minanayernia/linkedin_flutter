@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  final Stream<User?> user ;
+  final user ;
   final AppDatabase db ;
 
   MyHomePage(this.db , this.user);
@@ -82,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
     children: [
       NavigationBar(),
           
-          Intro(),
+          Intro(widget.db , widget.user),
           EditIntrCard(),
           AdditionalInfoList(),
           EditInfoCard(),

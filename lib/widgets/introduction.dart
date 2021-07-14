@@ -3,7 +3,9 @@
 import 'package:flutter/material.dart';
 import '../database.dart';
 class Intro extends StatelessWidget {
-  const Intro({ Key? key }) : super(key: key);
+  final AppDatabase db ;
+  final user ;
+  const Intro( this.db , this.user) ;
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +44,18 @@ class Intro extends StatelessWidget {
           
           Container(
           margin: EdgeInsets.only(left: 10 ),
-          child: Text("profile.userName" , 
-          style: TextStyle(color: Colors.white , fontSize: 15),
-          ),
+          child: 
+          // Text( db.userProfileDao.findProfileByUserId(user).toString())
+          FutureBuilder(
+            future: db.userProfileDao.findProfileByUserId(user),
+            builder:  (context, snapshot) {
+              print("33333333333333333333");
+                if (snapshot.hasError) {
+                  return Text("Errror ${snapshot.error}");
+                }
+                return Text(snapshot.data.toString());
+              },
+          )
         ),
 
         TextButton(onPressed: (){}, child: Text("Edit"))
