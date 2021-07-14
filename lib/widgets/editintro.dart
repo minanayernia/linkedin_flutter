@@ -85,7 +85,7 @@ class _EditIntrCardState extends State<EditIntrCard> {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 20),
-      height: MediaQuery.of(context).size.height*0.55,
+      height: MediaQuery.of(context).size.height*0.65,
       width: MediaQuery.of(context).size.width * 0.9,
       color: Colors.black87,
       child: Column(
@@ -94,58 +94,115 @@ class _EditIntrCardState extends State<EditIntrCard> {
 
 
         Container(
-          margin: EdgeInsets.only(left: 10),
-          height: 40,
-        alignment: Alignment.centerLeft,
-        child: Text("EDIT INTRO" , 
-        style: TextStyle(color: Colors.white , fontSize: 20),),
-        ),
-
-        Container(
           color: Colors.redAccent,
-          child:TextField(
-          controller: firstNameController,
-          
-          style: TextStyle(color: Colors.white),
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 10),
+                alignment: Alignment.centerLeft,
+                child: Text("FirstName" , style: TextStyle(color: Colors.white),),),
+              TextField(
+            controller: firstNameController,
+            style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
             fillColor: Colors.white,
           border: OutlineInputBorder(),
-          hintText: firstname , 
+          hintText: "Enter FirstName",
           hintStyle: TextStyle(color: Colors.white)
   ),
+          //readOnly: true,
+          /*onTap: () async{
+            DateTime pickedDate = await showDatePicker(
+                      context: context, initialDate: DateTime.now(),
+                      firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
+                      lastDate: DateTime(2101)
+                  );
+
+          },*/
           
-        ) ,),
+        ) ,
+            ],
+          )
+        ),
         
         Container(
           color: Colors.redAccent,
-          child:TextField(
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 10),
+                alignment: Alignment.centerLeft,
+                child: Text("LastName" , style: TextStyle(color: Colors.white),),),
+              TextField(
             controller: lastNameController,
+            style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
+            fillColor: Colors.white,
           border: OutlineInputBorder(),
-          hintText: lasttname,
+          hintText: "Enter LastName",
           hintStyle: TextStyle(color: Colors.white)
   ),
+          //readOnly: true,
+          /*onTap: () async{
+            DateTime pickedDate = await showDatePicker(
+                      context: context, initialDate: DateTime.now(),
+                      firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
+                      lastDate: DateTime(2101)
+                  );
+
+          },*/
           
-        ) ,),
+        ) ,
+            ],
+          )
+        ),
 
 
          Container(
           color: Colors.redAccent,
-          child:TextField(
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 10),
+                alignment: Alignment.centerLeft,
+                child: Text("About" , style: TextStyle(color: Colors.white),),),
+              TextField(
             controller: aboutController,
+            style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
+            fillColor: Colors.white,
           border: OutlineInputBorder(),
-          hintText: about,
+          hintText: "Enter About",
           hintStyle: TextStyle(color: Colors.white)
   ),
+          //readOnly: true,
+          /*onTap: () async{
+            DateTime pickedDate = await showDatePicker(
+                      context: context, initialDate: DateTime.now(),
+                      firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
+                      lastDate: DateTime(2101)
+                  );
+
+          },*/
           
-        ) ,),
+        ) ,
+            ],
+          )
+        ),
         
         Container(
           color: Colors.redAccent,
-          child:TextField(
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 10),
+                alignment: Alignment.centerLeft,
+                child: Text("BirthDate" , style: TextStyle(color: Colors.white),),),
+              TextField(
             controller: birthDateController,
+            style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
+            fillColor: Colors.white,
           border: OutlineInputBorder(),
           hintText: "Enter Date",
           suffixIcon: IconButton(
@@ -165,20 +222,43 @@ class _EditIntrCardState extends State<EditIntrCard> {
 
           },*/
           
-        ) ,),
+        ) ,
+            ],
+          )
+        ),
 
 
         Container(
           color: Colors.redAccent,
-          child:TextField(
-          controller: locationController,
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 10),
+                alignment: Alignment.centerLeft,
+                child: Text("Location" , style: TextStyle(color: Colors.white),),),
+              TextField(
+            controller: locationController,
+            style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
+            fillColor: Colors.white,
           border: OutlineInputBorder(),
-          hintText: location,
+          hintText: "Enter Location",
           hintStyle: TextStyle(color: Colors.white)
   ),
+          //readOnly: true,
+          /*onTap: () async{
+            DateTime pickedDate = await showDatePicker(
+                      context: context, initialDate: DateTime.now(),
+                      firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
+                      lastDate: DateTime(2101)
+                  );
+
+          },*/
           
-        ) ,),
+        ) ,
+            ],
+          )
+        ),
         Container(
           alignment: Alignment.centerRight,
           child:TextButton(onPressed:()=>editIntro() , child: Text("Save" , style: TextStyle(color: Colors.white),))
