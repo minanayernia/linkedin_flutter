@@ -99,7 +99,7 @@ class _IntroState extends State<Intro> {
           Container(
             
           margin: EdgeInsets.only(left: 10 ),
-          child: Text(_textFromFile) ,
+          child: Text(_textFromFile , style: TextStyle(color: Colors.white),) ,
           
           // FutureBuilder(
           //   future: db.userDao.findUserNameByUserId(user),
