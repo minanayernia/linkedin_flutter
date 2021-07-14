@@ -7,7 +7,7 @@ class PostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height*0.9,
+      height: MediaQuery.of(context).size.height*2,
       width: MediaQuery.of(context).size.width*0.86,
       color: Colors.redAccent,
       margin: EdgeInsets.only(top: 20 , bottom: 20),
@@ -137,7 +137,7 @@ addSkillCard(){
     return Container(
 
       margin: EdgeInsets.only(top: 20),
-      height: MediaQuery.of(context).size.height*0.8,
+      height: MediaQuery.of(context).size.height*1,
       width: MediaQuery.of(context).size.width*0.9,
       color: Colors.black87,
       child : Column(children: [
@@ -341,7 +341,7 @@ class _AddCommentState extends State<AddComment> {
   @override
   Widget build(BuildContext context) {
     return Container(
-            height: MediaQuery.of(context).size.height*0.6,
+      height: MediaQuery.of(context).size.height*0.8,
       width: MediaQuery.of(context).size.width*0.86,
       color: Colors.redAccent,
       margin: EdgeInsets.only(top: 20 , bottom: 20),
