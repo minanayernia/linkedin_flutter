@@ -96,6 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
           PostList(),
           NotifList(),
           LanguageList(),
+          EditLanguageCard(),
           Message() ,
           NewMessage() ,
           InvitationList(),

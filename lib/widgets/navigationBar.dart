@@ -50,6 +50,12 @@ class NavigationBar extends StatelessWidget {
               ),
           ),
                 TextButton(onPressed: (){},
+                 child:Text("Home")),
+                 TextButton(onPressed: (){},
+                 child:Text("Notification")),
+                 TextButton(onPressed: (){},
+                 child:Text("Message")),
+                 TextButton(onPressed: (){},
                  child:Text("My Network")),
                  
             ],
