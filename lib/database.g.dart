@@ -258,6 +258,7 @@ class _$UserProfileDao extends UserProfileDao {
   Future<UserProfile?> findProfileByUserId(int userId) async {
     return _queryAdapter.query('SELECT * FROM userProfile WHERE userId = ?1',
         mapper: (Map<String, Object?> row) => UserProfile(
+            ProfileId: row['ProfileId'] as int?,
             userId: row['userId'] as int?,
             location: row['location'] as String,
             FirstName: row['FirstName'] as String,
@@ -278,6 +279,7 @@ class _$UserProfileDao extends UserProfileDao {
     return _queryAdapter.query(
         'UPDATE UserProfile SET about = ?2 WHERE userId = ?1',
         mapper: (Map<String, Object?> row) => UserProfile(
+            ProfileId: row['ProfileId'] as int?,
             userId: row['userId'] as int?,
             location: row['location'] as String,
             FirstName: row['FirstName'] as String,
@@ -293,7 +295,7 @@ class _$UserProfileDao extends UserProfileDao {
       String lastname, String about, String location) async {
     return _queryAdapter.query(
         'UPDATE UserProfile SET firstName = ?2 , lastName = ?3, about =  ?4 , location = ?5   WHERE userId =  ?1',
-        mapper: (Map<String, Object?> row) => UserProfile(userId: row['userId'] as int?, location: row['location'] as String, FirstName: row['FirstName'] as String, LastName: row['LastName'] as String, UserName: row['UserName'] as String, AdditionalInfo: row['AdditionalInfo'] as String, About: row['About'] as String),
+        mapper: (Map<String, Object?> row) => UserProfile(ProfileId: row['ProfileId'] as int?, userId: row['userId'] as int?, location: row['location'] as String, FirstName: row['FirstName'] as String, LastName: row['LastName'] as String, UserName: row['UserName'] as String, AdditionalInfo: row['AdditionalInfo'] as String, About: row['About'] as String),
         arguments: [userId, firstname, lastname, about, location]);
   }
 
@@ -326,10 +328,15 @@ class _$SkillDao extends SkillDao {
 
   @override
   Future<List<Skill?>> allSkills(int profileId) async {
-    return _queryAdapter.queryList('SELECT * FROM Skill WHERE profileId = ?1',
+    return _queryAdapter.queryList('SELECT * FROM skill WHERE profileId = ?1',
         mapper: (Map<String, Object?> row) =>
             Skill(row['SkillText'] as String, row['profileId'] as int),
         arguments: [profileId]);
+  }
+
+  @override
+  Future<void> deleteSkills() async {
+    await _queryAdapter.queryNoReturn('DELETE FROM Skill');
   }
 
   @override

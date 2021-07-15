@@ -170,8 +170,10 @@ class _SignUpState extends State<SignUp> {
    void _signUp(String username , String password ) async {
     final userDao = widget.db.userDao ;
     final prifileDao = widget.db.userProfileDao;
-    await prifileDao.deletAllProfile();
-    await userDao.deleteAllUsers();
+    // await widget.db.skillDao.deleteSkills();
+    // await prifileDao.deletAllProfile();
+    // await userDao.deleteAllUsers();
+    
     final checkUserName = await userDao.findeUserByUserName(username) ;
     print("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
     print(username);
@@ -208,6 +210,8 @@ class _SignUpState extends State<SignUp> {
 
     if (username != "" && password != "" && checkUserName == null ){
    final user = User( password : password , userName: username );
+   var useid = user.userId ;
+   print("this is my user id before inserting to database : $useid");
     // print(username + password);
     await userDao.insertUser(user); //kar mikone
     // final result = await userDao.findAllusers();
@@ -220,7 +224,23 @@ class _SignUpState extends State<SignUp> {
     // print(await  db.userProfileDao.findProfileByUserId(result?.userId));
     final userProfileDao = widget.db.userProfileDao ;
     final userProfile = UserProfile(userId : result?.userId);
+    var profid = userProfile.ProfileId;
+    print("this is my profileid in sign up page before adding to database : $profid");
     await userProfileDao.insertUserProfile(userProfile) ;
+    var prof ;
+    var profid2;
+    if (out != null){
+      widget.db.userProfileDao.findProfileByUserId(out).then((value) => setState((){
+        if (value != null){
+          profid2 = value.userId ;
+          // print(object
+        }else{
+          print("the value of profile is null");
+        }
+      }));
+    }
+    
+    print("this is my profileid in after adding to database : $profid2");
     Navigator.push(
             context,
             MaterialPageRoute(builder: (context) =>  MyHomePage(this.widget.db , out)),);
