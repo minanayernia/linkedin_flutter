@@ -223,16 +223,27 @@ class _SignUpState extends State<SignUp> {
     // final chert = await userDao.findUserNameByUserId(result?.userId);
     // print(await  db.userProfileDao.findProfileByUserId(result?.userId));
     final userProfileDao = widget.db.userProfileDao ;
-    final userProfile = UserProfile(userId : result?.userId);
-    var profid = userProfile.ProfileId;
-    print("this is my profileid in sign up page before adding to database : $profid");
-    await userProfileDao.insertUserProfile(userProfile) ;
+    final userProfile ;
+    var profid ;
+    if (result != null ){
+      userProfile = UserProfile(userId : result.userId);
+      print("this is my profileid in sign up page before adding to database : $profid");
+      await userProfileDao.insertUserProfile(userProfile) ;
+      print("profile added!");
+    }else{
+      print("the result of findUserByUserName is null ");
+    }
+    
+    
+    
     var prof ;
     var profid2;
     if (out != null){
       widget.db.userProfileDao.findProfileByUserId(out).then((value) => setState((){
         if (value != null){
-          profid2 = value.userId ;
+          print("the value of findProfileByUserId is not null");
+          profid2 = value.ProfileId ;
+          print("this is my profileid in after adding to database : $profid2");
           // print(object
         }else{
           print("the value of profile is null");
@@ -240,7 +251,7 @@ class _SignUpState extends State<SignUp> {
       }));
     }
     
-    print("this is my profileid in after adding to database : $profid2");
+    
     Navigator.push(
             context,
             MaterialPageRoute(builder: (context) =>  MyHomePage(this.widget.db , out)),);

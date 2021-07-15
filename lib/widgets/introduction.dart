@@ -42,6 +42,8 @@ class _IntroState extends State<Intro> {
     if (a != null){
       widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
         if (val != null){
+          print("this is profileid in intro page");
+          print(val.ProfileId);
           about = val.About;
           }
       }));
@@ -150,7 +152,7 @@ class _IntroState extends State<Intro> {
         
         Container(
           margin: EdgeInsets.only(left: 10 , top: 5),
-          child: Text(about,
+          child: Text(about.toString(),
           style: TextStyle(color: Colors.white , fontSize: 13),
           ),
         )
