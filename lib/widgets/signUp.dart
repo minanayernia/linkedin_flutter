@@ -154,7 +154,6 @@ TextEditingController signupPassController = TextEditingController();
 
 class SignUp extends StatefulWidget {
    final AppDatabase db ;
-  
   const SignUp(this.db);
 
   @override
