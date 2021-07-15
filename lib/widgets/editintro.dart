@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import '../database.dart';
 
 var temp ;
-String firstname = '';
-String lasttname = '' ;
-String about = '' ;
-String birthdate = '' ;
-String location = '' ;
+var firstname ;
+var lasttname ;
+var about ;
+var birthdate ;
+var location ;
 
 TextEditingController firstNameController = TextEditingController();
 TextEditingController lastNameController = TextEditingController();
