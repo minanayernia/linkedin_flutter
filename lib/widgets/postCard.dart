@@ -208,6 +208,9 @@ class CommentCard extends StatelessWidget {
   }
 }
 
+TextEditingController newCaptionController = TextEditingController();
+
+
 class NewPostCard extends StatelessWidget {
   const NewPostCard({ Key ?key }) : super(key: key);
 
@@ -247,6 +250,7 @@ class NewPostCard extends StatelessWidget {
           
           color: Colors.white12,
           child:TextField(
+          controller: newCaptionController,
           
           style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
@@ -279,7 +283,7 @@ class NewPostCard extends StatelessWidget {
   }
 }
 
-
+TextEditingController newCommentController = TextEditingController();
 class NewCommentCard extends StatelessWidget {
   const NewCommentCard({ Key? key }) : super(key: key);
 
@@ -300,6 +304,7 @@ class NewCommentCard extends StatelessWidget {
           child: Text("User" , style: TextStyle(color: Colors.white),),) ,
 
           TextField(
+            controller: newCommentController,
             textAlign: TextAlign.left,
             style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
