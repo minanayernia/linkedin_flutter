@@ -29,8 +29,12 @@ class Featured{
 
   String featuredText;
 
-  Featured(
-    this.featuredText
+  Featured({
+    this.featuredId ,
+    required this.featuredText,
+    required this.profileId
+  }
+    
   );
 
 }

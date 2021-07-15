@@ -23,7 +23,9 @@ class Accomplishment {
 
   String AccomplishmentText ;
 
-  Accomplishment({this.AcomplishmentId , required this.AccomplishmentText , required this.profileId});
+  Accomplishment({this.AcomplishmentId ,
+   required this.AccomplishmentText ,
+    required this.profileId});
 }
 
 @dao 
@@ -31,8 +33,8 @@ abstract class AccomplishmentDao {
   @Query('SELECT * FROM Accomplishment WHERE profileId = :profileId')
   Future<List<Accomplishment?>> allAccomplishments (int profileId);
 
-  //   @Query('SELECT * FROM Skill WHERE skillId = :id')
-  // Future<Accomplishment?> findAccomplishmentById(int id);
+  @Query('SELECT * FROM Accomplishment WHERE AcomplishmentId = :id')
+  Future<Accomplishment?> findAccomplishmentById(int id);
 
   @Query('UPDATE accomplishments SET accomplishmentText =  :accomplishmentText WHERE profileId in (SELECT profileId From userProfile WHERE userId = :userId')
   Future<Accomplishment?> editAccomplishment(String accomplishmentText ,int userId);

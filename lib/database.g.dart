@@ -422,6 +422,17 @@ class _$AccomplishmentDao extends AccomplishmentDao {
   }
 
   @override
+  Future<Accomplishment?> findAccomplishmentById(int id) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Accomplishment WHERE AcomplishmentId = ?1',
+        mapper: (Map<String, Object?> row) => Accomplishment(
+            AcomplishmentId: row['AcomplishmentId'] as int?,
+            AccomplishmentText: row['AccomplishmentText'] as String,
+            profileId: row['profileId'] as int),
+        arguments: [id]);
+  }
+
+  @override
   Future<Accomplishment?> editAccomplishment(
       String accomplishmentText, int userId) async {
     return _queryAdapter.query(
