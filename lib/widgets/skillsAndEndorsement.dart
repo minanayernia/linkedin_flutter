@@ -159,7 +159,7 @@ void addSkillCard(var id , var text){
           profileId = val.ProfileId;
           // print("this profileid in test card $profileId");
           // skill = Skill(SkillText: "android" ,profileId: profileId);
-          // widget.db.skillDao.insertSkill(skill);
+          // widget.db.skillDao.insertSkill(skill);q
           widget.db.skillDao.allSkills(profileId).then((value) => setState((){
              if (value != null){
               for (int i = 0 ; i < value.length ; i++){
