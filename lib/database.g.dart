@@ -146,8 +146,10 @@ class _$PostDao extends PostDao {
   @override
   Future<List<Post>> findAllPosts(int userId) async {
     return _queryAdapter.queryList('SELECT * FROM Post WHERE userId = ?1',
-        mapper: (Map<String, Object?> row) => Post(row['PostId'] as int?,
-            row['PostCaption'] as String, row['userId'] as int),
+        mapper: (Map<String, Object?> row) => Post(
+            PostId: row['PostId'] as int?,
+            PostCaption: row['PostCaption'] as String,
+            userId: row['userId'] as int),
         arguments: [userId]);
   }
 

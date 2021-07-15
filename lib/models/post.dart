@@ -31,7 +31,10 @@ class Post {
   int userId ;
   // final DateTime EndorseAt;
 
-  Post(this.PostId, this.PostCaption , this.userId);
+  Post({
+    this.PostId,
+    required this.PostCaption , 
+    required this.userId});
 }
 
 
