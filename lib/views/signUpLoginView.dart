@@ -20,7 +20,7 @@ class SignUpLogIn extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
     children: [
       LogInCard(db),
-      SignUpCard(db),
+      SignUp(db),
           
   ],
     ),

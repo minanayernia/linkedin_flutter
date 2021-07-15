@@ -34,22 +34,159 @@ TextEditingController signupPassController = TextEditingController();
 //     );
 //   }
 // }
-class SignUpCard extends StatelessWidget {
-  final AppDatabase db ;
+
+// var checkPass = "Password can't be an empty field" ;
+// class SignUpCard extends StatelessWidget {
+//   final AppDatabase db ;
   
-  const SignUpCard(this.db);
+//   const SignUpCard(this.db);
+
+//   @override
+//   Widget build(BuildContext context) {
+
+//     void _signUp(String username , String password ) async {
+//     final userDao = db.userDao ;
+//     final prifileDao = db.userProfileDao;
+//     await prifileDao.deletAllProfile();
+//     await userDao.deleteAllUsers();
+
+//     if (username == ""){
+//         checkUser = true ;
+//         print("boooooz") ;
+//     }
+//     if (checkUser != true){
+//    final user = User( password : password , userName: username );
+//     // print(username + password);
+//     await userDao.insertUser(user); //kar mikone
+//     // final result = await userDao.findAllusers();
+//     final result = await userDao.findUserByUsernamePassword(password, username);
+//     print("jojoooooooooooo");
+//     print(result?.userId);
+//     final out = result?.userId;
+//     // final chert = await userDao.findUserNameByUserId(result?.userId);
+//     // print(await  db.userProfileDao.findProfileByUserId(result?.userId));
+//     final userProfileDao = db.userProfileDao ;
+//     final userProfile = UserProfile(userId : result?.userId);
+//     await userProfileDao.insertUserProfile(userProfile) ;
+//     Navigator.push(
+//             context,
+//             MaterialPageRoute(builder: (context) =>  MyHomePage(this.db , out)),);
+
+//     }
+    
+//     // print(signupPassController.text);
+//   }
+    
+//     return Align(
+//       alignment: Alignment.center,
+//       child : Container(
+//       margin: EdgeInsets.only(top: 50),
+//       height: MediaQuery.of(context).size.height*0.5,
+//       width: MediaQuery.of(context).size.width * 0.6,
+//       color: Colors.black87,
+//       child: Column(
+//       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//       children: [
+
+
+//         Container(
+//           margin: EdgeInsets.only(left: 10),
+//           height: 40,
+//         alignment: Alignment.centerLeft,
+//         child: Text("SIGNUP" , 
+//         style: TextStyle(color: Colors.white , fontSize: 20),),
+//         ),
+
+//         Container(
+//           color: Colors.redAccent,
+//           child:TextField(
+//           controller: signupUserController,
+//           style: TextStyle(color: Colors.white),
+//           decoration: InputDecoration(
+//             fillColor: Colors.white,
+//           border: OutlineInputBorder(),
+//           hintText: 'UserName' , 
+//           hintStyle: TextStyle(color: Colors.white),
+//           // print("hi"),
+//           // print(signupUserController),
+//   ),
+          
+//         ) ,),
+//         Visibility(
+//           visible: checkUser,
+//           child: Container(child: Text("User name can't be an empty field" , style: TextStyle(color: Colors.redAccent),),),),
+        
+        
+//         Container(
+//           color: Colors.redAccent,
+//           child:TextField(
+//           obscureText: true,
+//           controller: signupPassController,
+//           decoration: InputDecoration(
+//           border: OutlineInputBorder(),
+//           fillColor: Colors.white,
+
+//           hintText: 'Password',
+//           hintStyle: TextStyle(color: Colors.white)
+//   ),
+          
+//         ) ,),
+        
+//       ButtonTheme(
+//           height: 40,
+//           minWidth: MediaQuery.of(context).size.width*0.55,
+//           buttonColor: Colors.white,
+//           child: RaisedButton(onPressed: (){
+//             _signUp(signupUserController.text , signupPassController.text );
+//           },
+//            child: Text("SignUp" , style: TextStyle(color: Colors.redAccent),)))
+
+//         ],
+//       ),
+//       ),
+      
+//     );
+//   }
+// }
+
+
+
+
+class SignUp extends StatefulWidget {
+   final AppDatabase db ;
+  
+  const SignUp(this.db);
 
   @override
-  Widget build(BuildContext context) {
+  _SignUpState createState() => _SignUpState();
+}
 
-    void _signUp(String username , String password ) async {
-    final userDao = db.userDao ;
-    final prifileDao = db.userProfileDao;
+class _SignUpState extends State<SignUp> {
+  bool checkUser = false ;
+  bool checkPass = false ;
+  @override
+  Widget build(BuildContext context) {
+   void _signUp(String username , String password ) async {
+    final userDao = widget.db.userDao ;
+    final prifileDao = widget.db.userProfileDao;
     await prifileDao.deletAllProfile();
     await userDao.deleteAllUsers();
-    
 
-    final user = User( password : password , userName: username );
+    setState(() {
+      if (username == ""){
+        checkUser = !checkUser ;
+        print("boooooz") ;
+      if (password == ""){
+        checkPass = !checkPass ;
+
+      }
+        
+    }
+    });
+
+    if (username != "" && password != ""){
+    checkUser = !checkUser ;
+   final user = User( password : password , userName: username );
     // print(username + password);
     await userDao.insertUser(user); //kar mikone
     // final result = await userDao.findAllusers();
@@ -59,18 +196,20 @@ class SignUpCard extends StatelessWidget {
     final out = result?.userId;
     // final chert = await userDao.findUserNameByUserId(result?.userId);
     // print(await  db.userProfileDao.findProfileByUserId(result?.userId));
-    final userProfileDao = db.userProfileDao ;
+    final userProfileDao = widget.db.userProfileDao ;
     final userProfile = UserProfile(userId : result?.userId);
     await userProfileDao.insertUserProfile(userProfile) ;
     Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>  MyHomePage(this.db , out)),);
+            MaterialPageRoute(builder: (context) =>  MyHomePage(this.widget.db , out)),);
+
+    }
     
     // print(signupPassController.text);
   }
-    
+
     return Align(
-      alignment: Alignment.center,
+        alignment: Alignment.center,
       child : Container(
       margin: EdgeInsets.only(top: 50),
       height: MediaQuery.of(context).size.height*0.5,
@@ -104,6 +243,10 @@ class SignUpCard extends StatelessWidget {
   ),
           
         ) ,),
+        Visibility(
+          visible: checkUser,
+          child: Container(child: Text("User name can't be an empty field" , style: TextStyle(color: Colors.redAccent),),),),
+        
         
         Container(
           color: Colors.redAccent,
@@ -119,6 +262,10 @@ class SignUpCard extends StatelessWidget {
   ),
           
         ) ,),
+
+        Visibility(
+          visible: checkPass,
+          child: Container(child: Text("password can't be an empty field" , style: TextStyle(color: Colors.redAccent),),),),
         
       ButtonTheme(
           height: 40,
