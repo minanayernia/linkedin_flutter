@@ -329,8 +329,10 @@ class _$SkillDao extends SkillDao {
   @override
   Future<List<Skill?>> allSkills(int profileId) async {
     return _queryAdapter.queryList('SELECT * FROM skill WHERE profileId = ?1',
-        mapper: (Map<String, Object?> row) =>
-            Skill(row['SkillText'] as String, row['profileId'] as int),
+        mapper: (Map<String, Object?> row) => Skill(
+            SkillId: row['SkillId'] as int?,
+            SkillText: row['SkillText'] as String,
+            profileId: row['profileId'] as int),
         arguments: [profileId]);
   }
 
@@ -340,11 +342,34 @@ class _$SkillDao extends SkillDao {
   }
 
   @override
-  Future<Skill?> editSkill(String skillText, int userId) async {
+  Future<Skill?> findSkillByName(String skillText) async {
+    return _queryAdapter.query('SELECT * FROM Skill WHERE skillText = ?1',
+        mapper: (Map<String, Object?> row) => Skill(
+            SkillId: row['SkillId'] as int?,
+            SkillText: row['SkillText'] as String,
+            profileId: row['profileId'] as int),
+        arguments: [skillText]);
+  }
+
+  @override
+  Future<Skill?> findSkillById(int id) async {
+    return _queryAdapter.query('SELECT * FROM Skill WHERE skillId = ?1',
+        mapper: (Map<String, Object?> row) => Skill(
+            SkillId: row['SkillId'] as int?,
+            SkillText: row['SkillText'] as String,
+            profileId: row['profileId'] as int),
+        arguments: [id]);
+  }
+
+  @override
+  Future<Skill?> editSkill(String skillText, int skillId) async {
     return _queryAdapter.query(
-        'UPDATE skill SET skillText = ?1 WHERE profileId in (SELECT profileId From userProfile WHERE userId = ?2',
-        mapper: (Map<String, Object?> row) => Skill(row['SkillText'] as String, row['profileId'] as int),
-        arguments: [skillText, userId]);
+        'UPDATE skill SET skillText = ?1 WHERE skillId = ?2',
+        mapper: (Map<String, Object?> row) => Skill(
+            SkillId: row['SkillId'] as int?,
+            SkillText: row['SkillText'] as String,
+            profileId: row['profileId'] as int),
+        arguments: [skillText, skillId]);
   }
 
   @override

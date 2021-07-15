@@ -2,6 +2,8 @@
 
 // import 'dart:html';
 
+// import 'dart:js_util';
+
 import 'package:dbproject/models/Skill.dart';
 import 'package:flutter/material.dart';
 
@@ -123,7 +125,7 @@ class _AddSkillState extends State<AddSkill> {
       List skillsText = [] ;
     List skillsId = [] ;
 
-void addSkillCard(int id , String text){
+void addSkillCard(var id , var text){
   
   list.add(new SkillCard(id , text));
   setState((){});
@@ -153,36 +155,36 @@ void addSkillCard(int id , String text){
 
     if (a != null){
       widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
-        if (val != null){
+        if (val != null) {
           profileId = val.ProfileId;
+          // print("this profileid in test card $profileId");
+          // skill = Skill(SkillText: "android" ,profileId: profileId);
+          // widget.db.skillDao.insertSkill(skill);
+          widget.db.skillDao.allSkills(profileId).then((value) => setState((){
+             if (value != null){
+              for (int i = 0 ; i < value.length ; i++){
+                if (value[i] != null){
+                  print(value[i]?.SkillText);
+                  print("this is the skillid :");
+                  print(value[i]?.SkillId);
+                  addSkillCard(value[i]?.SkillId , value[i]?.SkillText );
+                  var li = list[i].text;
+                  print("$i , $li");
+                }
+                
+              }
+             }
+          }));
+          print(skill);
           }
       }));
     }
-    if (a != null ){
-      widget.db.skillDao.allSkills(profileId).then((value) => setState((){
-        if (value != null){
-          int i = 0 ;
-          for (i = 0 ; i < value.length; i++){
-            if (value[i] != null){
-              print("in all skills");
-              skillsId[i]= value[i]?.SkillId;
-              print(skillsId[i]);
-              skillsText[i] = value[i]?.SkillText;
-              print(skillsText[i]);
-            }else{
 
-            }
-            
-          }
-        }
-      }));
-
-    }
-    for (int i = 0 ; i < skillsId.length ; i++){
-      addSkillCard(skillsId[i], skillsText[i]);
-    }
-
+    
+    // print("this my profileid $profileId");
+    
   }
+
   var skill ;
   void test()async{
     var a = widget.user;
@@ -191,17 +193,34 @@ void addSkillCard(int id , String text){
 
     if (a != null){
       widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
-        if (val != null){
+        if (val != null) {
           profileId = val.ProfileId;
+          print("this profileid in test card $profileId");
+          skill = Skill(SkillText: "android" ,profileId: profileId);
+          widget.db.skillDao.insertSkill(skill);
+          widget.db.skillDao.allSkills(profileId).then((value) => setState((){
+             if (value != null){
+              for (int i = 0 ; i < value.length ; i++){
+                if (value[i] != null){
+                  print(value[i]?.SkillText);
+                  print("this is the skillid :");
+                  print(value[i]?.SkillId);
+                  addSkillCard(value[i]?.SkillId , value[i]?.SkillText );
+                  var li = list[i].text;
+                  print("$i , $li");
+                }
+                
+              }
+             }
+          }));
+          print(skill);
           }
       }));
     }
 
-    skill = Skill("java" , profileId);
-    print("this my profileid $profileId");
-    await widget.db.skillDao.insertSkill(skill);
-    // addSkillCard(profileId , "java");
-    print(skill);
+    
+    // print("this my profileid $profileId");
+    
   }
 
   
@@ -239,12 +258,14 @@ void addSkillCard(int id , String text){
         TextButton(onPressed: null, child: Text("Add skill")) ,
 
       ],) ,),
-        TextButton(onPressed: test, child: Text("test"))
+        // TextButton(onPressed: test, child: Text("test")),
 
-      // Flexible(child:
-      //  ListView.builder(
-      //   itemCount: list.length,
-      //   itemBuilder: (_,index) => list[index]))
+      Flexible(child:
+       ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (_,index) { 
+          return SkillCard(list[index].id.toString(), list[index].text);
+          ;}))
       
       ] 
       ,)
@@ -373,7 +394,7 @@ class _EditSkillCardState extends State<EditSkillCard> {
         
         child: SingleChildScrollView(child: Column(children: [
               NewSkill(widget.db , widget.user),
-              EditedCard(),
+              EditedCard(widget.db , widget.user),
       ],),),)
 
       ], 
@@ -445,28 +466,71 @@ class NewSkill extends StatefulWidget {
 
 class _NewSkillState extends State<NewSkill> {
 
-void addSkillCard(int id , String text){
-  
-  list.add(new SkillCard(id , text));
-  setState((){});
-}
-  
-void addSkillDatabase(String text ){
+  void addSkillCard(var id , var text){
+    list.add(new SkillCard(id , text));
+    setState((){});
+  }
+
+  void addSkillToDatabase(String skillText)async{
     var a = widget.user;
     var profileId ;
+    var skill ;
+
     if (a != null){
       widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
-        if (val != null){
+        if (val != null) {
           profileId = val.ProfileId;
+          print("this profileid in test card $profileId");
+          skill = Skill(SkillText: skillText ,profileId: profileId);
+          widget.db.skillDao.insertSkill(skill);
+          // widget.db.skillDao.allSkills(profileId).then((value) => setState((){
+          //    if (value != null){
+          //     for (int i = 0 ; i < value.length ; i++){
+          //       if (value[i] != null){
+          //         // addSkillCard(id, text)
+          //         print(value[i]?.SkillText);
+          //         print("this is the skillid :");
+          //         print(value[i]?.SkillId);
+          //         addSkillCard(value[i]?.SkillId , value[i]?.SkillText );
+          //         var li = list[i].text;
+          //         print("$i , $li");
+          //       }
+                
+          //     }
+          //    }
+          // }));
+          // print(skill);
           }
-      }));
+      }
+      
+      ));
+      addSkillController.text = ''  ;
     }
-    var skill = Skill(text, profileId) ;
-    if (a != null ){
-      widget.db.skillDao.insertSkill(skill);
-      addSkillCard(profileId, text) ;
-    }
+
+    
+    // print("this my profileid $profileId");
+
+
   }
+
+
+  
+// void addSkillDatabase(String text ){
+//     var a = widget.user;
+//     var profileId ;
+//     if (a != null){
+//       widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
+//         if (val != null){
+//           profileId = val.ProfileId;
+//           }
+//       }));
+//     }
+//     var skill = Skill(SkillText:text,profileId: profileId) ;
+//     if (a != null ){
+//       widget.db.skillDao.insertSkill(skill);
+//       addSkillCard(profileId, text) ;
+//     }
+//   }
 
   @override
   Widget build(BuildContext context) {
@@ -487,7 +551,7 @@ void addSkillDatabase(String text ){
             decoration: InputDecoration(
             hintText: "Skill name",
             hintStyle: TextStyle(color: Colors.redAccent),
-            suffixIcon: IconButton(onPressed: () => addSkillDatabase(addSkillController.text) , icon : Icon(Icons.check)),
+            suffixIcon: IconButton(onPressed: () => addSkillToDatabase(addSkillController.text) , icon : Icon(Icons.check)),
             
             ),
             
@@ -541,9 +605,39 @@ void addSkillDatabase(String text ){
 
 TextEditingController editNumberSkillController = TextEditingController();
 TextEditingController editFieldSkillController = TextEditingController();
+var skillText ;
+class EditedCard extends StatefulWidget {
+  const EditedCard(this.db , this.user) ;
+  final AppDatabase db ;
+  final int? user  ;  
 
-class EditedCard extends StatelessWidget {
-  const EditedCard({ Key? key }) : super(key: key);
+
+  @override
+  _EditedCardState createState() => _EditedCardState();
+}
+
+class _EditedCardState extends State<EditedCard> {
+
+  void editSkillINDatabase(var skillText , int id)async{
+
+    var a = widget.user;
+    if (a != null){
+      print("this is userid:");
+      print(a);
+      await widget.db.skillDao.editSkill(skillText, id) ;
+      widget.db.skillDao.findSkillById(id).then((val) => setState((){
+        print("we are in editskilldatabase");
+        print(val?.SkillId);
+        if (val != null){
+          print("skilltext is going to change");
+          skillText = val.SkillText ;
+          }
+          else{
+            print("value is null");
+          }
+      }));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -575,7 +669,9 @@ class EditedCard extends StatelessWidget {
             decoration: InputDecoration(
             hintText: "Edit field",
             suffixIcon: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              return editSkillINDatabase(editFieldSkillController.value.text.toString(), int.parse(editNumberSkillController.value.text));
+            },
             icon: Icon(Icons.check),
              ),
               ),
@@ -592,4 +688,55 @@ class EditedCard extends StatelessWidget {
     );
   }
 }
+
+// class EditedCard extends StatelessWidget {
+//   const EditedCard({ Key? key }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: EdgeInsets.only(top: 10),
+//       height: 50,
+//       width: MediaQuery.of(context).size.width*0.88,
+//       color: Colors.redAccent,
+//       child: Container(margin: EdgeInsets.only(left: 5),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//         Container(
+//           width: MediaQuery.of(context).size.width*0.18,
+//           child: TextField(
+//             controller: editNumberSkillController,
+//             decoration: InputDecoration(
+//             hintText: "Field number",
+//             suffixIcon: IconButton(
+//             onPressed: () {},
+//             icon: Icon(Icons.countertops),
+//              ),
+//               ),
+//               ),) ,
+//             Container(
+//               width: MediaQuery.of(context).size.width*0.68,
+//               child: TextField(
+//             controller: editFieldSkillController,
+//             decoration: InputDecoration(
+//             hintText: "Edit field",
+//             suffixIcon: IconButton(
+//             onPressed: () {},
+//             icon: Icon(Icons.check),
+//              ),
+//               ),
+//               ),) 
+
+            
+
+//       ],)
+        
+
+    
+//       )
+      
+//     );
+//   }
+// }
 

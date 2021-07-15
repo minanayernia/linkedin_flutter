@@ -23,7 +23,10 @@ class Skill {
   @ColumnInfo(name: 'profileId')
   int profileId ;
 
-  Skill( this.SkillText , this.profileId);
+  Skill({  
+    this.SkillId ,
+    required this.SkillText ,
+    required this.profileId});
 }
 
 @dao 
@@ -36,8 +39,15 @@ abstract class SkillDao {
   @Query('DELETE FROM Skill')
   Future<void> deleteSkills();
 
-  @Query('UPDATE skill SET skillText = :skillText WHERE profileId in (SELECT profileId From userProfile WHERE userId = :userId')
-  Future<Skill?> editSkill(String skillText , int userId);
+  @Query('SELECT * FROM Skill WHERE skillText = :skillText')
+  Future<Skill?> findSkillByName(String skillText);
+
+  @Query('SELECT * FROM Skill WHERE skillId = :id')
+  Future<Skill?> findSkillById(int id);
+
+  @Query('UPDATE skill SET skillText = :skillText WHERE skillId = :skillId')
+  Future<Skill?> editSkill(String skillText , int skillId);
+  
   @insert 
   Future<void>insertSkill(Skill skill);
   
