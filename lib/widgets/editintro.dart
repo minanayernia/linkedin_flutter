@@ -53,7 +53,7 @@ class _EditIntrCardState extends State<EditIntrCard> {
   void editIntro()async{
     var a = widget.user;
     if (a != null){
-      widget.db.userProfileDao.editAllProfile(a, firstNameController.toString(), lastNameController.toString(), aboutController.toString() , locationController.toString()).then((val) => setState((){
+      widget.db.userProfileDao.editAllProfile(a, firstNameController.value.text, lastNameController.value.text, aboutController.value.text , locationController.value.text).then((val) => setState((){
         if (val != null){
           firstname= val.FirstName;
           lasttname = val.LastName ;
@@ -140,7 +140,7 @@ class _EditIntrCardState extends State<EditIntrCard> {
           decoration: InputDecoration(
             fillColor: Colors.white,
           border: OutlineInputBorder(),
-          hintText:lastNameController.text,
+          hintText:lasttname,
           hintStyle: TextStyle(color: Colors.white)
   ),
           //readOnly: true,
@@ -173,7 +173,7 @@ class _EditIntrCardState extends State<EditIntrCard> {
           decoration: InputDecoration(
             fillColor: Colors.white,
           border: OutlineInputBorder(),
-          hintText: aboutController.text,
+          hintText: about,
           hintStyle: TextStyle(color: Colors.white)
   ),
           //readOnly: true,
@@ -243,7 +243,7 @@ class _EditIntrCardState extends State<EditIntrCard> {
           decoration: InputDecoration(
             fillColor: Colors.white,
           border: OutlineInputBorder(),
-          hintText: locationController.text,
+          hintText: location,
           hintStyle: TextStyle(color: Colors.white)
   ),
           //readOnly: true,
