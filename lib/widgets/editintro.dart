@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import '../database.dart';
 
 var temp ;
-String firstname = '';
-String lasttname = '' ;
-String about = '' ;
-String birthdate = '' ;
-String location = '' ;
+var firstname ;
+var lasttname ;
+var about ;
+var birthdate ;
+var location ;
 
 TextEditingController firstNameController = TextEditingController();
 TextEditingController lastNameController = TextEditingController();
@@ -53,7 +53,7 @@ class _EditIntrCardState extends State<EditIntrCard> {
   void editIntro()async{
     var a = widget.user;
     if (a != null){
-      widget.db.userProfileDao.editAllProfile(a, firstNameController.value.text, lastNameController.text, aboutController.text , locationController.text).then((val) => setState((){
+      widget.db.userProfileDao.editAllProfile(a, firstNameController.toString(), lastNameController.toString(), aboutController.toString() , locationController.toString()).then((val) => setState((){
         if (val != null){
           firstname= val.FirstName;
           lasttname = val.LastName ;
