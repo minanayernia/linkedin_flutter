@@ -445,7 +445,7 @@ class _$AccomplishmentDao extends AccomplishmentDao {
   Future<Accomplishment?> editAccomplishment(
       String accomplishmentText, int accomplishmentId) async {
     return _queryAdapter.query(
-        'UPDATE accomplishments SET accomplishmentText =  ?1 WHERE  AcomplishmentId = ?2',
+        'UPDATE Accomplishment SET AccomplishmentText =  ?1 WHERE  AcomplishmentId = ?2',
         mapper: (Map<String, Object?> row) => Accomplishment(AcomplishmentId: row['AcomplishmentId'] as int?, AccomplishmentText: row['AccomplishmentText'] as String, profileId: row['profileId'] as int),
         arguments: [accomplishmentText, accomplishmentId]);
   }
@@ -480,7 +480,7 @@ class _$FeaturedDao extends FeaturedDao {
   @override
   Future<List<Featured?>> allAdditionalInfo(int profileId) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM featured WHERE profileId = ?1',
+        'SELECT * FROM Featured WHERE profileId = ?1',
         mapper: (Map<String, Object?> row) => Featured(
             featuredId: row['featuredId'] as int?,
             featuredText: row['featuredText'] as String,
@@ -491,7 +491,7 @@ class _$FeaturedDao extends FeaturedDao {
   @override
   Future<Featured?> editFeatured(String featuredText, int userId) async {
     return _queryAdapter.query(
-        'UPDATE featured SET featuredText = ?1 WHERE profileId in (SELECT profileId From userProfile WHERE userId = ?2',
+        'UPDATE Featured SET featuredText = ?1 WHERE profileId in (SELECT profileId From userProfile WHERE userId = ?2',
         mapper: (Map<String, Object?> row) => Featured(featuredId: row['featuredId'] as int?, featuredText: row['featuredText'] as String, profileId: row['profileId'] as int?),
         arguments: [featuredText, userId]);
   }

@@ -49,5 +49,9 @@ abstract class NetworkDao{
   @Query('SELECT COUNT(*) FROM network WHERE networkState = 1 and (userId = :userId or userReqId = :userId)')
   Future<int> countMutualConnection(int userId); 
 
-  // @Query('SELECT userReqId FROM network WHERE userId = :userId and networkState = 1') 
+  @Query('((SELECT userReqId as user_id FROM network WHERE userId = :userId) UNION (SELECT userId as user_id FROM network WHERE userReqId = :userId))') 
+  Future<int?> AllUsersInYourNetwork(int userId);
+
+  @insert 
+  Future<void> insertNetwork(Network network);
 }

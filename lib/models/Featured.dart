@@ -41,10 +41,10 @@ class Featured{
 
 @dao 
 abstract class FeaturedDao {
-  @Query('SELECT * FROM featured WHERE profileId = :profileId')
+  @Query('SELECT * FROM Featured WHERE profileId = :profileId')
   Future<List<Featured?>> allAdditionalInfo(int profileId);
 
-  @Query('UPDATE featured SET featuredText = :featuredText WHERE profileId in (SELECT profileId From userProfile WHERE userId = :userId')
+  @Query('UPDATE Featured SET featuredText = :featuredText WHERE profileId in (SELECT profileId From userProfile WHERE userId = :userId')
   Future<Featured?> editFeatured(String featuredText , int userId);
 
   @insert 
