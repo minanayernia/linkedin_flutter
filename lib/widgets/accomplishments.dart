@@ -147,15 +147,24 @@ class EditAccomplishCard extends StatelessWidget {
 }
 
 
-TextEditingController addAccomplishController = TextEditingController();
 
-class NewAccomplish extends StatelessWidget {
+
+
+TextEditingController addAccomplishController = TextEditingController();
+class NewAccomplish extends StatefulWidget {
   const NewAccomplish({ Key? key }) : super(key: key);
 
   @override
+  _NewAccomplishState createState() => _NewAccomplishState();
+}
+
+
+
+class _NewAccomplishState extends State<NewAccomplish> {
+  @override
   Widget build(BuildContext context) {
     return Container(
-       height: 100,
+      height: 100,
       width: MediaQuery.of(context).size.width*0.88,
       color: Colors.white,
       margin: EdgeInsets.only(top: 10),
@@ -185,6 +194,45 @@ class NewAccomplish extends StatelessWidget {
     );
   }
 }
+
+
+
+// class NewAccomplish extends StatelessWidget {
+//   const NewAccomplish({ Key? key }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//        height: 100,
+//       width: MediaQuery.of(context).size.width*0.88,
+//       color: Colors.white,
+//       margin: EdgeInsets.only(top: 10),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//         Container(
+//           color: Colors.white,
+//           width: MediaQuery.of(context).size.width*0.86,
+//           margin: EdgeInsets.only(left: 10),
+//           child: TextField(
+//             controller: addAccomplishController,
+//             decoration: InputDecoration(
+//             hintText: "Accomplishment name",
+//             hintStyle: TextStyle(color: Colors.redAccent),
+//             suffixIcon: IconButton(onPressed: (){}, icon : Icon(Icons.check)),
+            
+//             ),
+            
+            
+//           )
+//         ),
+        
+
+//       ],),
+      
+//     );
+//   }
+// }
 
 TextEditingController editNumberAccomplishController = TextEditingController();
 

@@ -59,7 +59,7 @@ class _SkillCardState extends State<SkillCard> {
 
         ],),
         Row(children: [
-          TextButton(onPressed: (){}, child: Text("Endorse")),
+          // TextButton(onPressed: (){}, child: Text("Endorse")),
           TextButton(onPressed: (){}, child: Text("Edit")),
         ],)
 
