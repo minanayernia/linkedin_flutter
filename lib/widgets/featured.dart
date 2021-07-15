@@ -1,22 +1,72 @@
+
+
+import 'package:dbproject/models/Featured.dart';
 import 'package:flutter/material.dart';
+
+import '../database.dart';
 
 
 
 class FeaturedList extends StatefulWidget {
-  const FeaturedList({ Key? key }) : super(key: key);
+  const FeaturedList(this.db , this.user);
+  final AppDatabase db ;
+  final int? user  ; 
 
   @override
   _FeaturedListState createState() => _FeaturedListState();
 }
 
 class _FeaturedListState extends State<FeaturedList> {
-List<FeaturedCard> list = [];
-addSkillCard(){
+
+  List featuredsText = [] ;
+  List featuredsId = [] ;
+
+addSkillCard(var id , var text){
   
-  list.add(new FeaturedCard()
+  list.add(new FeaturedCard(id , text)
   );
   setState((){});
 }
+var feature ;
+void getFeatures()async{
+    var a = widget.user;
+    var profileId ;
+   
+
+    if (a != null){
+      widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
+        if (val != null) {
+          profileId = val.ProfileId;
+          // print("this profileid in test card $profileId");
+          // skill = Skill(SkillText: "android" ,profileId: profileId);
+          // widget.db.skillDao.insertSkill(skill);q
+          widget.db.featuredDao.allAdditionalInfo(profileId).then((value) => setState((){
+             if (value != null){
+              for (int i = 0 ; i < value.length ; i++){
+                if (value[i] != null){
+                  print(value[i]?.featuredText);
+                  print("this is the skillid :");
+                  print(value[i]?.featuredId);
+                  addSkillCard(value[i]?.featuredId , value[i]?.featuredText );
+                  var li = list[i].text;
+                  print("$i , $li");
+                }
+                
+              }
+             }
+          }));
+          print(feature);
+          }
+      }));
+    }
+}
+
+
+@override
+  void initState() {
+    getFeatures();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -40,14 +90,17 @@ addSkillCard(){
           style: TextStyle(color: Colors.white , fontSize: 15),
           ),
         ),
-        TextButton(onPressed: addSkillCard, child: Text("Add")) ,
+        TextButton(onPressed: (){}, child: Text("Add")) ,
 
       ],) ,),
         
 
-      Flexible(child: ListView.builder(
+      Flexible(child:
+       ListView.builder(
         itemCount: list.length,
-        itemBuilder: (_,index) => list[index]))
+        itemBuilder: (_,index) { 
+          return FeaturedCard(list[index].id.toString(), list[index].text);
+          ;}))
       
 
       ], 
@@ -58,10 +111,17 @@ addSkillCard(){
   }
 }
 
+List<FeaturedCard> list = [];
+class FeaturedCard extends StatefulWidget {
+  const FeaturedCard(this.id , this.text);
+  final id ;
+  final text ;
 
-class FeaturedCard extends StatelessWidget {
-  const FeaturedCard({ Key? key }) : super(key: key);
+  @override
+  _FeaturedCardState createState() => _FeaturedCardState();
+}
 
+class _FeaturedCardState extends State<FeaturedCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -74,10 +134,10 @@ class FeaturedCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
         Row(children: [
-            Text("1" , style: TextStyle(color: Colors.white),) ,
+            Text(widget.id , style: TextStyle(color: Colors.white),) ,
             Container(
               padding: EdgeInsets.only(left: 5),
-              child: Text("Article" , style: TextStyle(color: Colors.white),),)
+              child: Text(widget.text , style: TextStyle(color: Colors.white),),)
             
 
 
@@ -91,15 +151,52 @@ class FeaturedCard extends StatelessWidget {
   }
 }
 
+// class FeaturedCard extends StatelessWidget {
+//   const FeaturedCard({ Key? key }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: EdgeInsets.only(top: 10),
+//       height: 50,
+//       width: MediaQuery.of(context).size.width*0.88,
+//       color: Colors.redAccent,
+//       child: Container(margin: EdgeInsets.only(left: 5),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//         Row(children: [
+//             Text("1" , style: TextStyle(color: Colors.white),) ,
+//             Container(
+//               padding: EdgeInsets.only(left: 5),
+//               child: Text("Article" , style: TextStyle(color: Colors.white),),)
+            
 
 
-class EditFeaturedCard extends StatelessWidget {
-  const EditFeaturedCard({ Key? key }) : super(key: key);
+//         ],),
+//         TextButton(onPressed: (){}, child: Text("Edit")),
 
+//       ],)
+//       )
+      
+//     );
+//   }
+// }
+
+class EditFeaturedCard extends StatefulWidget {
+  const EditFeaturedCard(this.db , this.user) ;
+  final AppDatabase db ;
+  final int? user  ; 
+
+  @override
+  _EditFeaturedCardState createState() => _EditFeaturedCardState();
+}
+
+class _EditFeaturedCardState extends State<EditFeaturedCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-            margin: EdgeInsets.only(top: 20),
+      margin: EdgeInsets.only(top: 20),
 
       height: 250,
       width: MediaQuery.of(context).size.width*0.9,
@@ -127,25 +224,122 @@ class EditFeaturedCard extends StatelessWidget {
       Container(
         
         child: SingleChildScrollView(child: Column(children: [
-              NewFeature(),
-              EditedCard(),
+              NewFeature(widget.db , widget.user),
+              // EditedCard(),
       ],),),)
 
       ], 
       )
+      
     );
   }
 }
+
+// class EditFeaturedCard extends StatelessWidget {
+//   const EditFeaturedCard(this.db , this.user) ;
+//   final AppDatabase db ;
+//   final int? user  ; 
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//             margin: EdgeInsets.only(top: 20),
+
+//       height: 250,
+//       width: MediaQuery.of(context).size.width*0.9,
+//       color: Colors.black87,
+//       child: 
+//       Column(children: [
+//         Container(
+//           color: Colors.redAccent,
+//           child: Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//           children: [
+//         Container(
+          
+//           margin: EdgeInsets.only(left: 10),
+//           child: Text("ADD/EDIT FEATURED",
+//           style: TextStyle(color: Colors.white , fontSize: 15),
+//           ),
+//         ),
+//         TextButton(onPressed: (){}, child: Text("Edit")) ,
+
+//       ],) ,),
+
+
+      
+//       Container(
+        
+//         child: SingleChildScrollView(child: Column(children: [
+//               NewFeature(widget.db , widget.user),
+//               // EditedCard(),
+//       ],),),)
+
+//       ], 
+//       )
+//     );
+//   }
+// }
 TextEditingController addFeatureController = TextEditingController();
 
 class NewFeature extends StatefulWidget {
-  const NewFeature({ Key? key }) : super(key: key);
+  const NewFeature(this.db , this.user);
+  final AppDatabase db ;
+  final int? user  ;
 
   @override
   _NewFeatureState createState() => _NewFeatureState();
 }
 
 class _NewFeatureState extends State<NewFeature> {
+
+
+    void addFeatureCard(var id , var text){
+    list.add(new FeaturedCard(id , text));
+    setState((){});
+  }
+
+  void addFeatureToDatabase(String featureText)async{
+    var a = widget.user;
+    var profileId ;
+    var feature ;
+
+    if (a != null){
+      widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
+        if (val != null) {
+          profileId = val.ProfileId;
+          print("this profileid in test card $profileId");
+          feature = Featured(featuredText: featureText ,profileId: profileId);
+          widget.db.featuredDao.insertFeatured(feature);
+          // widget.db.skillDao.allSkills(profileId).then((value) => setState((){
+          //    if (value != null){
+          //     for (int i = 0 ; i < value.length ; i++){
+          //       if (value[i] != null){
+          //         // addSkillCard(id, text)
+          //         print(value[i]?.SkillText);
+          //         print("this is the skillid :");
+          //         print(value[i]?.SkillId);
+          //         addSkillCard(value[i]?.SkillId , value[i]?.SkillText );
+          //         var li = list[i].text;
+          //         print("$i , $li");
+          //       }
+                
+          //     }
+          //    }
+          // }));
+          // print(skill);
+          }
+      }
+      
+      ));
+      addFeatureController.text = ''  ;
+    }
+
+    
+    // print("this my profileid $profileId");
+
+
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -165,7 +359,10 @@ class _NewFeatureState extends State<NewFeature> {
             decoration: InputDecoration(
             hintText: "Feature name",
             hintStyle: TextStyle(color: Colors.redAccent),
-            suffixIcon: IconButton(onPressed: (){}, icon : Icon(Icons.check)),
+            suffixIcon: IconButton(onPressed: () => addFeatureToDatabase(addFeatureController.text)
+
+
+            , icon : Icon(Icons.check)),
             
             ),
             

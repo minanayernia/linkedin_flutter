@@ -70,6 +70,8 @@ class _$AppDatabase extends AppDatabase {
 
   AccomplishmentDao? _accomplishmentDaoInstance;
 
+  FeaturedDao? _featuredDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -98,6 +100,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `Skill` (`SkillId` INTEGER PRIMARY KEY AUTOINCREMENT, `SkillText` TEXT NOT NULL, `profileId` INTEGER NOT NULL, FOREIGN KEY (`profileId`) REFERENCES `UserProfile` (`profileId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Accomplishment` (`AcomplishmentId` INTEGER PRIMARY KEY AUTOINCREMENT, `profileId` INTEGER NOT NULL, `AccomplishmentText` TEXT NOT NULL, FOREIGN KEY (`profileId`) REFERENCES `UserProfile` (`profileId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Featured` (`featuredId` INTEGER PRIMARY KEY AUTOINCREMENT, `profileId` INTEGER, `featuredText` TEXT NOT NULL, FOREIGN KEY (`profileId`) REFERENCES `UserProfile` (`ProfileId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -130,6 +134,11 @@ class _$AppDatabase extends AppDatabase {
   AccomplishmentDao get accomplishmentDao {
     return _accomplishmentDaoInstance ??=
         _$AccomplishmentDao(database, changeListener);
+  }
+
+  @override
+  FeaturedDao get featuredDao {
+    return _featuredDaoInstance ??= _$FeaturedDao(database, changeListener);
   }
 }
 
@@ -434,16 +443,61 @@ class _$AccomplishmentDao extends AccomplishmentDao {
 
   @override
   Future<Accomplishment?> editAccomplishment(
-      String accomplishmentText, int userId) async {
+      String accomplishmentText, int accomplishmentId) async {
     return _queryAdapter.query(
-        'UPDATE accomplishments SET accomplishmentText =  ?1 WHERE profileId in (SELECT profileId From userProfile WHERE userId = ?2',
+        'UPDATE accomplishments SET accomplishmentText =  ?1 WHERE  AcomplishmentId = ?2',
         mapper: (Map<String, Object?> row) => Accomplishment(AcomplishmentId: row['AcomplishmentId'] as int?, AccomplishmentText: row['AccomplishmentText'] as String, profileId: row['profileId'] as int),
-        arguments: [accomplishmentText, userId]);
+        arguments: [accomplishmentText, accomplishmentId]);
   }
 
   @override
   Future<void> insertAccomplishment(Accomplishment accomplishment) async {
     await _accomplishmentInsertionAdapter.insert(
         accomplishment, OnConflictStrategy.abort);
+  }
+}
+
+class _$FeaturedDao extends FeaturedDao {
+  _$FeaturedDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _featuredInsertionAdapter = InsertionAdapter(
+            database,
+            'Featured',
+            (Featured item) => <String, Object?>{
+                  'featuredId': item.featuredId,
+                  'profileId': item.profileId,
+                  'featuredText': item.featuredText
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Featured> _featuredInsertionAdapter;
+
+  @override
+  Future<List<Featured?>> allAdditionalInfo(int profileId) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM featured WHERE profileId = ?1',
+        mapper: (Map<String, Object?> row) => Featured(
+            featuredId: row['featuredId'] as int?,
+            featuredText: row['featuredText'] as String,
+            profileId: row['profileId'] as int?),
+        arguments: [profileId]);
+  }
+
+  @override
+  Future<Featured?> editFeatured(String featuredText, int userId) async {
+    return _queryAdapter.query(
+        'UPDATE featured SET featuredText = ?1 WHERE profileId in (SELECT profileId From userProfile WHERE userId = ?2',
+        mapper: (Map<String, Object?> row) => Featured(featuredId: row['featuredId'] as int?, featuredText: row['featuredText'] as String, profileId: row['profileId'] as int?),
+        arguments: [featuredText, userId]);
+  }
+
+  @override
+  Future<void> insertFeatured(Featured featured) async {
+    await _featuredInsertionAdapter.insert(featured, OnConflictStrategy.abort);
   }
 }

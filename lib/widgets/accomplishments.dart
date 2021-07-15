@@ -239,7 +239,7 @@ class _EditAccomplishCardState extends State<EditAccomplishCard> {
         
         child: SingleChildScrollView(child: Column(children: [
               NewAccomplish(widget.db , widget.user),
-              // EditedCard(widget.db , widget.user),
+              EditedCard(widget.db , widget.user),
       ],),),)
 
       ], 
@@ -448,22 +448,22 @@ class _EditedCardState extends State<EditedCard> {
   void editAccomplishmentINDatabase(var skillText , int id)async{
 
     var a = widget.user;
-    // if (a != null){
-    //   print("this is userid:");
-    //   print(a);
-    //   await widget.db.accomplishmentDao.editAccomplishment(skillText, id) ;
-    //   widget.db.accomplishmentDao.(id).then((val) => setState((){
-    //     print("we are in editskilldatabase");
-    //     // print(val?.SkillId);
-    //     if (val != null){
-    //       print("skilltext is going to change");
-    //       // accopmlishText = val ;
-    //       }
-    //       else{
-    //         print("value is null");
-    //       }
-    //   }));
-    // }
+    if (a != null){
+      print("this is userid:");
+      print(a);
+      await widget.db.accomplishmentDao.editAccomplishment(skillText, id) ;
+      widget.db.accomplishmentDao.findAccomplishmentById(id).then((val) => setState((){
+        print("we are in editskilldatabase");
+        // print(val?.SkillId);
+        if (val != null){
+          print("skilltext is going to change");
+          accopmlishText = val ;
+          }
+          else{
+            print("value is null");
+          }
+      }));
+    }
   }
   @override
   Widget build(BuildContext context) {

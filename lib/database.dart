@@ -2,6 +2,7 @@
 
 // required package imports
 import 'dart:async';
+import 'package:dbproject/models/Featured.dart';
 import 'package:dbproject/models/User.dart';
 import 'package:dbproject/models/UserProfile.dart';
 import 'package:floor/floor.dart';
@@ -12,9 +13,10 @@ import 'models/Skill.dart';
 import 'models/Accomplishment.dart';
 import 'models/User.dart';
 import 'models/post.dart'; 
+import 'models/Featured.dart';
 part 'database.g.dart'; // 
 
-@Database(version: 1, entities: [Post , User , UserProfile , Skill , Accomplishment])
+@Database(version: 1, entities: [Post , User , UserProfile , Skill , Accomplishment , Featured])
 
 abstract class AppDatabase extends FloorDatabase {
   
@@ -23,5 +25,7 @@ abstract class AppDatabase extends FloorDatabase {
   UserProfileDao get userProfileDao;
   SkillDao get skillDao;
   AccomplishmentDao get accomplishmentDao;
+  FeaturedDao get featuredDao ;
+
 
 }
