@@ -108,7 +108,7 @@ class _EditIntrCardState extends State<EditIntrCard> {
           decoration: InputDecoration(
             fillColor: Colors.white,
           border: OutlineInputBorder(),
-          hintText: firstNameController.text,
+          hintText: firstname,
           hintStyle: TextStyle(color: Colors.white)
   ),
           //readOnly: true,

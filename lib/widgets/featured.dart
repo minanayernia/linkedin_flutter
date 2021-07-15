@@ -138,9 +138,14 @@ class EditFeaturedCard extends StatelessWidget {
 }
 TextEditingController addFeatureController = TextEditingController();
 
-class NewFeature extends StatelessWidget {
+class NewFeature extends StatefulWidget {
   const NewFeature({ Key? key }) : super(key: key);
 
+  @override
+  _NewFeatureState createState() => _NewFeatureState();
+}
+
+class _NewFeatureState extends State<NewFeature> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -174,6 +179,43 @@ class NewFeature extends StatelessWidget {
     );
   }
 }
+
+// class NewFeature extends StatelessWidget {
+//   const NewFeature({ Key? key }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       height: 100,
+//       width: MediaQuery.of(context).size.width*0.88,
+//       color: Colors.white,
+//       margin: EdgeInsets.only(top: 10),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//         Container(
+//           color: Colors.white,
+//           width: MediaQuery.of(context).size.width*0.86,
+//           margin: EdgeInsets.only(left: 10),
+//           child: TextField(
+//             controller: addFeatureController,
+//             decoration: InputDecoration(
+//             hintText: "Feature name",
+//             hintStyle: TextStyle(color: Colors.redAccent),
+//             suffixIcon: IconButton(onPressed: (){}, icon : Icon(Icons.check)),
+            
+//             ),
+            
+            
+//           )
+//         ),
+        
+
+//       ],),
+      
+//     );
+//   }
+// }
 
 
 TextEditingController editNumberFeatureController = TextEditingController();
