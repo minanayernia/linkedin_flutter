@@ -489,6 +489,16 @@ class _$FeaturedDao extends FeaturedDao {
   }
 
   @override
+  Future<Featured?> findFeaturedById(int featuredId) async {
+    return _queryAdapter.query('SELECT * FROM Featured WHERE featuredId = ?1',
+        mapper: (Map<String, Object?> row) => Featured(
+            featuredId: row['featuredId'] as int?,
+            featuredText: row['featuredText'] as String,
+            profileId: row['profileId'] as int?),
+        arguments: [featuredId]);
+  }
+
+  @override
   Future<Featured?> editFeatured(String featuredText, int userId) async {
     return _queryAdapter.query(
         'UPDATE Featured SET featuredText = ?1 WHERE profileId in (SELECT profileId From userProfile WHERE userId = ?2',
