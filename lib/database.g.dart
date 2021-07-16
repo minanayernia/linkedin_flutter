@@ -68,6 +68,8 @@ class _$AppDatabase extends AppDatabase {
 
   SkillDao? _skillDaoInstance;
 
+  AccomplishmentDao? _accomplishmentDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -94,6 +96,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `UserProfile` (`ProfileId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER, `FirstName` TEXT NOT NULL, `LastName` TEXT NOT NULL, `UserName` TEXT NOT NULL, `About` TEXT NOT NULL, `AdditionalInfo` TEXT NOT NULL, `location` TEXT NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Skill` (`SkillId` INTEGER PRIMARY KEY AUTOINCREMENT, `SkillText` TEXT NOT NULL, `profileId` INTEGER NOT NULL, FOREIGN KEY (`profileId`) REFERENCES `UserProfile` (`profileId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Accomplishment` (`AcomplishmentId` INTEGER PRIMARY KEY AUTOINCREMENT, `profileId` INTEGER NOT NULL, `AccomplishmentText` TEXT NOT NULL, FOREIGN KEY (`profileId`) REFERENCES `UserProfile` (`profileId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -120,6 +124,12 @@ class _$AppDatabase extends AppDatabase {
   @override
   SkillDao get skillDao {
     return _skillDaoInstance ??= _$SkillDao(database, changeListener);
+  }
+
+  @override
+  AccomplishmentDao get accomplishmentDao {
+    return _accomplishmentDaoInstance ??=
+        _$AccomplishmentDao(database, changeListener);
   }
 }
 
@@ -375,5 +385,52 @@ class _$SkillDao extends SkillDao {
   @override
   Future<void> insertSkill(Skill skill) async {
     await _skillInsertionAdapter.insert(skill, OnConflictStrategy.abort);
+  }
+}
+
+class _$AccomplishmentDao extends AccomplishmentDao {
+  _$AccomplishmentDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _accomplishmentInsertionAdapter = InsertionAdapter(
+            database,
+            'Accomplishment',
+            (Accomplishment item) => <String, Object?>{
+                  'AcomplishmentId': item.AcomplishmentId,
+                  'profileId': item.profileId,
+                  'AccomplishmentText': item.AccomplishmentText
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Accomplishment> _accomplishmentInsertionAdapter;
+
+  @override
+  Future<List<Accomplishment?>> allAccomplishments(int profileId) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Accomplishment WHERE profileId = ?1',
+        mapper: (Map<String, Object?> row) => Accomplishment(
+            AcomplishmentId: row['AcomplishmentId'] as int?,
+            AccomplishmentText: row['AccomplishmentText'] as String,
+            profileId: row['profileId'] as int),
+        arguments: [profileId]);
+  }
+
+  @override
+  Future<Accomplishment?> editAccomplishment(
+      String accomplishmentText, int userId) async {
+    return _queryAdapter.query(
+        'UPDATE accomplishments SET accomplishmentText =  ?1 WHERE profileId in (SELECT profileId From userProfile WHERE userId = ?2',
+        mapper: (Map<String, Object?> row) => Accomplishment(AcomplishmentId: row['AcomplishmentId'] as int?, AccomplishmentText: row['AccomplishmentText'] as String, profileId: row['profileId'] as int),
+        arguments: [accomplishmentText, userId]);
+  }
+
+  @override
+  Future<void> insertAccomplishment(Accomplishment accomplishment) async {
+    await _accomplishmentInsertionAdapter.insert(
+        accomplishment, OnConflictStrategy.abort);
   }
 }
