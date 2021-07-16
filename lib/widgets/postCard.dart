@@ -39,15 +39,17 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height*2,
+      height: MediaQuery.of(context).size.height*1,
       width: MediaQuery.of(context).size.width*0.86,
       color: Colors.redAccent,
       margin: EdgeInsets.only(top: 20 , bottom: 20),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
 
-        Row(
+        Container(
+          height: 30,
+          child:Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
           Container(
@@ -57,7 +59,9 @@ class _PostCardState extends State<PostCard> {
             ),
           ) , 
           TextButton(onPressed: (){}, child: Text("..."))
-        ],),
+        ],) ,),
+
+        
         Container(
           height: MediaQuery.of(context).size.height*0.35,
           width: MediaQuery.of(context).size.width*0.84,
@@ -93,6 +97,8 @@ class _PostCardState extends State<PostCard> {
         ],
         
         ),
+
+        NewCommentCard(),
 
 
         Row(children: [
@@ -573,7 +579,7 @@ class NewCommentCard extends StatelessWidget {
       margin: EdgeInsets.only(top: 20),
       height: 130,
       width: MediaQuery.of(context).size.width*0.86,
-      color: Colors.white30,
+      color: Colors.redAccent[100],
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

@@ -133,7 +133,7 @@ void addSkillCard(var id , var text){
   }
   });
   
-  if(text != ""){
+  if(text != "" && checkCopy == false){
   list.add(new SkillCard(id , text));
   setState((){});
   }
@@ -406,9 +406,7 @@ class _EditSkillCardState extends State<EditSkillCard> {
               EditedCard(widget.db , widget.user),
       ],),),),
 
-      Visibility(
-          visible: checkSkillField,
-          child: Container(child: Text("Field name can't be empty" , style: TextStyle(color: Colors.redAccent),),),),
+
 
 
       ], 
@@ -468,7 +466,7 @@ class _EditSkillCardState extends State<EditSkillCard> {
 
 TextEditingController addSkillController = TextEditingController();
 
-
+bool checkCopy = false ;
 class NewSkill extends StatefulWidget {
   const NewSkill(this.db , this.user);
   final AppDatabase db ;
@@ -483,25 +481,45 @@ class _NewSkillState extends State<NewSkill> {
   
 
   void addSkillCard(var id , var text){
-    if(text != ""){
+    if(text != ""&& checkCopy == false){
     list.add(new SkillCard(id , text));
     setState((){});
     }
   }
 
   void addSkillToDatabase(String skillText)async{
+    final checkCopyField = await widget.db.skillDao.findSkillByName(skillText) ;
+
     var a = widget.user;
     var profileId ;
     var skill ;
+
+    setState(() {
+      if(checkCopyField != null){
+        checkCopy = true ;
+      }
+      if(checkCopyField == null){
+        checkCopy = false ;
+      }
+    });
 
     setState(() {
       if (skillText == ""){
       checkSkillField = true ;
       print("YYYYYYYYYYYYYYYYYYYYYYYY") ;
     }
-
+  
     });
-    if(skillText != ""){
+    setState(() {
+      if (skillText != ""){
+      checkSkillField = false;
+      print("YYYYYYYYYYYYYYYYYYYYYYYY") ;
+    }
+  
+    });
+
+
+    if(skillText != "" && checkCopyField == null){
     if (a != null){
       widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
         if (val != null) {
@@ -562,11 +580,11 @@ class _NewSkillState extends State<NewSkill> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
+      height: 90,
       width: MediaQuery.of(context).size.width*0.88,
       color: Colors.white,
       margin: EdgeInsets.only(top: 10),
-      child: Row(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
         Container(
@@ -583,10 +601,20 @@ class _NewSkillState extends State<NewSkill> {
             ),
             
             
-          )
+          ),
         ),
-        
+        Container(
+          alignment: Alignment.center,
+          child: Visibility(
+          visible: checkSkillField,
+          child: Container(child: Text("Field name can't be empty" , style: TextStyle(color: Colors.redAccent),),),),),
 
+          Container(
+          alignment: Alignment.center,
+          child: Visibility(
+          visible: checkCopy,
+          child: Container(child: Text("This field already exists" , style: TextStyle(color: Colors.redAccent),),),),),
+        
       ],),
       
     );
