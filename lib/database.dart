@@ -3,6 +3,8 @@
 // required package imports
 import 'dart:async';
 import 'package:dbproject/models/Featured.dart';
+import 'package:dbproject/models/Like.dart';
+import 'package:dbproject/models/Network.dart';
 import 'package:dbproject/models/User.dart';
 import 'package:dbproject/models/UserProfile.dart';
 import 'package:floor/floor.dart';
@@ -16,7 +18,7 @@ import 'models/post.dart';
 import 'models/Featured.dart';
 part 'database.g.dart'; // 
 
-@Database(version: 1, entities: [Post , User , UserProfile , Skill , Accomplishment , Featured])
+@Database(version: 1, entities: [ Like ,Post , User , UserProfile , Skill , Accomplishment , Featured , Network ,])
 
 abstract class AppDatabase extends FloorDatabase {
   
@@ -26,6 +28,8 @@ abstract class AppDatabase extends FloorDatabase {
   SkillDao get skillDao;
   AccomplishmentDao get accomplishmentDao;
   FeaturedDao get featuredDao ;
+  NetworkDao get netwokDao ;
+  LikeDao get likeDao ;
 
 
 }

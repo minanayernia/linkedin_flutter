@@ -34,6 +34,7 @@ class Comment {
   int? commentId ;
 
   String commentText;
+  int is_replied = 0 ; // if 0 => not replied if 1 => replied
   // final DateTime CommentedAt;
   @ColumnInfo(name: 'userId')
   int userId ;
@@ -43,7 +44,10 @@ class Comment {
 
   @ColumnInfo(name: 'ReplyCommentId')
   int? ReplyCommentId ;
-  Comment( this.postId , this.userId , this.commentText );
+  Comment( {
+    required this.postId ,
+    required this.userId ,
+    required this.commentText} );
 }
 
 @dao 
@@ -55,9 +59,7 @@ abstract class CommentDao {
   Future<List<Comment>> findAllComment(int postId);
 
   @insert
-  Future<void> insertCommentReply(Comment comment);
+  Future<void> insertComment(Comment comment);
 
-  @insert 
-  Future<void> insertComment(int postId , int userId);
   
 }
