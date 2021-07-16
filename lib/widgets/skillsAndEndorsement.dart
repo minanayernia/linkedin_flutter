@@ -672,9 +672,41 @@ class EditedCard extends StatefulWidget {
 }
 
 class _EditedCardState extends State<EditedCard> {
+  bool checkEditFieldName = false  ;
+  bool checkEditFieldNumber = false ;
+  void editSkillINDatabase(var skillText , String idNumber)async{
 
-  void editSkillINDatabase(var skillText , int id)async{
+    setState(() {
+      if(idNumber == ""){
+        checkEditFieldNumber = true ;
+      }
+      if(idNumber != ""){
+        checkEditFieldNumber = false ;
+      }
+    });
 
+    if(idNumber != ""){
+    int id = int.parse(editNumberSkillController.value.text);
+    final checkFieldNumber = await widget.db.skillDao.findSkillById(id);
+    setState(() {
+      if (checkFieldNumber == null){
+        checkEditFieldNumber = true ;
+      }
+      if (checkFieldNumber != null){
+        checkEditFieldNumber = false ;
+      }
+    });
+    setState(() {
+      if(skillText == ""){
+        checkEditFieldName = true ;
+      }
+      if(skillText != ""){
+        checkEditFieldName = false ;
+      }
+
+    });
+
+    if(skillText != "" && checkFieldNumber != null){
     var a = widget.user;
     if (a != null){
       print("this is userid:");
@@ -693,16 +725,21 @@ class _EditedCardState extends State<EditedCard> {
       }));
     }
   }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 10),
-      height: 50,
+      height: 100,
       width: MediaQuery.of(context).size.width*0.88,
       color: Colors.redAccent,
       child: Container(margin: EdgeInsets.only(left: 5),
-      child: Row(
+      child: Column(children: [
+
+
+        Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
         Container(
@@ -725,16 +762,31 @@ class _EditedCardState extends State<EditedCard> {
             hintText: "Edit field",
             suffixIcon: IconButton(
             onPressed: () {
-              return editSkillINDatabase(editFieldSkillController.value.text.toString(), int.parse(editNumberSkillController.value.text));
+              return editSkillINDatabase(editFieldSkillController.value.text.toString(), editNumberSkillController.value.text);
             },
             icon: Icon(Icons.check),
              ),
               ),
-              ),) 
+              ),)     
 
-            
+      ],),
+
+        Container(
+          alignment: Alignment.center,
+          child: Visibility(
+          visible: checkEditFieldName,
+          child: Container(child: Text("Edit filed can't be empty" , style: TextStyle(color: Colors.white),),),),),
+
+          Container(
+          alignment: Alignment.center,
+          child: Visibility(
+          visible: checkEditFieldNumber,
+          child: Container(child: Text("No such field exists" , style: TextStyle(color: Colors.white),),),),),
 
       ],)
+      
+      
+      
         
 
     

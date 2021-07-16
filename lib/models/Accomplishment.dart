@@ -31,7 +31,7 @@ class Accomplishment {
 @dao 
 abstract class AccomplishmentDao {
   @Query('SELECT * FROM Accomplishment WHERE profileId = :profileId')
-  Future<List<Accomplishment?>> allAccomplishments (int profileId);
+  Future<List<Accomplishment?>> allAccomplishments(int profileId);
 
   @Query('SELECT * FROM Accomplishment WHERE AcomplishmentId = :id')
   Future<Accomplishment?> findAccomplishmentById(int id);
