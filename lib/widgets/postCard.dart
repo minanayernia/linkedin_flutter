@@ -742,3 +742,42 @@ class OtherPost extends StatelessWidget {
     );
   }
 }
+
+
+class HomePosts extends StatefulWidget {
+  const HomePosts({ Key? key }) : super(key: key);
+
+  @override
+  _HomePostsState createState() => _HomePostsState();
+}
+
+class _HomePostsState extends State<HomePosts> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 20),
+      height: MediaQuery.of(context).size.height*1,
+      width: MediaQuery.of(context).size.width*0.9,
+      color: Colors.black87,
+      child : Column(children: [
+        Container(
+          padding: EdgeInsets.only(left: 10),
+          height: 40,
+          color: Colors.redAccent,
+          child:Align(alignment: Alignment.centerLeft,
+        child: Text("HOME POSTS" , style: TextStyle(color: Colors.white),)
+        
+        
+        )
+         ,),
+        
+        
+      
+        
+
+      ],)
+
+      
+    );
+  }
+}

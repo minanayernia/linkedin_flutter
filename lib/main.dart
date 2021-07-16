@@ -120,6 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
           NewMessage() ,
           InvitationList(),
           PeopleYouMayKnowList(),
+          HomePosts()
       // SignUpLogIn()
       
           
