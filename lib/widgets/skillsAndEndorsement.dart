@@ -133,7 +133,7 @@ void addSkillCard(var id , var text){
   }
   });
   
-  if(text != ""){
+  if(text != "" && checkCopy == false){
   list.add(new SkillCard(id , text));
   setState((){});
   }
@@ -406,9 +406,7 @@ class _EditSkillCardState extends State<EditSkillCard> {
               EditedCard(widget.db , widget.user),
       ],),),),
 
-      Visibility(
-          visible: checkSkillField,
-          child: Container(child: Text("Field name can't be empty" , style: TextStyle(color: Colors.redAccent),),),),
+
 
 
       ], 
@@ -468,7 +466,7 @@ class _EditSkillCardState extends State<EditSkillCard> {
 
 TextEditingController addSkillController = TextEditingController();
 
-
+bool checkCopy = false ;
 class NewSkill extends StatefulWidget {
   const NewSkill(this.db , this.user);
   final AppDatabase db ;
@@ -483,25 +481,45 @@ class _NewSkillState extends State<NewSkill> {
   
 
   void addSkillCard(var id , var text){
-    if(text != ""){
+    if(text != ""&& checkCopy == false){
     list.add(new SkillCard(id , text));
     setState((){});
     }
   }
 
   void addSkillToDatabase(String skillText)async{
+    final checkCopyField = await widget.db.skillDao.findSkillByName(skillText) ;
+
     var a = widget.user;
     var profileId ;
     var skill ;
+
+    setState(() {
+      if(checkCopyField != null){
+        checkCopy = true ;
+      }
+      if(checkCopyField == null){
+        checkCopy = false ;
+      }
+    });
 
     setState(() {
       if (skillText == ""){
       checkSkillField = true ;
       print("YYYYYYYYYYYYYYYYYYYYYYYY") ;
     }
-
+  
     });
-    if(skillText != ""){
+    setState(() {
+      if (skillText != ""){
+      checkSkillField = false;
+      print("YYYYYYYYYYYYYYYYYYYYYYYY") ;
+    }
+  
+    });
+
+
+    if(skillText != "" && checkCopyField == null){
     if (a != null){
       widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
         if (val != null) {
@@ -562,11 +580,11 @@ class _NewSkillState extends State<NewSkill> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
+      height: 90,
       width: MediaQuery.of(context).size.width*0.88,
       color: Colors.white,
       margin: EdgeInsets.only(top: 10),
-      child: Row(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
         Container(
@@ -583,10 +601,20 @@ class _NewSkillState extends State<NewSkill> {
             ),
             
             
-          )
+          ),
         ),
-        
+        Container(
+          alignment: Alignment.center,
+          child: Visibility(
+          visible: checkSkillField,
+          child: Container(child: Text("Field name can't be empty" , style: TextStyle(color: Colors.redAccent),),),),),
 
+          Container(
+          alignment: Alignment.center,
+          child: Visibility(
+          visible: checkCopy,
+          child: Container(child: Text("This field already exists" , style: TextStyle(color: Colors.redAccent),),),),),
+        
       ],),
       
     );
@@ -644,9 +672,41 @@ class EditedCard extends StatefulWidget {
 }
 
 class _EditedCardState extends State<EditedCard> {
+  bool checkEditFieldName = false  ;
+  bool checkEditFieldNumber = false ;
+  void editSkillINDatabase(var skillText , String idNumber)async{
 
-  void editSkillINDatabase(var skillText , int id)async{
+    setState(() {
+      if(idNumber == ""){
+        checkEditFieldNumber = true ;
+      }
+      if(idNumber != ""){
+        checkEditFieldNumber = false ;
+      }
+    });
 
+    if(idNumber != ""){
+    int id = int.parse(editNumberSkillController.value.text);
+    final checkFieldNumber = await widget.db.skillDao.findSkillById(id);
+    setState(() {
+      if (checkFieldNumber == null){
+        checkEditFieldNumber = true ;
+      }
+      if (checkFieldNumber != null){
+        checkEditFieldNumber = false ;
+      }
+    });
+    setState(() {
+      if(skillText == ""){
+        checkEditFieldName = true ;
+      }
+      if(skillText != ""){
+        checkEditFieldName = false ;
+      }
+
+    });
+
+    if(skillText != "" && checkFieldNumber != null){
     var a = widget.user;
     if (a != null){
       print("this is userid:");
@@ -665,16 +725,21 @@ class _EditedCardState extends State<EditedCard> {
       }));
     }
   }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 10),
-      height: 50,
+      height: 100,
       width: MediaQuery.of(context).size.width*0.88,
       color: Colors.redAccent,
       child: Container(margin: EdgeInsets.only(left: 5),
-      child: Row(
+      child: Column(children: [
+
+
+        Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
         Container(
@@ -697,16 +762,31 @@ class _EditedCardState extends State<EditedCard> {
             hintText: "Edit field",
             suffixIcon: IconButton(
             onPressed: () {
-              return editSkillINDatabase(editFieldSkillController.value.text.toString(), int.parse(editNumberSkillController.value.text));
+              return editSkillINDatabase(editFieldSkillController.value.text.toString(), editNumberSkillController.value.text);
             },
             icon: Icon(Icons.check),
              ),
               ),
-              ),) 
+              ),)     
 
-            
+      ],),
+
+        Container(
+          alignment: Alignment.center,
+          child: Visibility(
+          visible: checkEditFieldName,
+          child: Container(child: Text("Edit filed can't be empty" , style: TextStyle(color: Colors.white),),),),),
+
+          Container(
+          alignment: Alignment.center,
+          child: Visibility(
+          visible: checkEditFieldNumber,
+          child: Container(child: Text("No such field exists" , style: TextStyle(color: Colors.white),),),),),
 
       ],)
+      
+      
+      
         
 
     
