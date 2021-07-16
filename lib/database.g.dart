@@ -714,7 +714,7 @@ class _$CommentDao extends CommentDao {
   }
 
   @override
-  Future<List<Comment?>> findAllComment(int postId) async {
+  Future<List<Comment>> findAllComment(int postId) async {
     return _queryAdapter.queryList('SELECT * FROM comment  WHERE postId = ?1',
         mapper: (Map<String, Object?> row) => Comment(
             commentId: row['commentId'] as int?,

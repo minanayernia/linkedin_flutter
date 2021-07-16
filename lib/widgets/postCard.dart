@@ -92,7 +92,7 @@ void allComments(int postId)async{
     if (value != null){
       for (int i = 0 ; i < value.length ; i++){
         temp.add(0);
-        var userid = value[i]?.userId ;
+        var userid = value[i].userId ;
         if (userid != null ){
           widget.db.userDao.findUserNameByUserId(userid).then((val) => setState(() {
             commentsUserNames.add(val?.userName);
@@ -100,7 +100,7 @@ void allComments(int postId)async{
           }));
         }
         //adding commentlikes ;
-        var com = value[i]?.commentId ;
+        var com = value[i].commentId ;
         if (com != null){
           widget.db.commentLikeDao.commentLikes(com).then((value) => setState(() {
             int count = 0 ;
@@ -113,11 +113,11 @@ void allComments(int postId)async{
         
 
 
-        print(value[i]?.commentId);
-        commentIds.add(value[i]?.commentId);
-        commentUserIds.add(value[i]?.userId);
+        print(value[i].commentId);
+        commentIds.add(value[i].commentId);
+        commentUserIds.add(value[i].userId);
         if (value[i] != null){
-          commentsTexts.add(value[i]?.commentText);
+          commentsTexts.add(value[i].commentText);
         }
         
         print(commentIds);

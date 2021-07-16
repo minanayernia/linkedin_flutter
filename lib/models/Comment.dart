@@ -57,7 +57,7 @@ abstract class CommentDao {
   Future<int?> commentNumber(int postId);
 
   @Query('SELECT * FROM comment  WHERE postId = :postId')
-  Future<List<Comment?>> findAllComment(int postId);
+  Future<List<Comment>> findAllComment(int postId);
 
 
   @insert
