@@ -47,6 +47,9 @@ abstract class FeaturedDao {
   @Query('SELECT * FROM Featured WHERE featuredId = :featuredId ')
   Future<Featured?> findFeaturedById(int featuredId);
 
+  @Query('SELECT * FROM Featured WHERE featuredText = :featuredText')
+  Future<Featured?> findFeaturedByText(String featuredText);
+
   @Query('UPDATE Featured SET featuredText = :featuredText WHERE featuredId = :featuredId')
   Future<Featured?> editFeatured(String featuredText , int featuredId);
 

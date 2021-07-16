@@ -36,6 +36,9 @@ abstract class AccomplishmentDao {
   @Query('SELECT * FROM Accomplishment WHERE AcomplishmentId = :id')
   Future<Accomplishment?> findAccomplishmentById(int id);
 
+  @Query('SELECT * FROM Accomplishment WHERE AccomplishmentText = :AccomplishmentText')
+  Future<Accomplishment?> findAccomplishmentByText(String AccomplishmentText);
+
   @Query('UPDATE Accomplishment SET AccomplishmentText =  :accomplishmentText WHERE  AcomplishmentId = :accomplishmentId')
   Future<Accomplishment?> editAccomplishment(String accomplishmentText ,int accomplishmentId);
   @insert 

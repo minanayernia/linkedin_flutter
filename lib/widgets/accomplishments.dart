@@ -445,8 +445,8 @@ class EditedCard extends StatefulWidget {
 }
 
 class _EditedCardState extends State<EditedCard> {
-  void editAccomplishmentINDatabase(var skillText , int id)async{
 
+  void editAccomplishmentINDatabase(var skillText , int id)async{
     var a = widget.user;
     if (a != null){
       print("this is userid:");

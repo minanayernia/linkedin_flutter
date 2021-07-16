@@ -478,6 +478,18 @@ class _$AccomplishmentDao extends AccomplishmentDao {
   }
 
   @override
+  Future<Accomplishment?> findAccomplishmentByText(
+      String AccomplishmentText) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Accomplishment WHERE AccomplishmentText = ?1',
+        mapper: (Map<String, Object?> row) => Accomplishment(
+            AcomplishmentId: row['AcomplishmentId'] as int?,
+            AccomplishmentText: row['AccomplishmentText'] as String,
+            profileId: row['profileId'] as int),
+        arguments: [AccomplishmentText]);
+  }
+
+  @override
   Future<Accomplishment?> editAccomplishment(
       String accomplishmentText, int accomplishmentId) async {
     return _queryAdapter.query(
@@ -532,6 +544,16 @@ class _$FeaturedDao extends FeaturedDao {
             featuredText: row['featuredText'] as String,
             profileId: row['profileId'] as int?),
         arguments: [featuredId]);
+  }
+
+  @override
+  Future<Featured?> findFeaturedByText(String featuredText) async {
+    return _queryAdapter.query('SELECT * FROM Featured WHERE featuredText = ?1',
+        mapper: (Map<String, Object?> row) => Featured(
+            featuredId: row['featuredId'] as int?,
+            featuredText: row['featuredText'] as String,
+            profileId: row['profileId'] as int?),
+        arguments: [featuredText]);
   }
 
   @override
