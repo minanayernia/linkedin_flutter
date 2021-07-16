@@ -44,13 +44,13 @@ class AdditionalInfoList extends StatefulWidget {
 }
 
 class _AdditionalInfoListState extends State<AdditionalInfoList> {
-List<AboutCard> list = [];
-addSkillCard(){
+// List<AboutCard> list = [];
+// addSkillCard(){
   
-  list.add(new AboutCard()
-  );
-  setState((){});
-}
+//   list.add(new AboutCard()
+//   );
+//   setState((){});
+// }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -67,20 +67,20 @@ addSkillCard(){
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
         Container(
-          
-          margin: EdgeInsets.only(left: 10),
+          height: 30,
+          margin: EdgeInsets.only(left: 10 , top: 7),
           child: Text("ADDITIONALINFO",
           style: TextStyle(color: Colors.white , fontSize: 15),
           ),
         ),
-        TextButton(onPressed: addSkillCard, child: Text("Add")) ,
+        // TextButton(onPressed:(){}, child: Text("Add")) ,
 
       ],) ,),
         
-
-      Flexible(child: ListView.builder(
-        itemCount: list.length,
-        itemBuilder: (_,index) => list[index]))
+      AboutCard(),
+      // Flexible(child: ListView.builder(
+      //   itemCount: list.length,
+      //   itemBuilder: (_,index) => list[index]))
       
 
       ], 
