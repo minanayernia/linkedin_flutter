@@ -43,8 +43,9 @@ class CommentLike {
   @Query('SELECT COUNT(commentLikeId) FROM commentLike WHERE commentId = :commentId')
   Future<int?> commentLikenNumber(int commentId);
 
-  @Query('SELECT commentLikeId FROM CommentLike WHERE commentId :commentId')
-  Future<int?> commentLikeList(int commentId);
+  @Query('SELECT * FROM CommentLike WHERE commentId = :commentId')
+  Future<List<CommentLike?>> commentLikes(int commentId);
+  
   
   @insert
   Future<void> insertCommentLike(CommentLike commentLike);

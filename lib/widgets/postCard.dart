@@ -82,8 +82,12 @@ List<int> temp = [] ;
     allComments(postId);
     newCommentController.text = "" ;
   }
-
+List<int> commentlikes = [];
 void allComments(int postId)async{
+  commentlikes = [] ;
+  commentsTexts = [] ;
+  commentsUserNames = [] ;
+  commentIds = [] ;
   widget.db.commentDao.findAllComment(postId).then((value) => setState(() { 
     if (value != null){
       for (int i = 0 ; i < value.length ; i++){
@@ -95,6 +99,19 @@ void allComments(int postId)async{
             print("username is adding to commentusernamelist");
           }));
         }
+        //adding commentlikes ;
+        var com = value[i]?.commentId ;
+        if (com != null){
+          widget.db.commentLikeDao.commentLikes(com).then((value) => setState(() {
+            int count = 0 ;
+            for(int i = 0 ; i < value.length ; i++){
+              count ++ ;
+            }
+            commentlikes.add(count);
+          }));
+        }
+        
+
 
         print(value[i]?.commentId);
         commentIds.add(value[i]?.commentId);
@@ -296,7 +313,8 @@ void likeComment(int commentId , int userId)async{
           minWidth: MediaQuery.of(context).size.width*0.2,
           buttonColor: Colors.white,
           child: RaisedButton(onPressed: (){
-            // likeComment(commentId, userId)
+            likeComment(int.parse(likeCommentController.text), widget.id);
+            allComments(widget.postId);
           },
            child: Text("Like" , style: TextStyle(color: Colors.redAccent),)))
            
@@ -317,14 +335,6 @@ void likeComment(int commentId , int userId)async{
     Flexible(child: ListView.builder(
       itemCount: commentsTexts.length,
       itemBuilder: (_,index) {
-      // return Container(child: Column(children: [
-      //   Row(children: [
-          
-      //     Text(commentIds.length > 0 ? commentIds[index].toString() : '0'),
-      //     Text(commentsUserNames.length > 0 ? commentsUserNames[index]! : '0'),
-      //     ],),
-      //     Text(commentsTexts.length > 0 ? commentsTexts[index]! : '0'),
-      // ],),);
       return Container(
         margin: EdgeInsets.only(top:20),
         height: 50,
@@ -343,6 +353,8 @@ void likeComment(int commentId , int userId)async{
           Text(commentIds.length > 0 ? commentIds[index].toString() : '0'),
           Text("  "),
           Text(commentsUserNames.length > 0 ? commentsUserNames[index]! : '0'),
+          Text("   likes:"),
+          Text(commentlikes.length > 0 ? commentlikes[index].toString() : '0')
           ],),
 
           Container(
