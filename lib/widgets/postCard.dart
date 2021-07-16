@@ -21,6 +21,10 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
+  TextEditingController newCommentController = TextEditingController();
+  TextEditingController toWhomCommentController = TextEditingController();
+  TextEditingController likeCommentController = TextEditingController();
+
 
   String username= '' ;
   void getUserName()async{
@@ -118,7 +122,7 @@ void allComments(int postId)async{
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height*1,
+      height: MediaQuery.of(context).size.height*1.2,
       width: MediaQuery.of(context).size.width*0.86,
       color: Colors.redAccent,
       margin: EdgeInsets.only(top: 20 , bottom: 20),
@@ -184,11 +188,12 @@ void allComments(int postId)async{
         // NewCommentCard(),
 
         //start new comment
+        Row(children: [
 
-        Container(
+          Container(
       margin: EdgeInsets.only(top: 20),
       height: 130,
-      width: MediaQuery.of(context).size.width*0.86,
+      width: MediaQuery.of(context).size.width*0.6,
       color: Colors.redAccent[100],
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -199,7 +204,26 @@ void allComments(int postId)async{
           alignment: Alignment.centerLeft,  
           child: Text("User" , style: TextStyle(color: Colors.white),),) ,
 
-          TextField(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+            Container(
+              width: 300,
+              child: TextField(
+            controller: toWhomCommentController,
+            textAlign: TextAlign.left,
+            style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+          fillColor: Colors.white,
+          border: OutlineInputBorder(),
+          hintText: 'To whom ?' , 
+          hintStyle: TextStyle(color: Colors.white )  
+         ),),
+         ),
+
+         Container(
+           width: 400,
+           child: TextField(
             controller: newCommentController,
             textAlign: TextAlign.left,
             style: TextStyle(color: Colors.white),
@@ -208,7 +232,9 @@ void allComments(int postId)async{
           border: OutlineInputBorder(),
           hintText: 'Add a comment...' , 
           hintStyle: TextStyle(color: Colors.redAccent )  
-         ),),
+         ),),)
+
+          ],),
          Container(
            alignment: Alignment.bottomRight,
            width: MediaQuery.of(context).size.width*0.8,
@@ -219,10 +245,61 @@ void allComments(int postId)async{
          
 
         ],
-      ),
-      
-      
+      ), 
     ),
+      Container(
+      margin: EdgeInsets.only(top: 20),
+      height: 130,
+      width: MediaQuery.of(context).size.width*0.3,
+      color: Colors.white10,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+
+          Container(
+            padding: EdgeInsets.only(left: 10),
+          alignment: Alignment.centerLeft,  
+          child: Text("User" , style: TextStyle(color: Colors.white),),) ,
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+            
+            Container(
+              width: 300,
+              child: TextField(
+            controller: likeCommentController,
+            textAlign: TextAlign.left,
+            style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+          fillColor: Colors.white,
+          border: OutlineInputBorder(),
+          hintText: 'Which Comment ?' , 
+          hintStyle: TextStyle(color: Colors.white )  
+         ),),
+         ),
+
+          ],),
+         Container(
+           alignment: Alignment.center,
+           width: MediaQuery.of(context).size.width*0.8,
+           child: ButtonTheme(
+          height: 30,
+          minWidth: MediaQuery.of(context).size.width*0.2,
+          buttonColor: Colors.white,
+          child: RaisedButton(onPressed: (){
+          },
+           child: Text("Like" , style: TextStyle(color: Colors.redAccent),)))
+           
+           ),
+         
+
+        ],
+      ), 
+    ),
+
+        ],),
+        
 
     //End new comment
 
@@ -231,14 +308,43 @@ void allComments(int postId)async{
     Flexible(child: ListView.builder(
       itemCount: commentsTexts.length,
       itemBuilder: (_,index) {
-      return Container(child: Column(children: [
-        Row(children: [
+      // return Container(child: Column(children: [
+      //   Row(children: [
           
+      //     Text(commentIds.length > 0 ? commentIds[index].toString() : '0'),
+      //     Text(commentsUserNames.length > 0 ? commentsUserNames[index]! : '0'),
+      //     ],),
+      //     Text(commentsTexts.length > 0 ? commentsTexts[index]! : '0'),
+      // ],),);
+      return Container(
+        margin: EdgeInsets.only(top:20),
+        height: 50,
+        width: MediaQuery.of(context).size.width*0.86,
+        color: Colors.redAccent[100],
+        child: Container(
+          width: MediaQuery.of(context).size.width*0.86,
+          height: 30,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+          Text("commentId :"),
           Text(commentIds.length > 0 ? commentIds[index].toString() : '0'),
+          Text("  "),
           Text(commentsUserNames.length > 0 ? commentsUserNames[index]! : '0'),
           ],),
-          Text(commentsTexts.length > 0 ? commentsTexts[index]! : '0'),
-      ],),);
+
+          Container(
+            width: MediaQuery.of(context).size.width*0.9,
+            color: Colors.white,
+            child: Text(commentsTexts.length > 0 ? commentsTexts[index]! : '0' , style: TextStyle(color: Colors.redAccent),) ,)
+          
+      ],),
+        )
+      
+      );
       }))
 
         // Row(children: [
@@ -711,7 +817,6 @@ class _NewPostCardState extends State<NewPostCard> {
 //   }
 // }
 
-TextEditingController newCommentController = TextEditingController();
 class NewCommentCard extends StatelessWidget {
   const NewCommentCard({ Key? key }) : super(key: key);
 
@@ -732,7 +837,7 @@ class NewCommentCard extends StatelessWidget {
           child: Text("User" , style: TextStyle(color: Colors.white),),) ,
 
           TextField(
-            controller: newCommentController,
+            // controller: newCommentController,
             textAlign: TextAlign.left,
             style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
