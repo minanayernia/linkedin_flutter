@@ -40,7 +40,7 @@ class Like {
 @dao 
 abstract class LikeDao {
 
-  @Query('SELECT COUNT(LikeId) FROM like WHERE PostId = :postId')
+  @Query('SELECT COUNT(LikeId) FROM Like WHERE PostId = :postId')
   Future<int?> likeNumbers(int postId);
 
 

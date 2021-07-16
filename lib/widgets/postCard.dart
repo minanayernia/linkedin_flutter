@@ -1,6 +1,7 @@
 
 import 'dart:ffi';
 
+import 'package:dbproject/models/Comment.dart';
 import 'package:dbproject/models/Like.dart';
 import 'package:dbproject/models/User.dart';
 import 'package:dbproject/models/post.dart';
@@ -20,9 +21,9 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
+
   String username= '' ;
   void getUserName()async{
-  
     widget.db.userDao.findUserNameByUserId(widget.id).then((value) => setState((){
       print("entered the query");
       if (value != null){
@@ -43,7 +44,7 @@ void countLike(int postId)async{
         // likeNumbers ++ ;
         likelist.add(value[i]?.userId);
         // print()
-        print(likelist.length);
+        // print(likelist.length);
       }
     }
   }
@@ -60,35 +61,47 @@ void addLike(int postId , int userId)async{
     likelist = [];
     countLike(postId);
   }));
-  // print("like added successfully");
-  // widget.db.likeDao.likelist(postId).then((value) => setState((){
-  //   if (value != null){
-  //     for(int i = 0 ; i < value.length ; i++){
-  //       // likeNumbers ++ ;
-  //       likelist.add(value[i]?.userId);
-  //       // print()
-  //       print(likelist.length);
-  //     }
-  //   }
-  // }
-  
-  // ));
+}
+var commentIds = [];
+var commentsTexts=[];
+var commentUserIds= [];
+var commentsUserNames = [];
+  void addComment(int userId , int postId , String commentText)async{
+    var comment = Comment(postId: postId, userId: userId, commentText: commentText);
+    await widget.db.commentDao.insertComment(comment);
+    print("after inserting comment");
+    commentIds = [];
+    commentsTexts=[];
+    commentUserIds= [];
+    allComments(postId);
+  }
 
-  // widget.db.likeDao.likeNumbers(postId).then((value) => setState((){
-  //   if (value != null ){
-  //     print("like value is not null");
-  //     likeNumbers = value ;
-  //     print(likeNumbers);
-  //   }else{
-  //     print("value is null");
-  //   }
-  // }));
-  
+void allComments(int postId)async{
+  widget.db.commentDao.findAllComment(postId).then((value) => setState(() { 
+    if (value != null){
+      for (int i = 0 ; i < value.length ; i++){
+        var userid = value[i]?.userId ;
+        if (userid != null ){
+          widget.db.userDao.findUserNameByUserId(userid).then((val) => setState(() {
+            commentsUserNames.add(val?.userName);
+            print("username is adding to commentusernamelist");
+          }));
+        }
+
+        print(value[i]?.commentId);
+        commentIds.add(value[i]?.commentId);
+        commentUserIds.add(value[i]?.userId);
+        commentsTexts.add(value[i]?.commentText);
+        print(commentIds);
+      }
+    }
+    }));
 }
   @override
   void initState() {
     getUserName();
     countLike(widget.postId);
+    allComments(widget.postId);
     super.initState();
   }
   @override
@@ -151,10 +164,11 @@ void addLike(int postId , int userId)async{
         Text(likelist.length.toString() , style: TextStyle(color: Colors.white),),
         Container(
           margin: EdgeInsets.only(left: 5),
-          child: TextButton(onPressed: (){}, child: Text("Comments" ,style: TextStyle(color: Colors.white , fontSize: 13),
+          child: TextButton(
+            onPressed: (){}, child: Text("Comments" ,style: TextStyle(color: Colors.white , fontSize: 13),
             ))
             ,),
-            Text("24",style: TextStyle(color: Colors.white),),
+            Text(commentIds.length.toString(),style: TextStyle(color: Colors.white),),
             
         
 
@@ -162,14 +176,69 @@ void addLike(int postId , int userId)async{
         
         ),
 
-        NewCommentCard(),
+        // NewCommentCard(),
 
+        //start new comment
 
+        Container(
+      margin: EdgeInsets.only(top: 20),
+      height: 130,
+      width: MediaQuery.of(context).size.width*0.86,
+      color: Colors.redAccent[100],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+
+          Container(
+            padding: EdgeInsets.only(left: 10),
+          alignment: Alignment.centerLeft,  
+          child: Text("User" , style: TextStyle(color: Colors.white),),) ,
+
+          TextField(
+            controller: newCommentController,
+            textAlign: TextAlign.left,
+            style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+          fillColor: Colors.white,
+          border: OutlineInputBorder(),
+          hintText: 'Add a comment...' , 
+          hintStyle: TextStyle(color: Colors.redAccent )  
+         ),),
+         Container(
+           alignment: Alignment.bottomRight,
+           width: MediaQuery.of(context).size.width*0.8,
+           child: TextButton(
+             onPressed: (){
+             return addComment(widget.id, widget.postId, newCommentController.text);
+           }, child: Text("Send")) ,),
+         
+
+        ],
+      ),
+      
+      
+    ),
+
+    //End new comment
+
+    
+    Flexible(child: ListView.builder(
+      itemCount: commentIds.length,
+      itemBuilder: (_,index) {
+      return Container(child: Column(children: [
         Row(children: [
-          TextButton(onPressed: (){}, child: Text("Like")),
-          TextButton(onPressed: (){}, child: Text("Comment")),
-          TextButton(onPressed: (){}, child: Text("Share"))
-        ],)
+          Text(commentIds[index].toString()),
+          Text(commentsUserNames[index].toString()),
+          ],),
+          Text(commentsTexts[index])
+      ],),);
+      }))
+
+        // Row(children: [
+        //   TextButton(onPressed: (){}, child: Text("Like")),
+        //   TextButton(onPressed: (){}, child: Text("Comment")),
+        //   TextButton(onPressed: (){}, child: Text("Share"))
+        // ],)
       ],),
 
       

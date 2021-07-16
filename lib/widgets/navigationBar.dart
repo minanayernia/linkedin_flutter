@@ -36,7 +36,7 @@ void m()
                         child: new TextField(controller: _controller)
                       ),
                       new PopupMenuButton<String>(
-                        icon: const Icon(Icons.arrow_drop_down),
+                        icon: const Icon(Icons.search),
                         onSelected: (String value) {
                           _controller.text = value;
                         },

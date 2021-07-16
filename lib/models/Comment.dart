@@ -1,4 +1,4 @@
-import 'dart:html';
+
 
 import 'package:dbproject/models/post.dart';
 import 'package:floor/floor.dart';
@@ -45,6 +45,7 @@ class Comment {
   @ColumnInfo(name: 'ReplyCommentId')
   int? ReplyCommentId ;
   Comment( {
+    this.commentId ,
     required this.postId ,
     required this.userId ,
     required this.commentText} );
@@ -53,10 +54,11 @@ class Comment {
 @dao 
 abstract class CommentDao {
   @Query('SELECT COUNT(commentId) FROM comment WHERE postId = :postId')
-  Future<int> commentNumber(int postId);
+  Future<int?> commentNumber(int postId);
 
-  @Query('SELECT * FROM comments  WHERE postId = :postId')
-  Future<List<Comment>> findAllComment(int postId);
+  @Query('SELECT * FROM comment  WHERE postId = :postId')
+  Future<List<Comment?>> findAllComment(int postId);
+
 
   @insert
   Future<void> insertComment(Comment comment);

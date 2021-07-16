@@ -38,6 +38,7 @@ class  User {
 @dao
 abstract class UserDao {
 
+
   @Query('SELECT * FROM User WHERE userName LIKE :input')
   Future<List<User?>> searchByUsername(String input);
 
