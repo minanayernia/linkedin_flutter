@@ -39,8 +39,8 @@ class  User {
 abstract class UserDao {
 
 
-  @Query('SELECT * FROM User WHERE userName LIKE :input')
-  Future<List<User?>> searchByUsername(String input);
+  @Query("SELECT * FROM User WHERE userName LIKE :userName")
+  Future<List<User?>> searchByUsername(String userName);
 
   @Query('Delete FROM User')
   Future<void> deleteAllUsers();

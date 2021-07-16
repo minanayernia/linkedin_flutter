@@ -32,13 +32,19 @@ class CommentLike {
   int commentId ;
 
 
-  CommentLike( this.userId , this.commentId ) ;
+  CommentLike( {
+    this.commentLikeId ,
+    required this.userId ,
+    required this.commentId }) ;
 }
 
 @dao abstract class CommentLikeDao {
 
   @Query('SELECT COUNT(commentLikeId) FROM commentLike WHERE commentId = :commentId')
-  Future<int> commentLikenNumber(int commentId);
+  Future<int?> commentLikenNumber(int commentId);
+
+  @Query('SELECT commentLikeId FROM CommentLike WHERE commentId :commentId')
+  Future<int?> commentLikeList(int commentId);
   
   @insert
   Future<void> insertCommentLike(CommentLike commentLike);

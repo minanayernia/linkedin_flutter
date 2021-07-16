@@ -1,6 +1,8 @@
 
 
 import 'package:dbproject/models/User.dart';
+import 'package:dbproject/views/otherUserView.dart';
+import 'package:dbproject/widgets/accomplishments.dart';
 import 'package:dbproject/widgets/direct.dart';
 import 'package:dbproject/widgets/editintro.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +13,10 @@ import '../database.dart';
 
 
 class SearchUserCard extends StatefulWidget {
-  const SearchUserCard({ Key? key }) : super(key: key);
-
+  const SearchUserCard(this.db , this.username , this.id);
+  final username ;
+  final AppDatabase db ;
+  final id ;
   @override
   _SearchUserCardState createState() => _SearchUserCardState();
 }
@@ -25,10 +29,17 @@ class _SearchUserCardState extends State<SearchUserCard> {
       height: 50,
       width: MediaQuery.of(context).size.width*0.2,
       color: Colors.redAccent,
-      child: Container(
+      child: GestureDetector(
+        onTap: (){
+           Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => OtherUserView(widget.db , widget.id)),);
+        },
+        child: Container(
         alignment: Alignment.centerLeft,
         padding: EdgeInsets.only(left: 10),
-        child: Text("User"),),
+        child: Text(widget.username),),)
+      
       
       
     );
@@ -52,9 +63,8 @@ class Intro extends StatefulWidget {
 
 class _IntroState extends State<Intro> {
   List<SearchUserCard> list = [];
-addSkillCard(){
-  
-  list.add(new SearchUserCard()
+  void addSearchCard(var db  , String? username , int? id,){
+  list.add(new SearchUserCard(db , username , id)
   );
   setState((){});
 }
@@ -98,6 +108,45 @@ addSkillCard(){
       makemy();
       return _textFromFile;
   }
+
+  List<String?> items = [] ;
+  void searchUser(String text)async{
+    print(text);
+    var searchtext = "%"+text+"%" ;
+    print(searchtext);
+    print("get in searchUser function");
+    widget.db.userDao.searchByUsername(searchtext.toString()).then((value) => setState((){
+      list = [];
+      print("search started");
+      // mylist = value ;
+      if (value != null ){
+        print(value);
+        for (int i = 0 ; i < value.length ; i++){
+          if(value[i] != null){
+            print("value i is not null");
+            print(value[i]?.userName);
+            addSearchCard(widget.db , value[i]?.userName , value[i]?.userId);
+            // items.add(value[i]?.userName);
+            // print(value[i]?.userName);
+          }
+          else{
+            print("value[i] is null");
+          }
+          
+      }
+      }
+      else{
+        print("value is null");
+      }
+    }));
+
+    for(int i = 0 ; i < items.length ; i++){
+      items[i] = items[i].toString();
+    }
+
+
+  }
+  
 
   @override
   void initState() {
@@ -215,11 +264,13 @@ addSkillCard(){
           child: TextField(
                 controller: searchUserController,
                 decoration: InputDecoration(
-                  hintText: "Search messages",
+                  hintText: "Search user",
                   contentPadding: EdgeInsets.only(left: 10 , top: 15),
                   hintStyle: TextStyle(color: Colors.white),
                   suffixIcon: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      return searchUser(searchUserController.text);
+                    },
                     icon: Icon(Icons.search),
                     
                     
@@ -233,7 +284,7 @@ addSkillCard(){
       ),
             Flexible(child: ListView.builder(
             itemCount: list.length,
-            itemBuilder: (_,index) => list[index]))
+            itemBuilder: (_,index) => SearchUserCard( widget.db ,list[index].username , list[index].id)))
 
           ],),
 

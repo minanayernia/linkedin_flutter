@@ -2,6 +2,7 @@
 import 'dart:ffi';
 
 import 'package:dbproject/models/Comment.dart';
+import 'package:dbproject/models/CommentLike.dart';
 import 'package:dbproject/models/Like.dart';
 import 'package:dbproject/models/User.dart';
 import 'package:dbproject/models/post.dart';
@@ -106,6 +107,12 @@ void allComments(int postId)async{
       }
     }
     }));
+}
+
+void likeComment(int commentId , int userId)async{
+  var commentLike = CommentLike(userId: userId, commentId: commentId);
+  await widget.db.commentLikeDao.insertCommentLike(commentLike);
+  print("after inserting commentlike ");
 }
   @override
   void initState() {
@@ -289,6 +296,7 @@ void allComments(int postId)async{
           minWidth: MediaQuery.of(context).size.width*0.2,
           buttonColor: Colors.white,
           child: RaisedButton(onPressed: (){
+            // likeComment(commentId, userId)
           },
            child: Text("Like" , style: TextStyle(color: Colors.redAccent),)))
            
