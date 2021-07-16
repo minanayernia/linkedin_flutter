@@ -225,7 +225,7 @@ class _EditFeaturedCardState extends State<EditFeaturedCard> {
         
         child: SingleChildScrollView(child: Column(children: [
               NewFeature(widget.db , widget.user),
-              // EditedCard(),
+              EditedCard(widget.db , widget.user),
       ],),),)
 
       ], 
@@ -417,9 +417,37 @@ class _NewFeatureState extends State<NewFeature> {
 
 TextEditingController editNumberFeatureController = TextEditingController();
 TextEditingController editFieldFeatureController = TextEditingController();
-class EditedCard extends StatelessWidget {
-  const EditedCard({ Key? key }) : super(key: key);
 
+class EditedCard extends StatefulWidget {
+  const EditedCard(this.db , this.user) ;
+  final AppDatabase db ;
+  final int? user  ;  
+
+  @override
+  _EditedCardState createState() => _EditedCardState();
+}
+
+class _EditedCardState extends State<EditedCard> {
+    void editFeatureINDatabase(var featureText , int id)async{
+
+    var a = widget.user;
+    if (a != null){
+      print("this is userid:");
+      print(a);
+      await widget.db.featuredDao.editFeatured(featureText, id) ;
+      widget.db.featuredDao.findFeaturedById(id).then((val) => setState((){
+        print("we are in editskilldatabase");
+        print(val?.featuredText);
+        if (val != null){
+          print("skilltext is going to change");
+          featureText = val.featuredText ;
+          }
+          else{
+            print("value is null");
+          }
+      }));
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -450,7 +478,9 @@ class EditedCard extends StatelessWidget {
             decoration: InputDecoration(
             hintText: "Edit field",
             suffixIcon: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              return editFeatureINDatabase(editFieldFeatureController.value.text.toString(), int.parse(editNumberFeatureController.value.text));
+            },
             icon: Icon(Icons.check),
              ),
               ),
@@ -467,3 +497,54 @@ class EditedCard extends StatelessWidget {
     );
   }
 }
+
+// class EditedCard extends StatelessWidget {
+//   const EditedCard({ Key? key }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: EdgeInsets.only(top: 10),
+//       height: 50,
+//       width: MediaQuery.of(context).size.width*0.88,
+//       color: Colors.redAccent,
+//       child: Container(margin: EdgeInsets.only(left: 5),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//         Container(
+//           width: MediaQuery.of(context).size.width*0.18,
+//           child: TextField(
+//             controller: editNumberFeatureController,
+//             decoration: InputDecoration(
+//             hintText: "Field number",
+//             suffixIcon: IconButton(
+//             onPressed: () {},
+//             icon: Icon(Icons.countertops),
+//              ),
+//               ),
+//               ),) ,
+//             Container(
+//               width: MediaQuery.of(context).size.width*0.68,
+//               child: TextField(
+//             controller: editFieldFeatureController,
+//             decoration: InputDecoration(
+//             hintText: "Edit field",
+//             suffixIcon: IconButton(
+//             onPressed: () {},
+//             icon: Icon(Icons.check),
+//              ),
+//               ),
+//               ),) 
+
+            
+
+//       ],)
+        
+
+    
+//       )
+      
+//     );
+//   }
+// }

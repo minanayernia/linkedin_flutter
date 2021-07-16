@@ -121,14 +121,22 @@ class AddSkill extends StatefulWidget {
 }
 
 class _AddSkillState extends State<AddSkill> {
+
      
-      List skillsText = [] ;
+    List skillsText = [] ;
     List skillsId = [] ;
 
 void addSkillCard(var id , var text){
+  setState(() {
+    if(text == ""){
+    checkSkillField = true ;
+  }
+  });
   
+  if(text != ""){
   list.add(new SkillCard(id , text));
   setState((){});
+  }
 }
 
 // void addSkillDatabase(String text ){
@@ -352,6 +360,7 @@ class OtherSkillCard extends StatelessWidget {
   }
 }
 
+bool checkSkillField = false ;
 class EditSkillCard extends StatefulWidget {
   const EditSkillCard(this.db , this.user) ;
   final AppDatabase db ;
@@ -395,7 +404,12 @@ class _EditSkillCardState extends State<EditSkillCard> {
         child: SingleChildScrollView(child: Column(children: [
               NewSkill(widget.db , widget.user),
               EditedCard(widget.db , widget.user),
-      ],),),)
+      ],),),),
+
+      Visibility(
+          visible: checkSkillField,
+          child: Container(child: Text("Field name can't be empty" , style: TextStyle(color: Colors.redAccent),),),),
+
 
       ], 
       )
@@ -466,9 +480,13 @@ class NewSkill extends StatefulWidget {
 
 class _NewSkillState extends State<NewSkill> {
 
+  
+
   void addSkillCard(var id , var text){
+    if(text != ""){
     list.add(new SkillCard(id , text));
     setState((){});
+    }
   }
 
   void addSkillToDatabase(String skillText)async{
@@ -476,6 +494,14 @@ class _NewSkillState extends State<NewSkill> {
     var profileId ;
     var skill ;
 
+    setState(() {
+      if (skillText == ""){
+      checkSkillField = true ;
+      print("YYYYYYYYYYYYYYYYYYYYYYYY") ;
+    }
+
+    });
+    if(skillText != ""){
     if (a != null){
       widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
         if (val != null) {
@@ -505,6 +531,7 @@ class _NewSkillState extends State<NewSkill> {
       
       ));
       addSkillController.text = ''  ;
+    }
     }
 
     
