@@ -1,3 +1,4 @@
+import 'package:dbproject/models/User.dart';
 import 'package:dbproject/widgets/accomplishments.dart';
 import 'package:dbproject/widgets/additionalinformation.dart';
 import 'package:dbproject/widgets/introduction.dart';
@@ -17,8 +18,9 @@ import 'package:dbproject/widgets/myNetwork.dart';
 class OtherUserView extends StatefulWidget {
   
   //const OtherUserView({ Key? key }) : super(key: key);
-  const OtherUserView( this.db) ;
+  const OtherUserView( this.db , this.user) ;
   final AppDatabase db ;
+  final user ;
 
   @override
   _OtherUserViewState createState() => _OtherUserViewState();
@@ -35,7 +37,7 @@ class _OtherUserViewState extends State<OtherUserView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            NavigationBar(),
+            NavigationBar(widget.db,widget.user),
             //OtherIntro(db),
             OtherAdditionalInfo() ,
             OtherAccomplish(),

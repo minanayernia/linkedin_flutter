@@ -646,8 +646,15 @@ class _$LikeDao extends LikeDao {
   @override
   Future<int?> likeNumbers(int postId) async {
     await _queryAdapter.queryNoReturn(
-        'SELECT COUNT(LikeId) FROM like WHERE PostId = ?1',
+        'SELECT COUNT(LikeId) FROM Like WHERE PostId = ?1',
         arguments: [postId]);
+  }
+
+  @override
+  Future<int?> findLikeIdByUseridPostid(int userId, int PostId) async {
+    await _queryAdapter.queryNoReturn(
+        'SELECT LikeId FROM Like WHERE userId = ?1 and PostId = ?2',
+        arguments: [userId, PostId]);
   }
 
   @override

@@ -193,18 +193,18 @@ class LogInCard extends StatelessWidget {
           
         ) ,),
 
-        ButtonTheme(
-          height: 40,
-          minWidth: MediaQuery.of(context).size.width*0.55,
-          buttonColor: Colors.redAccent,
-          child: RaisedButton(onPressed: (){
-            Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => OtherUserView(db)),
-  );
-          },
-           child: Text("LogIn" , style: TextStyle(color: Colors.white),))
-           )
+  //       ButtonTheme(
+  //         height: 40,
+  //         minWidth: MediaQuery.of(context).size.width*0.55,
+  //         buttonColor: Colors.redAccent,
+  //         child: RaisedButton(onPressed: (){
+  //           Navigator.push(
+  //           context,
+  //           MaterialPageRoute(builder: (context) => OtherUserView(db , user)),
+  // );
+  //         },
+  //          child: Text("LogIn" , style: TextStyle(color: Colors.white),))
+  //          )
 
         
 
