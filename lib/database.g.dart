@@ -72,6 +72,10 @@ class _$AppDatabase extends AppDatabase {
 
   FeaturedDao? _featuredDaoInstance;
 
+  NetworkDao? _netwokDaoInstance;
+
+  LikeDao? _likeDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -91,6 +95,8 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Like` (`LikeId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+        await database.execute(
             'CREATE TABLE IF NOT EXISTS `Post` (`PostId` INTEGER PRIMARY KEY AUTOINCREMENT, `PostCaption` TEXT NOT NULL, `userId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `User` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT, `password` TEXT NOT NULL, `userName` TEXT NOT NULL)');
@@ -102,6 +108,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `Accomplishment` (`AcomplishmentId` INTEGER PRIMARY KEY AUTOINCREMENT, `profileId` INTEGER NOT NULL, `AccomplishmentText` TEXT NOT NULL, FOREIGN KEY (`profileId`) REFERENCES `UserProfile` (`profileId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Featured` (`featuredId` INTEGER PRIMARY KEY AUTOINCREMENT, `profileId` INTEGER, `featuredText` TEXT NOT NULL, FOREIGN KEY (`profileId`) REFERENCES `UserProfile` (`ProfileId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Network` (`networkId` INTEGER PRIMARY KEY AUTOINCREMENT, `userReqId` INTEGER, `userId` INTEGER, `networkState` INTEGER, FOREIGN KEY (`userReqId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -140,6 +148,16 @@ class _$AppDatabase extends AppDatabase {
   FeaturedDao get featuredDao {
     return _featuredDaoInstance ??= _$FeaturedDao(database, changeListener);
   }
+
+  @override
+  NetworkDao get netwokDao {
+    return _netwokDaoInstance ??= _$NetworkDao(database, changeListener);
+  }
+
+  @override
+  LikeDao get likeDao {
+    return _likeDaoInstance ??= _$LikeDao(database, changeListener);
+  }
 }
 
 class _$PostDao extends PostDao {
@@ -173,6 +191,14 @@ class _$PostDao extends PostDao {
   }
 
   @override
+  Future<List<Post>> allNetworkPosts(int userId) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM posts WHERE userId in ((select DISTINCT userReqId from network WHERE networkState = 1 and userId = ?1)UNION(select DISTINCT userId from network WHERE networkState = 1 and userReqId = ?1))',
+        mapper: (Map<String, Object?> row) => Post(PostId: row['PostId'] as int?, PostCaption: row['PostCaption'] as String, userId: row['userId'] as int),
+        arguments: [userId]);
+  }
+
+  @override
   Future<void> insertPost(Post post) async {
     await _postInsertionAdapter.insert(post, OnConflictStrategy.abort);
   }
@@ -197,6 +223,16 @@ class _$UserDao extends UserDao {
   final QueryAdapter _queryAdapter;
 
   final InsertionAdapter<User> _userInsertionAdapter;
+
+  @override
+  Future<List<User?>> searchByUsername(String input) async {
+    return _queryAdapter.queryList('SELECT * FROM User WHERE userName LIKE ?1',
+        mapper: (Map<String, Object?> row) => User(
+            userId: row['userId'] as int?,
+            password: row['password'] as String,
+            userName: row['userName'] as String),
+        arguments: [input]);
+  }
 
   @override
   Future<void> deleteAllUsers() async {
@@ -509,5 +545,89 @@ class _$FeaturedDao extends FeaturedDao {
   @override
   Future<void> insertFeatured(Featured featured) async {
     await _featuredInsertionAdapter.insert(featured, OnConflictStrategy.abort);
+  }
+}
+
+class _$NetworkDao extends NetworkDao {
+  _$NetworkDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _networkInsertionAdapter = InsertionAdapter(
+            database,
+            'Network',
+            (Network item) => <String, Object?>{
+                  'networkId': item.networkId,
+                  'userReqId': item.userReqId,
+                  'userId': item.userId,
+                  'networkState': item.networkState
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Network> _networkInsertionAdapter;
+
+  @override
+  Future<int?> countMutualConnection(int userId) async {
+    await _queryAdapter.queryNoReturn(
+        'SELECT COUNT(*) FROM network WHERE networkState = 1 and (userId = ?1 or userReqId = ?1)',
+        arguments: [userId]);
+  }
+
+  @override
+  Future<int?> AllUsersInYourNetwork(int userId) async {
+    await _queryAdapter.queryNoReturn(
+        '((SELECT userReqId as user_id FROM network WHERE userId = ?1) UNION (SELECT userId as user_id FROM network WHERE userReqId = ?1))',
+        arguments: [userId]);
+  }
+
+  @override
+  Future<void> insertNetwork(Network network) async {
+    await _networkInsertionAdapter.insert(network, OnConflictStrategy.abort);
+  }
+}
+
+class _$LikeDao extends LikeDao {
+  _$LikeDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _likeInsertionAdapter = InsertionAdapter(
+            database,
+            'Like',
+            (Like item) => <String, Object?>{
+                  'LikeId': item.LikeId,
+                  'userId': item.userId,
+                  'postId': item.PostId
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Like> _likeInsertionAdapter;
+
+  @override
+  Future<int?> likeNumbers(int postId) async {
+    await _queryAdapter.queryNoReturn(
+        'SELECT COUNT(LikeId) FROM like WHERE PostId = ?1',
+        arguments: [postId]);
+  }
+
+  @override
+  Future<List<Like?>> likelist(int postId) async {
+    return _queryAdapter.queryList('SELECT * FROM Like where PostId = ?1',
+        mapper: (Map<String, Object?> row) => Like(
+            LikeId: row['LikeId'] as int?,
+            userId: row['userId'] as int,
+            PostId: row['postId'] as int),
+        arguments: [postId]);
+  }
+
+  @override
+  Future<void> insertLike(Like like) async {
+    await _likeInsertionAdapter.insert(like, OnConflictStrategy.abort);
   }
 }

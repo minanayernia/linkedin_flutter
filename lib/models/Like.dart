@@ -31,14 +31,21 @@ class Like {
   @ColumnInfo(name: 'postId')
   int PostId ;
 
-  Like(this.userId , this.PostId);
+  Like({
+    this.LikeId ,
+    required this.userId ,
+    required this.PostId});
 }
 
 @dao 
 abstract class LikeDao {
 
-  @Query('SELECT COUNT(likeId) FROM likes WHERE postId = :postId')
-  Future<int> likeNumbers(int postId);
+  @Query('SELECT COUNT(LikeId) FROM like WHERE PostId = :postId')
+  Future<int?> likeNumbers(int postId);
+
+
+  @Query('SELECT * FROM Like where PostId = :postId')
+  Future<List<Like?>> likelist(int postId);
   
   @insert
   Future<void> insertLike(Like like);

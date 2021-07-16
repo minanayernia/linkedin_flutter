@@ -1,6 +1,7 @@
 
 import 'dart:ffi';
 
+import 'package:dbproject/models/Like.dart';
 import 'package:dbproject/models/User.dart';
 import 'package:dbproject/models/post.dart';
 import 'package:dbproject/widgets/skillsAndEndorsement.dart';
@@ -9,7 +10,8 @@ import 'package:flutter/material.dart';
 import '../database.dart';
 
 class PostCard extends StatefulWidget {
-  const PostCard(this.caption , this.id , this.db);
+  const PostCard(this.caption , this.id ,  this.postId ,this.db);
+  final postId ;
   final id ;
   final caption;
   final AppDatabase db ;
@@ -30,10 +32,71 @@ class _PostCardState extends State<PostCard> {
     }));
 
   }
+var likeNumbers ;
+List<int?> likelist  = [] ;
+
+void countLike(int postId)async{
+  likeNumbers = await widget.db.likeDao.likeNumbers(postId);
+  widget.db.likeDao.likelist(postId).then((value) => setState((){
+    if (value != null){
+      for(int i = 0 ; i < value.length ; i++){
+        // likeNumbers ++ ;
+        likelist.add(value[i]?.userId);
+        // print()
+        print(likelist.length);
+      }
+    }
+  }
+  
+  ));
+  
+  
+
+}
+
+void addLike(int postId , int userId)async{
+  print("this liked post id : $postId");
+  print("this liker userId :$userId");
+  var like = Like(userId: userId , PostId: postId);
+  await widget.db.likeDao.insertLike(like).then((value) => setState((){
+    likelist = [];
+    countLike(postId);
+  }));
+  // print("like added successfully");
+  // widget.db.likeDao.likelist(postId).then((value) => setState((){
+  //   if (value != null){
+  //     for(int i = 0 ; i < value.length ; i++){
+  //       // likeNumbers ++ ;
+  //       likelist.add(value[i]?.userId);
+  //       // print()
+  //       print(likelist.length);
+  //     }
+  //   }
+  // }
+  
+  // ));
+
+  // widget.db.likeDao.likeNumbers(postId).then((value) => setState((){
+  //   if (value != null ){
+  //     print("like value is not null");
+  //     likeNumbers = value ;
+  //     print(likeNumbers);
+  //   }else{
+  //     print("value is null");
+  //   }
+  // }));
+  
+}
   @override
   void initState() {
     getUserName();
+    countLike(widget.postId);
     super.initState();
+  }
+  @override
+  void setState(VoidCallback fn) {
+    // countLike(widget.postId);
+    super.setState(fn);
   }
 
   @override
@@ -77,10 +140,13 @@ class _PostCardState extends State<PostCard> {
         Row(children: [
         
         Container(
-          child: TextButton(onPressed: (){}, child: Text("Likes" ,style: TextStyle(color: Colors.white , fontSize: 13),
+          child: TextButton(
+            onPressed: (){
+              return addLike(widget.postId, widget.id);
+          }, child: Text("Likes" ,style: TextStyle(color: Colors.white , fontSize: 13),
           ))
           ),
-        Text("132" , style: TextStyle(color: Colors.white),),
+        Text(likelist.length.toString() , style: TextStyle(color: Colors.white),),
         Container(
           margin: EdgeInsets.only(left: 5),
           child: TextButton(onPressed: (){}, child: Text("Comments" ,style: TextStyle(color: Colors.white , fontSize: 13),
@@ -283,8 +349,8 @@ addSkillCard(){
   );
   setState((){});
 }
-void addPostCard( String text){
-  userPosts.add(new PostCard(text , widget.user, widget.db));
+void addPostCard( String text , var postId){
+  userPosts.add(new PostCard(text , widget.user , postId, widget.db));
 }
 
 void getAllUserPosts()async{
@@ -297,7 +363,7 @@ void getAllUserPosts()async{
         for(int i = 0 ; i < value.length ; i++){
           print("inside for of list posts");
           // userPosts[i] = value[i];
-          addPostCard(value[i].PostCaption);
+          addPostCard(value[i].PostCaption , value[i].PostId);
           print("post id");
           print(value[i].PostId);
           print("post caption");
@@ -309,6 +375,8 @@ void getAllUserPosts()async{
     }));
   }
 }
+
+
 @override
 void initState(){
   print("before get all user posts");
@@ -336,7 +404,7 @@ void initState(){
         Flexible(child: ListView.builder(
         itemCount: userPosts.length,
         itemBuilder: (_,index) {
-          return PostCard(userPosts[index].caption , userPosts[index].id , widget.db);}))
+          return PostCard(userPosts[index].caption , userPosts[index].id, userPosts[index].postId, widget.db);}))
       
         
 
