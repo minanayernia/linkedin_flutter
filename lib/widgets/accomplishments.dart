@@ -87,6 +87,8 @@ class _AccomplishCardState extends State<AccomplishCard> {
 // }
  var accomplishment ;
  List<AccomplishCard> list = [];
+ bool checkAccomplishField = false ;
+    bool checkCopy = false ;
 class AddAccomplish extends StatefulWidget {
   const AddAccomplish(this.db , this.user);
   final AppDatabase db ;
@@ -103,8 +105,10 @@ class _AddAccomplishState extends State<AddAccomplish> {
 
 void addSkillCard(var id , var text){
   
+  if(text != "" && checkCopy == false){
   list.add(new AccomplishCard(id , text));
   setState((){});
+  }
 }
 
   void getAccomplish()async{
@@ -311,16 +315,40 @@ class NewAccomplish extends StatefulWidget {
 
 
 class _NewAccomplishState extends State<NewAccomplish> {
+    
     void addSkillCard(var id , var text){
+    if(text != ""){
     list.add(new AccomplishCard(id , text));
     setState((){});
+    }
   }
 
   void addAccomplishToDatabase(String accomplishmentText)async{
+    final checkCopyField = await widget.db.accomplishmentDao.findAccomplishmentByText(accomplishmentText);
     var a = widget.user;
     var profileId ;
     var accomplishment ;
 
+        setState(() {
+      if(checkCopyField != null){
+        checkCopy = true ;
+      }
+      if(checkCopyField == null){
+        checkCopy = false ;
+      }
+    });
+
+    setState(() {
+    if(accomplishmentText == ""){
+      checkAccomplishField = true ;
+    }
+    if(accomplishmentText != ""){
+      checkAccomplishField = false ;
+    }
+
+
+    });
+    if(accomplishmentText != "" && checkCopyField == null){
     if (a != null){
       widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
         if (val != null) {
@@ -351,6 +379,7 @@ class _NewAccomplishState extends State<NewAccomplish> {
       ));
       addAccomplishController.text = ''  ;
     }
+    }
 
     
     // print("this my profileid $profileId");
@@ -364,7 +393,7 @@ class _NewAccomplishState extends State<NewAccomplish> {
       width: MediaQuery.of(context).size.width*0.88,
       color: Colors.white,
       margin: EdgeInsets.only(top: 10),
-      child: Row(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
         Container(
@@ -378,13 +407,21 @@ class _NewAccomplishState extends State<NewAccomplish> {
             hintStyle: TextStyle(color: Colors.redAccent),
             suffixIcon: IconButton(onPressed: () => addAccomplishToDatabase(addAccomplishController.text), icon : Icon(Icons.check)),
             
-            ),
-            
-            
+            ),      
           )
         ),
         
+              Container(
+          alignment: Alignment.center,
+          child: Visibility(
+          visible: checkAccomplishField,
+          child: Container(child: Text("Field name can't be empty" , style: TextStyle(color: Colors.redAccent),),),),),
 
+          Container(
+          alignment: Alignment.center,
+          child: Visibility(
+          visible: checkCopy,
+          child: Container(child: Text("This field already exists" , style: TextStyle(color: Colors.redAccent),),),),),
       ],),
       
     );
@@ -445,8 +482,41 @@ class EditedCard extends StatefulWidget {
 }
 
 class _EditedCardState extends State<EditedCard> {
+  bool checkEditFieldName = false ;
+  bool checkEditFieldNumber = false ;
+  void editAccomplishmentINDatabase(var skillText , String idNumber)async{
 
-  void editAccomplishmentINDatabase(var skillText , int id)async{
+    setState(() {
+      if(idNumber == ""){
+        checkEditFieldNumber = true ;
+      }
+      if(idNumber != ""){
+        checkEditFieldNumber = false ;
+      }
+    });
+    
+    if(idNumber != ""){
+    int id = int.parse(editNumberAccomplishController.value.text);
+    final checkFieldNumber = await widget.db.accomplishmentDao.findAccomplishmentById(id);
+
+    setState(() {
+      if (checkFieldNumber == null){
+        checkEditFieldNumber = true ;
+      }
+      if (checkFieldNumber != null){
+        checkEditFieldNumber = false ;
+      }
+    });
+    setState(() {
+      if(skillText == ""){
+        checkEditFieldName = true ;
+      }
+      if(skillText != ""){
+        checkEditFieldName = false ;
+      }
+
+    });
+    if(skillText != "" && checkFieldNumber != null){
     var a = widget.user;
     if (a != null){
       print("this is userid:");
@@ -464,16 +534,20 @@ class _EditedCardState extends State<EditedCard> {
           }
       }));
     }
+    }
+    }
   }
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 10),
-      height: 50,
+      height: 90,
       width: MediaQuery.of(context).size.width*0.88,
       color: Colors.redAccent,
       child: Container(margin: EdgeInsets.only(left: 5),
-      child: Row(
+      child: Column(children: [
+
+          Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
         Container(
@@ -496,7 +570,7 @@ class _EditedCardState extends State<EditedCard> {
             hintText: "Edit field",
             suffixIcon: IconButton(
             onPressed: () {
-              return editAccomplishmentINDatabase(editFieldAccomplishController.value.text.toString(), int.parse(editNumberAccomplishController.value.text));
+              return editAccomplishmentINDatabase(editFieldAccomplishController.value.text.toString(), editNumberAccomplishController.value.text);
 
             },
             icon: Icon(Icons.check),
@@ -506,7 +580,21 @@ class _EditedCardState extends State<EditedCard> {
 
             
 
+      ],),
+          Container(
+          alignment: Alignment.center,
+          child: Visibility(
+          visible: checkEditFieldName,
+          child: Container(child: Text("Edit Field can't be empty" , style: TextStyle(color: Colors.white),),),),),
+
+          Container(
+          alignment: Alignment.center,
+          child: Visibility(
+          visible: checkEditFieldNumber,
+          child: Container(child: Text("No such field exists" , style: TextStyle(color: Colors.white),),),),),
       ],)
+      
+      
         
 
     

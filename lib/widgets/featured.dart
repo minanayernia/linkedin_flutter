@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import '../database.dart';
 
 
-
+bool checkFeatureField = false ; 
+bool checkCopy = false ;
 class FeaturedList extends StatefulWidget {
   const FeaturedList(this.db , this.user);
   final AppDatabase db ;
@@ -23,9 +24,10 @@ class _FeaturedListState extends State<FeaturedList> {
 
 addSkillCard(var id , var text){
   
-  list.add(new FeaturedCard(id , text)
-  );
+    if(text != "" && checkCopy == false){
+  list.add(new FeaturedCard(id , text));
   setState((){});
+  }
 }
 var feature ;
 void getFeatures()async{
@@ -295,15 +297,39 @@ class _NewFeatureState extends State<NewFeature> {
 
 
     void addFeatureCard(var id , var text){
+    if(text != ""&& checkCopy == false){
     list.add(new FeaturedCard(id , text));
     setState((){});
+    }
   }
 
   void addFeatureToDatabase(String featureText)async{
+    final checkCopyField = await widget.db.featuredDao.findFeaturedByText(featureText);
     var a = widget.user;
     var profileId ;
     var feature ;
 
+        setState(() {
+      if(checkCopyField != null){
+        checkCopy = true ;
+      }
+      if(checkCopyField == null){
+        checkCopy = false ;
+      }
+    });
+
+    setState(() {
+    if(featureText == ""){
+      checkFeatureField = true ;
+    }
+    if(featureText != ""){
+      checkFeatureField = false ;
+    }
+
+
+    });
+
+    if(featureText != "" && checkCopyField == null){
     if (a != null){
       widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
         if (val != null) {
@@ -334,6 +360,7 @@ class _NewFeatureState extends State<NewFeature> {
       ));
       addFeatureController.text = ''  ;
     }
+    }
 
     
     // print("this my profileid $profileId");
@@ -347,7 +374,7 @@ class _NewFeatureState extends State<NewFeature> {
       width: MediaQuery.of(context).size.width*0.88,
       color: Colors.white,
       margin: EdgeInsets.only(top: 10),
-      child: Row(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
         Container(
@@ -369,6 +396,17 @@ class _NewFeatureState extends State<NewFeature> {
             
           )
         ),
+        Container(
+          alignment: Alignment.center,
+          child: Visibility(
+          visible: checkFeatureField,
+          child: Container(child: Text("Field name can't be empty" , style: TextStyle(color: Colors.redAccent),),),),),
+
+          Container(
+          alignment: Alignment.center,
+          child: Visibility(
+          visible: checkCopy,
+          child: Container(child: Text("This field already exists" , style: TextStyle(color: Colors.redAccent),),),),),
         
 
       ],),
@@ -428,8 +466,41 @@ class EditedCard extends StatefulWidget {
 }
 
 class _EditedCardState extends State<EditedCard> {
-    void editFeatureINDatabase(var featureText , int id)async{
+  bool checkEditFieldName = false ;
+  bool checkEditFieldNumber = false ;
+    void editFeatureINDatabase(var featureText , String idNumber)async{
 
+      setState(() {
+      if(idNumber == ""){
+        checkEditFieldNumber = true ;
+      }
+      if(idNumber != ""){
+        checkEditFieldNumber = false ;
+      }
+    });
+
+    if(idNumber != ""){
+      int id = int.parse(editNumberFeatureController.value.text);
+    final checkFieldNumber = await widget.db.accomplishmentDao.findAccomplishmentById(id);
+
+    setState(() {
+      if (checkFieldNumber == null){
+        checkEditFieldNumber = true ;
+      }
+      if (checkFieldNumber != null){
+        checkEditFieldNumber = false ;
+      }
+    });
+    setState(() {
+      if(featureText == ""){
+        checkEditFieldName = true ;
+      }
+      if(featureText != ""){
+        checkEditFieldName = false ;
+      }
+
+    });
+    if(featureText != "" && checkFieldNumber != null){
     var a = widget.user;
     if (a != null){
       print("this is userid:");
@@ -447,16 +518,19 @@ class _EditedCardState extends State<EditedCard> {
           }
       }));
     }
+    }
+    }
   }
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 10),
-      height: 50,
+      height: 90,
       width: MediaQuery.of(context).size.width*0.88,
       color: Colors.redAccent,
       child: Container(margin: EdgeInsets.only(left: 5),
-      child: Row(
+      child: Column(children: [
+        Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
         Container(
@@ -479,7 +553,7 @@ class _EditedCardState extends State<EditedCard> {
             hintText: "Edit field",
             suffixIcon: IconButton(
             onPressed: () {
-              return editFeatureINDatabase(editFieldFeatureController.value.text.toString(), int.parse(editNumberFeatureController.value.text));
+              return editFeatureINDatabase(editFieldFeatureController.value.text.toString(), editNumberFeatureController.value.text);
             },
             icon: Icon(Icons.check),
              ),
@@ -488,7 +562,22 @@ class _EditedCardState extends State<EditedCard> {
 
             
 
+      ],),
+
+        Container(
+          alignment: Alignment.center,
+          child: Visibility(
+          visible: checkEditFieldName,
+          child: Container(child: Text("Edit Field can't be empty" , style: TextStyle(color: Colors.white),),),),),
+
+          Container(
+          alignment: Alignment.center,
+          child: Visibility(
+          visible: checkEditFieldNumber,
+          child: Container(child: Text("No such field exists" , style: TextStyle(color: Colors.white),),),),),
       ],)
+      
+      
         
 
     
