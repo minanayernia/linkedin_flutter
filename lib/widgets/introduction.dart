@@ -1,6 +1,7 @@
 
 
 import 'package:dbproject/models/User.dart';
+import 'package:dbproject/widgets/direct.dart';
 import 'package:dbproject/widgets/editintro.dart';
 import 'package:flutter/material.dart';
 import '../database.dart';
@@ -9,7 +10,30 @@ import '../database.dart';
 
 
 
+class SearchUserCard extends StatefulWidget {
+  const SearchUserCard({ Key? key }) : super(key: key);
 
+  @override
+  _SearchUserCardState createState() => _SearchUserCardState();
+}
+
+class _SearchUserCardState extends State<SearchUserCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      height: 50,
+      width: MediaQuery.of(context).size.width*0.2,
+      color: Colors.redAccent,
+      child: Container(
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.only(left: 10),
+        child: Text("User"),),
+      
+      
+    );
+  }
+}
 
 
 class Intro extends StatefulWidget {
@@ -27,6 +51,13 @@ class Intro extends StatefulWidget {
 }
 
 class _IntroState extends State<Intro> {
+  List<SearchUserCard> list = [];
+addSkillCard(){
+  
+  list.add(new SearchUserCard()
+  );
+  setState((){});
+}
   String _textFromFile = 'im empty' ;
   String about = 'you have not filled about';
   var username = '';
@@ -78,10 +109,16 @@ class _IntroState extends State<Intro> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 20),
+    return Align(
+      alignment: Alignment.center,
+      child: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+        Container(
+          margin: EdgeInsets.only(top: 20),
       height: 200,
-      width: MediaQuery.of(context).size.width * 0.9,
+      width: MediaQuery.of(context).size.width * 0.7,
       color: Colors.redAccent,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,6 +195,56 @@ class _IntroState extends State<Intro> {
         )
 
       ],),
+        ),
+
+        Container(
+          margin: EdgeInsets.only(top: 20),
+          height: 200,
+          width: MediaQuery.of(context).size.width * 0.2,
+          color: Colors.black87,
+
+          child: Column(children: [
+            Container(
+          color: Colors.redAccent,
+          child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+        Container(
+          width: 250,
+          height: 50,
+          child: TextField(
+                controller: searchUserController,
+                decoration: InputDecoration(
+                  hintText: "Search messages",
+                  contentPadding: EdgeInsets.only(left: 10 , top: 15),
+                  hintStyle: TextStyle(color: Colors.white),
+                  suffixIcon: IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.search),
+                    
+                    
+             ),
+                ),
+              ),
+        ),
+        // TextButton(onPressed:(){}, child: Text("Add")) ,
+
+      ],) ,
+      ),
+            Flexible(child: ListView.builder(
+            itemCount: list.length,
+            itemBuilder: (_,index) => list[index]))
+
+          ],),
+
+        )
+
+      ],),
+      ),
+
+      
+      
+
 
     );
   }

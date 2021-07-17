@@ -78,6 +78,7 @@ var commentsUserNames = [];
     commentsTexts=[];
     commentUserIds= [];
     allComments(postId);
+    newCommentController.text = "" ;
   }
 
 void allComments(int postId)async{
