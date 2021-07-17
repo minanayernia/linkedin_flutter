@@ -726,7 +726,7 @@ class _NewPostCardState extends State<NewPostCard> {
     var newPost = Post(PostCaption: caption, userId: widget.user);
     await widget.db.postDao.insertPost(newPost);
     print("new post added ");
-    userPosts = [];
+    // userPosts = [];
     var a = widget.user ;
     widget.db.postDao.findAllPosts(a).then((value) => setState((){
       // if()
@@ -1012,19 +1012,22 @@ class _AddCommentState extends State<AddComment> {
     );
   }
 }
-List<PostCard> otherUserPosts = [] ; 
+
 class OtherPost extends StatefulWidget {
   const OtherPost(this.db , this.user);
   final user ;
   final AppDatabase db ;
+  
+
 
   @override
   _OtherPostState createState() => _OtherPostState();
 }
 
 class _OtherPostState extends State<OtherPost> {
+  List<PostCard> otherUserPosts = [] ; 
   void addPostCard( String text , var postId){
-  userPosts.add(new PostCard(text , widget.user , postId, widget.db));
+  otherUserPosts.add(new PostCard(text , widget.user , postId, widget.db));
 }
 void getAllUserPosts()async{
   var a = widget.user ;

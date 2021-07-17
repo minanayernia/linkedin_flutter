@@ -101,11 +101,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `CommentLike` (`commentLikeId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL, `commentId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`commentId`) REFERENCES `Comment` (`commentId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
-<<<<<<< HEAD
-            'CREATE TABLE IF NOT EXISTS `Comment` (`commentId` INTEGER PRIMARY KEY AUTOINCREMENT, `commentText` TEXT NOT NULL, `is_replied` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, `ReplyCommentId` INTEGER, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`ReplyCommentId`) REFERENCES `Comment` (`commentId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
-=======
-            'CREATE TABLE IF NOT EXISTS `Comment` (`commentId` INTEGER PRIMARY KEY AUTOINCREMENT, `commentText` TEXT NOT NULL, `is_replied` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
->>>>>>> 36ed2beb9058d2cd167daee21ab2319f513c9dea
+            'CREATE TABLE IF NOT EXISTS `Comment` (`commentId` INTEGER PRIMARY KEY AUTOINCREMENT, `commentText` TEXT NOT NULL, `is_replied` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, `ReplyCommentId` INTEGER, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Like` (`LikeId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -216,7 +212,7 @@ class _$PostDao extends PostDao {
   @override
   Future<List<Post>> allNetworkPosts(int userId) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM posts WHERE userId in ((select DISTINCT userReqId from network WHERE networkState = 1 and userId = ?1)UNION(select DISTINCT userId from network WHERE networkState = 1 and userReqId = ?1))',
+        'SELECT * FROM post WHERE userId in ((select DISTINCT userReqId from network WHERE networkState = 1 and userId = ?1)UNION(select DISTINCT userId from network WHERE networkState = 1 and userReqId = ?1))',
         mapper: (Map<String, Object?> row) => Post(PostId: row['PostId'] as int?, PostCaption: row['PostCaption'] as String, userId: row['userId'] as int),
         arguments: [userId]);
   }
@@ -422,13 +418,14 @@ class _$SkillDao extends SkillDao {
   }
 
   @override
-  Future<Skill?> findSkillByName(String skillText) async {
-    return _queryAdapter.query('SELECT * FROM Skill WHERE skillText = ?1',
+  Future<Skill?> findSkillByName(String skillText, int profid) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Skill WHERE skillText = ?1 and profileId = ?2',
         mapper: (Map<String, Object?> row) => Skill(
             SkillId: row['SkillId'] as int?,
             SkillText: row['SkillText'] as String,
             profileId: row['profileId'] as int),
-        arguments: [skillText]);
+        arguments: [skillText, profid]);
   }
 
   @override
@@ -740,12 +737,8 @@ class _$CommentDao extends CommentDao {
                   'commentText': item.commentText,
                   'is_replied': item.is_replied,
                   'userId': item.userId,
-<<<<<<< HEAD
                   'postId': item.postId,
                   'ReplyCommentId': item.ReplyCommentId
-=======
-                  'postId': item.postId
->>>>>>> 36ed2beb9058d2cd167daee21ab2319f513c9dea
                 });
 
   final sqflite.DatabaseExecutor database;

@@ -638,9 +638,34 @@ class _NewSkillState extends State<NewSkill> {
   }
 
   void addSkillToDatabase(String skillText)async{
-    final checkCopyField = await widget.db.skillDao.findSkillByName(skillText) ;
+    print("in addSkillToDatabase ");
+    var profid;
+    var a = widget.user ;
+    print(widget.user);
+    if(a != null){
+      widget.db.userProfileDao.findProfileByUserId(a).then((value) => setState((){
+      if(value != null){
+        profid = value.ProfileId ;
+        print("profid : $profid");
+      }
+      else{
+        print("null in find userprofile");
+      }
+    }));
+    }
+    
+    var checkCopyField ;
+     widget.db.skillDao.findSkillByName(skillText , profid).then((value) => setState((){
+      if (value != null ){
+        print("find skill by name is not null");
+        checkCopyField = value ;
+      }else{
+        print("find skill by name is null");
+        checkCopyField = null ;
+      }
+    }));
 
-    var a = widget.user;
+    // var a = widget.user;
     var profileId ;
     var skill ;
 
@@ -669,7 +694,9 @@ class _NewSkillState extends State<NewSkill> {
     });
 
 
-    if(skillText != "" && checkCopyField == null){
+    if(skillText != ""
+     && checkCopyField == null
+     ){
     if (a != null){
       widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
         if (val != null) {
