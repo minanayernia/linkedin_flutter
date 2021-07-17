@@ -218,6 +218,22 @@ class _$PostDao extends PostDao {
   }
 
   @override
+  Future<List<Post>> postlikedByNetwork(int userId) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM post  WHERE postId in (select DISTINCT postId from Like WHERE userId in (SELECT DISTINCT userReqId FROM Network WHERE networkState = 1 and userId = ?1))',
+        mapper: (Map<String, Object?> row) => Post(PostId: row['PostId'] as int?, PostCaption: row['PostCaption'] as String, userId: row['userId'] as int),
+        arguments: [userId]);
+  }
+
+  @override
+  Future<List<Post>> postCommentedByNetwork(int userId) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM post WHERE postId in (select DISTINCT postId from comments WHERE userId in (select DISTINCT userReqId from network WHERE networkState = 1 and userId = ?1))',
+        mapper: (Map<String, Object?> row) => Post(PostId: row['PostId'] as int?, PostCaption: row['PostCaption'] as String, userId: row['userId'] as int),
+        arguments: [userId]);
+  }
+
+  @override
   Future<void> insertPost(Post post) async {
     await _postInsertionAdapter.insert(post, OnConflictStrategy.abort);
   }
