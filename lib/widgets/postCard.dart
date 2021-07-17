@@ -352,7 +352,7 @@ void likeComment(int commentId , int userId)async{
           Text("commentId :"),
           Text(commentIds.length > 0 ? commentIds[index].toString() : '0'),
           Text("  "),
-          Text(commentsUserNames.length > 0 ? commentsUserNames[index]! : '0'),
+          // Text(commentsUserNames.length > 0 ? commentsUserNames[index]! : '0'),
           Text("   likes:"),
           Text(commentlikes.length > 0 ? commentlikes[index].toString() : '0')
           ],),

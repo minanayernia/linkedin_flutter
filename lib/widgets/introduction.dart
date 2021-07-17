@@ -416,14 +416,57 @@ class _IntroState extends State<Intro> {
 
 
 class OtherIntro extends StatefulWidget {
+  const OtherIntro( { Key? key,required this.db ,required this.user}): super(key: key) ;
   final AppDatabase db ;
-  const OtherIntro(this.db);
+  final int? user  ;
 
   @override
   _OtherIntroState createState() => _OtherIntroState();
 }
 
 class _OtherIntroState extends State<OtherIntro> {
+  String _textFromFile = 'im empty' ;
+  String about = 'you have not filled about';
+  var username = '';
+
+  void makemy() async{
+    var a = widget.user;
+    // print('this is user in intro: $a');
+    // var b = widget.db.userDao.findUserNameByUserId;
+    // print('intro db is: $b');
+    if (a != null){
+      widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
+        if (val != null){
+          print("this is profileid in intro page");
+          print(val.ProfileId);
+          about = val.About;
+          }
+      }));
+
+      print("i reached here");
+        widget.db.userDao.findUserNameByUserId(a).then((val) => setState(() {
+        print('val is : $val');
+        if (val != null){
+          _textFromFile = val.userName;
+        } else {
+          // _textFromFile = "kir";
+        }
+        }));
+    } else {
+      // _textFromFile = "kos";
+    }
+      
+  }
+  String giveme(){
+      makemy();
+      return _textFromFile;
+  }
+
+   @override
+  void initState() {
+    username = giveme();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -450,7 +493,7 @@ class _OtherIntroState extends State<OtherIntro> {
           
           Container(
           margin: EdgeInsets.only(left: 10 ),
-          child: Text("profile.userName" , 
+          child: Text(_textFromFile , 
           style: TextStyle(color: Colors.white , fontSize: 15),
           ),
         ),
@@ -462,7 +505,7 @@ class _OtherIntroState extends State<OtherIntro> {
         
         Container(
           margin: EdgeInsets.only(left: 10 , top: 5),
-          child: Text("profile.about" ,
+          child: Text(about.toString() ,
           style: TextStyle(color: Colors.white , fontSize: 13),
           ),
         )
