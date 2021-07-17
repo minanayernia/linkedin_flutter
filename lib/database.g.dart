@@ -758,9 +758,13 @@ class _$CommentLikeDao extends CommentLikeDao {
   }
 
   @override
-  Future<int?> commentLikeList(int commentId) async {
-    await _queryAdapter.queryNoReturn(
-        'SELECT commentLikeId FROM CommentLike WHERE commentId ?1',
+  Future<List<CommentLike?>> commentLikes(int commentId) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM CommentLike WHERE commentId = ?1',
+        mapper: (Map<String, Object?> row) => CommentLike(
+            commentLikeId: row['commentLikeId'] as int?,
+            userId: row['userId'] as int,
+            commentId: row['commentId'] as int),
         arguments: [commentId]);
   }
 
