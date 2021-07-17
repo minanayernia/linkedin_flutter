@@ -13,6 +13,7 @@ import 'package:floor/floor.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 
 // import 'dao/person_dao.dart';
+import 'models/Message.dart';
 import 'models/Skill.dart';
 import 'models/Accomplishment.dart';
 import 'models/User.dart';
@@ -20,7 +21,7 @@ import 'models/post.dart';
 import 'models/Featured.dart';
 part 'database.g.dart'; // 
 
-@Database(version: 1, entities: [ CommentLike , Comment ,Like ,Post , User , UserProfile , Skill , Accomplishment , Featured , Network ,])
+@Database(version: 1, entities: [Messagee ,CommentLike , Comment ,Like ,Post , User , UserProfile , Skill , Accomplishment , Featured , Network ,])
 
 abstract class AppDatabase extends FloorDatabase {
   
@@ -34,6 +35,7 @@ abstract class AppDatabase extends FloorDatabase {
   LikeDao get likeDao ;
   CommentDao get commentDao ;
   CommentLikeDao get commentLikeDao ;
+  MessageeDao get messageeDao ;
 
 
 }

@@ -80,6 +80,8 @@ class _$AppDatabase extends AppDatabase {
 
   CommentLikeDao? _commentLikeDaoInstance;
 
+  MessageeDao? _messageeDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -98,6 +100,8 @@ class _$AppDatabase extends AppDatabase {
         await callback?.onUpgrade?.call(database, startVersion, endVersion);
       },
       onCreate: (database, version) async {
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Messagee` (`messageId` INTEGER PRIMARY KEY AUTOINCREMENT, `recieverId` INTEGER NOT NULL, `senderId` INTEGER NOT NULL, `messageText` TEXT NOT NULL, `archived` INTEGER NOT NULL, `unread` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, FOREIGN KEY (`recieverId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`senderId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `CommentLike` (`commentLikeId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL, `commentId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`commentId`) REFERENCES `Comment` (`commentId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -176,6 +180,11 @@ class _$AppDatabase extends AppDatabase {
   CommentLikeDao get commentLikeDao {
     return _commentLikeDaoInstance ??=
         _$CommentLikeDao(database, changeListener);
+  }
+
+  @override
+  MessageeDao get messageeDao {
+    return _messageeDaoInstance ??= _$MessageeDao(database, changeListener);
   }
 }
 
@@ -854,5 +863,43 @@ class _$CommentLikeDao extends CommentLikeDao {
   Future<void> insertCommentLike(CommentLike commentLike) async {
     await _commentLikeInsertionAdapter.insert(
         commentLike, OnConflictStrategy.abort);
+  }
+}
+
+class _$MessageeDao extends MessageeDao {
+  _$MessageeDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _messageeInsertionAdapter = InsertionAdapter(
+            database,
+            'Messagee',
+            (Messagee item) => <String, Object?>{
+                  'messageId': item.messageId,
+                  'recieverId': item.recieverId,
+                  'senderId': item.senderId,
+                  'messageText': item.messageText,
+                  'archived': item.archived,
+                  'unread': item.unread,
+                  'deleted': item.deleted
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Messagee> _messageeInsertionAdapter;
+
+  @override
+  Future<List<Messagee?>> showMessage(int myid, int otherId) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Messagee WHERE (senderId = ?1 and recieverId = ?2) or (senderId = ?2 and recieverId = ?1)',
+        mapper: (Map<String, Object?> row) => Messagee(messageId: row['messageId'] as int?, recieverId: row['recieverId'] as int, senderId: row['senderId'] as int, messageText: row['messageText'] as String),
+        arguments: [myid, otherId]);
+  }
+
+  @override
+  Future<void> insertMessage(Messagee msg) async {
+    await _messageeInsertionAdapter.insert(msg, OnConflictStrategy.abort);
   }
 }
