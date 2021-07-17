@@ -639,15 +639,43 @@ class _NewSkillState extends State<NewSkill> {
 
   void addSkillToDatabase(String skillText)async{
     print("in addSkillToDatabase ");
-    var profid;
+    
     var a = widget.user ;
     print(widget.user);
     if(a != null){
       widget.db.userProfileDao.findProfileByUserId(a).then((value) => setState((){
         print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
       if(value != null){
-        profid = value.ProfileId ;
-        print("profid : $profid");
+        var checkCopyField ;
+          widget.db.skillDao.findSkillByName(skillText , value.ProfileId!).then((v) => setState((){
+            if (v != null ){
+             print("find skill by name is not null");
+             checkCopyField = v ;
+             checkCopy = true ;
+
+          }else{
+        print("find skill by name is null");
+        checkCopyField = null ;
+        checkCopy = false ;
+        if(skillText != "" && checkCopyField == null){
+          var profileId ;
+    var skill ;
+      widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
+        if (val != null) {
+          profileId = val.ProfileId;
+          print("this profileid in test card $profileId");
+          skill = Skill(SkillText: skillText ,profileId: profileId);
+          widget.db.skillDao.insertSkill(skill);
+          }
+      }
+      
+      ));
+      addSkillController.text = ''  ;
+    }
+      }
+    }));
+        
+        // print("profid : $profid");
       }
       else{
         print("null in find userprofile");
@@ -655,29 +683,19 @@ class _NewSkillState extends State<NewSkill> {
     }));
     }
     
-    var checkCopyField ;
-     widget.db.skillDao.findSkillByName(skillText , profid).then((v) => setState((){
-      if (v != null ){
-        print("find skill by name is not null");
-        checkCopyField = v ;
-      }else{
-        print("find skill by name is null");
-        checkCopyField = null ;
-      }
-    }));
+    
 
     // var a = widget.user;
-    var profileId ;
-    var skill ;
+    
 
-    setState(() {
-      if(checkCopyField != null){
-        checkCopy = true ;
-      }
-      if(checkCopyField == null){
-        checkCopy = false ;
-      }
-    });
+    // setState(() {
+    //   if(checkCopyField != null){
+    //     checkCopy = true ;
+    //   }
+    //   if(checkCopyField == null){
+    //     checkCopy = false ;
+    //   }
+    // });
 
     setState(() {
       if (skillText == ""){
@@ -695,65 +713,11 @@ class _NewSkillState extends State<NewSkill> {
     });
 
 
-    if(skillText != ""
-     && checkCopyField == null
-     ){
-    if (a != null){
-      widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
-        if (val != null) {
-          profileId = val.ProfileId;
-          print("this profileid in test card $profileId");
-          skill = Skill(SkillText: skillText ,profileId: profileId);
-          widget.db.skillDao.insertSkill(skill);
-          // widget.db.skillDao.allSkills(profileId).then((value) => setState((){
-          //    if (value != null){
-          //     for (int i = 0 ; i < value.length ; i++){
-          //       if (value[i] != null){
-          //         // addSkillCard(id, text)
-          //         print(value[i]?.SkillText);
-          //         print("this is the skillid :");
-          //         print(value[i]?.SkillId);
-          //         addSkillCard(value[i]?.SkillId , value[i]?.SkillText );
-          //         var li = list[i].text;
-          //         print("$i , $li");
-          //       }
-                
-          //     }
-          //    }
-          // }));
-          // print(skill);
-          }
-      }
-      
-      ));
-      addSkillController.text = ''  ;
-    }
-    }
-
     
-    // print("this my profileid $profileId");
 
 
   }
 
-
-  
-// void addSkillDatabase(String text ){
-//     var a = widget.user;
-//     var profileId ;
-//     if (a != null){
-//       widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
-//         if (val != null){
-//           profileId = val.ProfileId;
-//           }
-//       }));
-//     }
-//     var skill = Skill(SkillText:text,profileId: profileId) ;
-//     if (a != null ){
-//       widget.db.skillDao.insertSkill(skill);
-//       addSkillCard(profileId, text) ;
-//     }
-//   }
 
   @override
   Widget build(BuildContext context) {
@@ -864,33 +828,24 @@ class _EditedCardState extends State<EditedCard> {
     });
 
     if(idNumber != ""){
+
     int id = int.parse(editNumberSkillController.value.text);
-    final checkFieldNumber = await widget.db.skillDao.findSkillById(id);
-    setState(() {
-      if (checkFieldNumber == null){
-        checkEditFieldNumber = true ;
-      }
-      if (checkFieldNumber != null){
-        checkEditFieldNumber = false ;
-      }
-    });
-    setState(() {
-      if(skillText == ""){
-        checkEditFieldName = true ;
-      }
-      if(skillText != ""){
-        checkEditFieldName = false ;
-      }
-
-    });
-
-    if(skillText != "" && checkFieldNumber != null){
     var a = widget.user;
-    if (a != null){
-      print("this is userid:");
+    if(a != null){
+      widget.db.userProfileDao.findProfileByUserId(a).then((value) => setState((){
+        print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+      if(value != null){
+        var checkFieldNumber ;
+          widget.db.skillDao.findSkillById(id , value.ProfileId!).then((v) => setState((){
+            if (v != null ){
+             print("find skill by name is not null");
+             checkFieldNumber = v ;
+             checkEditFieldNumber = false ;
+             if(skillText != "" && checkFieldNumber != null){
+          print("this is userid:");
       print(a);
-      await widget.db.skillDao.editSkill(skillText, id) ;
-      widget.db.skillDao.findSkillById(id).then((val) => setState((){
+      widget.db.skillDao.editSkill(skillText, id) ;
+      widget.db.skillDao.findSkillById(id , value.ProfileId!).then((val) => setState((){
         print("we are in editskilldatabase");
         print(val?.SkillId);
         if (val != null){
@@ -902,7 +857,60 @@ class _EditedCardState extends State<EditedCard> {
           }
       }));
     }
-  }
+
+          }else{
+        print("find skill by name is null");
+        checkFieldNumber = null ;
+        checkEditFieldNumber = true ;
+
+      }
+    }));
+        
+        // print("profid : $profid");
+      }
+      else{
+        print("null in find userprofile");
+      }
+    }));
+    }
+    // final checkFieldNumber = await widget.db.skillDao.findSkillById(id);
+    // setState(() {
+    //   if (checkFieldNumber == null){
+    //     checkEditFieldNumber = true ;
+    //   }
+    //   if (checkFieldNumber != null){
+    //     checkEditFieldNumber = false ;
+    //   }
+    // });
+    setState(() {
+      if(skillText == ""){
+        checkEditFieldName = true ;
+      }
+      if(skillText != ""){
+        checkEditFieldName = false ;
+      }
+
+    });
+
+  //   if(skillText != "" && checkFieldNumber != null){
+    
+  //   if (a != null){
+  //     print("this is userid:");
+  //     print(a);
+  //     await widget.db.skillDao.editSkill(skillText, id) ;
+  //     widget.db.skillDao.findSkillById(id).then((val) => setState((){
+  //       print("we are in editskilldatabase");
+  //       print(val?.SkillId);
+  //       if (val != null){
+  //         print("skilltext is going to change");
+  //         skillText = val.SkillText ;
+  //         }
+  //         else{
+  //           print("value is null");
+  //         }
+  //     }));
+  //   }
+  // }
     }
   }
 

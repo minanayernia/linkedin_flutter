@@ -304,19 +304,60 @@ class _NewFeatureState extends State<NewFeature> {
   }
 
   void addFeatureToDatabase(String featureText)async{
-    final checkCopyField = await widget.db.featuredDao.findFeaturedByText(featureText);
+    // final checkCopyField = await widget.db.featuredDao.findFeaturedByText(featureText);
     var a = widget.user;
-    var profileId ;
-    var feature ;
+    // var profileId ;
+    // var feature ;
 
-        setState(() {
-      if(checkCopyField != null){
-        checkCopy = true ;
-      }
-      if(checkCopyField == null){
+        if(a != null){
+          widget.db.userProfileDao.findProfileByUserId(a).then((value) => setState((){
+        print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+      if(value != null){
+        var checkCopyField ;
+          widget.db.featuredDao.findFeaturedByText(featureText , value.ProfileId!).then((v) => setState((){
+            if (v != null ){
+             print("find skill by name is not null");
+             checkCopyField = v ;
+             checkCopy = true ;
+
+          }else{
+        print("find skill by name is null");
+        checkCopyField = null ;
         checkCopy = false ;
+        if(featureText != "" && checkCopyField == null){
+          var profileId ;
+           var feature ;
+            widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
+            if (val != null) {
+            profileId = val.ProfileId;
+          print("this profileid in test card $profileId");
+          feature = Featured(featuredText: featureText ,profileId: profileId);
+          widget.db.featuredDao.insertFeatured(feature);
+          }
       }
-    });
+      
+      ));
+      addFeatureController.text = ''  ;
+    }
+      }
+    }));
+        
+        // print("profid : $profid");
+      }
+      else{
+        print("null in find userprofile");
+      }
+    }));
+        }
+
+    //     setState(() {
+    //   if(checkCopyField != null){
+    //     checkCopy = true ;
+    //   }
+    //   if(checkCopyField == null){
+    //     checkCopy = false ;
+    //   }
+    // });
 
     setState(() {
     if(featureText == ""){
@@ -329,38 +370,38 @@ class _NewFeatureState extends State<NewFeature> {
 
     });
 
-    if(featureText != "" && checkCopyField == null){
-    if (a != null){
-      widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
-        if (val != null) {
-          profileId = val.ProfileId;
-          print("this profileid in test card $profileId");
-          feature = Featured(featuredText: featureText ,profileId: profileId);
-          widget.db.featuredDao.insertFeatured(feature);
-          // widget.db.skillDao.allSkills(profileId).then((value) => setState((){
-          //    if (value != null){
-          //     for (int i = 0 ; i < value.length ; i++){
-          //       if (value[i] != null){
-          //         // addSkillCard(id, text)
-          //         print(value[i]?.SkillText);
-          //         print("this is the skillid :");
-          //         print(value[i]?.SkillId);
-          //         addSkillCard(value[i]?.SkillId , value[i]?.SkillText );
-          //         var li = list[i].text;
-          //         print("$i , $li");
-          //       }
+    // if(featureText != "" && checkCopyField == null){
+    // if (a != null){
+    //   widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
+    //     if (val != null) {
+    //       profileId = val.ProfileId;
+    //       print("this profileid in test card $profileId");
+    //       feature = Featured(featuredText: featureText ,profileId: profileId);
+    //       widget.db.featuredDao.insertFeatured(feature);
+    //       // widget.db.skillDao.allSkills(profileId).then((value) => setState((){
+    //       //    if (value != null){
+    //       //     for (int i = 0 ; i < value.length ; i++){
+    //       //       if (value[i] != null){
+    //       //         // addSkillCard(id, text)
+    //       //         print(value[i]?.SkillText);
+    //       //         print("this is the skillid :");
+    //       //         print(value[i]?.SkillId);
+    //       //         addSkillCard(value[i]?.SkillId , value[i]?.SkillText );
+    //       //         var li = list[i].text;
+    //       //         print("$i , $li");
+    //       //       }
                 
-          //     }
-          //    }
-          // }));
-          // print(skill);
-          }
-      }
+    //       //     }
+    //       //    }
+    //       // }));
+    //       // print(skill);
+    //       }
+    //   }
       
-      ));
-      addFeatureController.text = ''  ;
-    }
-    }
+    //   ));
+    //   addFeatureController.text = ''  ;
+    // }
+    // }
 
     
     // print("this my profileid $profileId");
@@ -481,32 +522,22 @@ class _EditedCardState extends State<EditedCard> {
 
     if(idNumber != ""){
       int id = int.parse(editNumberFeatureController.value.text);
-    final checkFieldNumber = await widget.db.accomplishmentDao.findAccomplishmentById(id);
-
-    setState(() {
-      if (checkFieldNumber == null){
-        checkEditFieldNumber = true ;
-      }
-      if (checkFieldNumber != null){
-        checkEditFieldNumber = false ;
-      }
-    });
-    setState(() {
-      if(featureText == ""){
-        checkEditFieldName = true ;
-      }
-      if(featureText != ""){
-        checkEditFieldName = false ;
-      }
-
-    });
-    if(featureText != "" && checkFieldNumber != null){
-    var a = widget.user;
-    if (a != null){
-      print("this is userid:");
+      var a = widget.user ; 
+      if(a != null){
+        widget.db.userProfileDao.findProfileByUserId(a).then((value) => setState((){
+        print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+      if(value != null){
+        var checkFieldNumber ;
+          widget.db.featuredDao.findFeaturedById(id , value.ProfileId!).then((v) => setState((){
+            if (v != null ){
+             print("find skill by name is not null");
+             checkFieldNumber = v ;
+             checkEditFieldNumber = false ;
+             if(featureText != "" && checkFieldNumber != null){
+          print("this is userid:");
       print(a);
-      await widget.db.featuredDao.editFeatured(featureText, id) ;
-      widget.db.featuredDao.findFeaturedById(id).then((val) => setState((){
+      widget.db.featuredDao.editFeatured(featureText, id) ;
+      widget.db.featuredDao.findFeaturedById(id , value.ProfileId!).then((val) => setState((){
         print("we are in editskilldatabase");
         print(val?.featuredText);
         if (val != null){
@@ -518,7 +549,60 @@ class _EditedCardState extends State<EditedCard> {
           }
       }));
     }
-    }
+
+          }else{
+        print("find skill by name is null");
+        checkFieldNumber = null ;
+        checkEditFieldNumber = true ;
+
+      }
+    }));
+        
+        // print("profid : $profid");
+      }
+      else{
+        print("null in find userprofile");
+      }
+    }));
+      }
+    // final checkFieldNumber = await widget.db.featuredDao.findFeaturedById(id);
+
+    // setState(() {
+    //   if (checkFieldNumber == null){
+    //     checkEditFieldNumber = true ;
+    //   }
+    //   if (checkFieldNumber != null){
+    //     checkEditFieldNumber = false ;
+    //   }
+    // });
+    setState(() {
+      if(featureText == ""){
+        checkEditFieldName = true ;
+      }
+      if(featureText != ""){
+        checkEditFieldName = false ;
+      }
+
+    });
+    // if(featureText != "" && checkFieldNumber != null){
+    // var a = widget.user;
+    // if (a != null){
+    //   print("this is userid:");
+    //   print(a);
+    //   await widget.db.featuredDao.editFeatured(featureText, id) ;
+    //   widget.db.featuredDao.findFeaturedById(id).then((val) => setState((){
+    //     print("we are in editskilldatabase");
+    //     print(val?.featuredText);
+    //     if (val != null){
+    //       print("skilltext is going to change");
+    //       featureText = val.featuredText ;
+    //       }
+    //       else{
+    //         print("value is null");
+    //       }
+    //   }));
+    // }
+    // }
     }
   }
   @override
