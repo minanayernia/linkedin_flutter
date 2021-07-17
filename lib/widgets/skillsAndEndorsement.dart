@@ -283,11 +283,70 @@ void addSkillCard(var id , var text){
   }
 }
 
+var otherSkill ;
+ List<OtherSkillCard> otherList = [];
+class OtherSkill extends StatefulWidget {
+  const OtherSkill(this.db , this.user);
+  final AppDatabase db ;
+  final int? user  ;
 
+  @override
+  _OtherSkillState createState() => _OtherSkillState();
+}
 
-class OtherSkill extends StatelessWidget {
-  const OtherSkill({ Key? key }) : super(key: key);
+class _OtherSkillState extends State<OtherSkill> {
 
+      List accomplishmentsText = [] ;
+    List accomplishmentsId = [] ;
+
+void addSkillCard(var id , var text){
+  
+  otherList.add(new OtherSkillCard(id , text));
+  setState((){});
+}
+
+  void getSkill()async{
+    var a = widget.user;
+    var profileId ;
+   
+
+    if (a != null){
+      widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
+        if (val != null) {
+          profileId = val.ProfileId;
+          // print("this profileid in test card $profileId");
+          // skill = Skill(SkillText: "android" ,profileId: profileId);
+          // widget.db.skillDao.insertSkill(skill);q
+
+          widget.db.skillDao.allSkills(profileId).then((value) => setState((){
+             if (value != null){
+              for (int i = 0 ; i < value.length ; i++){
+                if (value[i] != null){
+                  print(value[i]?.SkillText);
+                  print("this is the skillid :");
+                  print(value[i]?.SkillId);
+                  addSkillCard(value[i]?.SkillId , value[i]?.SkillText );
+                  var li = otherList[i].text;
+                  print("$i , $li");
+                }
+                
+              }
+             }
+          }));
+          print(otherSkill);
+          }
+      }));
+    }
+
+    
+    // print("this my profileid $profileId");
+    
+  }
+  @override
+  void initState() {
+    getSkill();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -314,7 +373,15 @@ class OtherSkill extends StatelessWidget {
 
       ],) ,),
         
-      OtherSkillCard(),
+
+
+        Flexible(child:
+       ListView.builder(
+        itemCount: otherList.length,
+        itemBuilder: (_,index) { 
+          return OtherSkillCard(otherList[index].id.toString(), otherList[index].text);
+          }))
+      // OtherSkillCard(),
       /*Flexible(child: ListView.builder(
         itemCount: list.length,
         itemBuilder: (_,index) => list[index]))*/
@@ -326,9 +393,58 @@ class OtherSkill extends StatelessWidget {
   }
 }
 
-class OtherSkillCard extends StatelessWidget {
-  const OtherSkillCard({ Key? key }) : super(key: key);
+// class OtherSkill extends StatelessWidget {
+//   const OtherSkill({ Key? key }) : super(key: key);
 
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: EdgeInsets.only(top: 20),
+
+//       height: 200,
+//       width: MediaQuery.of(context).size.width*0.9,
+//       color: Colors.black87,
+//       child:
+//       Column(children: [
+
+//         Container(
+//           color: Colors.redAccent,
+//           child:Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//           children: [
+//         Container(
+//           height: 30 ,
+//           margin: EdgeInsets.only(left: 10 , top: 7),
+//           child: Text("SKILLS&ENDORSEMENTS",
+//           style: TextStyle(color: Colors.white , fontSize: 15),
+//           ),
+//         ),
+
+//       ],) ,),
+        
+//       // OtherSkillCard(),
+//       /*Flexible(child: ListView.builder(
+//         itemCount: list.length,
+//         itemBuilder: (_,index) => list[index]))*/
+      
+//       ] 
+//       ,)
+      
+//     );
+//   }
+// }
+
+
+class OtherSkillCard extends StatefulWidget {
+  const OtherSkillCard(this.id , this.text);
+  final id ;
+  final text ;
+
+  @override
+  _OtherSkillCardState createState() => _OtherSkillCardState();
+}
+
+class _OtherSkillCardState extends State<OtherSkillCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -341,10 +457,10 @@ class OtherSkillCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
         Row(children: [
-            Text("1" , style: TextStyle(color: Colors.white),) ,
+            Text(widget.id , style: TextStyle(color: Colors.white),) ,
             Container(
               padding: EdgeInsets.only(left: 5),
-              child: Text("Skill" , style: TextStyle(color: Colors.white),),)
+              child: Text(widget.text , style: TextStyle(color: Colors.white),),)
             
 
 
@@ -359,6 +475,40 @@ class OtherSkillCard extends StatelessWidget {
     );
   }
 }
+
+// class OtherSkillCard extends StatelessWidget {
+//   const OtherSkillCard({ Key? key }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: EdgeInsets.only(top: 10 , bottom: 5),
+//       height: 50,
+//       width: MediaQuery.of(context).size.width*0.88,
+//       color: Colors.redAccent,
+//       child: Container(margin: EdgeInsets.only(left: 5),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//         Row(children: [
+//             Text("1" , style: TextStyle(color: Colors.white),) ,
+//             Container(
+//               padding: EdgeInsets.only(left: 5),
+//               child: Text("Skill" , style: TextStyle(color: Colors.white),),)
+            
+
+
+//         ],),
+//         Row(children: [
+//           TextButton(onPressed: (){}, child: Text("Endorse")),
+//         ],)
+
+//       ],),
+//       )
+      
+//     );
+//   }
+// }
 
 bool checkSkillField = false ;
 class EditSkillCard extends StatefulWidget {

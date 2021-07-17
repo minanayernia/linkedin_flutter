@@ -5,16 +5,16 @@ import '../database.dart';
 
 import 'package:dbproject/models/Accomplishment.dart';
 
-class AccomplishmentCard extends StatelessWidget {
-  const AccomplishmentCard({ Key? key }) : super(key: key);
+// class AccomplishmentCard extends StatelessWidget {
+//   const AccomplishmentCard({ Key? key }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
 
-    );
-  }
-}
+//     );
+//   }
+// }
 
 class AccomplishCard extends StatefulWidget {
   const AccomplishCard(this.id , this.text);
@@ -653,16 +653,69 @@ class _EditedCardState extends State<EditedCard> {
 //     );
 //   }
 // }
-
+var otherAccomplishment ;
+ List<OtherAccomplishCard> otherList = [];
 class OtherAccomplish extends StatefulWidget {
+  const OtherAccomplish(this.db , this.user);
   final AppDatabase db ;
-  const OtherAccomplish(this.db);
+  final int? user  ;
 
   @override
   _OtherAccomplishState createState() => _OtherAccomplishState();
 }
 
 class _OtherAccomplishState extends State<OtherAccomplish> {
+    List accomplishmentsText = [] ;
+    List accomplishmentsId = [] ;
+
+void addAccomplishCard(var id , var text){
+  
+  otherList.add(new OtherAccomplishCard(id , text));
+  setState((){});
+}
+
+  void getAccomplish()async{
+    var a = widget.user;
+    var profileId ;
+   
+
+    if (a != null){
+      widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
+        if (val != null) {
+          profileId = val.ProfileId;
+          // print("this profileid in test card $profileId");
+          // skill = Skill(SkillText: "android" ,profileId: profileId);
+          // widget.db.skillDao.insertSkill(skill);q
+
+          widget.db.accomplishmentDao.allAccomplishments(profileId).then((value) => setState((){
+             if (value != null){
+              for (int i = 0 ; i < value.length ; i++){
+                if (value[i] != null){
+                  print(value[i]?.AccomplishmentText);
+                  print("this is the skillid :");
+                  print(value[i]?.AcomplishmentId);
+                  addAccomplishCard(value[i]?.AcomplishmentId , value[i]?.AccomplishmentText );
+                  var li = otherList[i].text;
+                  print("$i , $li");
+                }
+                
+              }
+             }
+          }));
+          print(otherAccomplishment);
+          }
+      }));
+    }
+
+    
+    // print("this my profileid $profileId");
+    
+  }
+  @override
+  void initState() {
+    getAccomplish();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -689,11 +742,16 @@ class _OtherAccomplishState extends State<OtherAccomplish> {
 
       ],) ,),
         
-
+      Flexible(child:
+       ListView.builder(
+        itemCount: otherList.length,
+        itemBuilder: (_,index) { 
+          return OtherAccomplishCard(otherList[index].id.toString(), otherList[index].text);
+          ;}))
       /*Flexible(child: ListView.builder(
         itemCount: list.length,
         itemBuilder: (_,index) => list[index]))*/
-      OtherAccomplishCard() ,
+      // OtherAccomplishCard() ,
 
       ], 
       )
@@ -745,9 +803,18 @@ class _OtherAccomplishState extends State<OtherAccomplish> {
 //   }
 // }
 
-class OtherAccomplishCard extends StatelessWidget {
-  const OtherAccomplishCard({ Key? key }) : super(key: key);
 
+
+class OtherAccomplishCard extends StatefulWidget {
+  const OtherAccomplishCard(this.id , this.text);
+  final id ;
+  final text ;
+
+  @override
+  _OtherAccomplishCardState createState() => _OtherAccomplishCardState();
+}
+
+class _OtherAccomplishCardState extends State<OtherAccomplishCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -757,12 +824,39 @@ class OtherAccomplishCard extends StatelessWidget {
       color: Colors.redAccent,
       child: Container(margin: EdgeInsets.only(left: 5),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-        Text("project" , style: TextStyle(color: Colors.white),) ,
+        Text(widget.id , style: TextStyle(color: Colors.white),) ,
+            Container(
+              padding: EdgeInsets.only(left: 5),
+              child: Text(widget.text , style: TextStyle(color: Colors.white),),)
       ],)
       )
       
     );
   }
 }
+
+// class OtherAccomplishCard extends StatelessWidget {
+//   const OtherAccomplishCard(this.id , this.text);
+//   final id ;
+//   final text ;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: EdgeInsets.only(top: 10),
+//       height: 50,
+//       width: MediaQuery.of(context).size.width*0.88,
+//       color: Colors.redAccent,
+//       child: Container(margin: EdgeInsets.only(left: 5),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//         Text("project" , style: TextStyle(color: Colors.white),) ,
+//       ],)
+//       )
+      
+//     );
+//   }
+// }
