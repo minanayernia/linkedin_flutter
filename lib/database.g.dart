@@ -101,7 +101,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `CommentLike` (`commentLikeId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL, `commentId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`commentId`) REFERENCES `Comment` (`commentId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Comment` (`commentId` INTEGER PRIMARY KEY AUTOINCREMENT, `commentText` TEXT NOT NULL, `is_replied` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, `ReplyCommentId` INTEGER, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`ReplyCommentId`) REFERENCES `Comment` (`commentId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+            'CREATE TABLE IF NOT EXISTS `Comment` (`commentId` INTEGER PRIMARY KEY AUTOINCREMENT, `commentText` TEXT NOT NULL, `is_replied` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, `commentId` INTEGER, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`ReplyCommentId`) REFERENCES `Comment` (`commentId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Like` (`LikeId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -661,9 +661,13 @@ class _$LikeDao extends LikeDao {
   }
 
   @override
-  Future<int?> findLikeIdByUseridPostid(int userId, int PostId) async {
-    await _queryAdapter.queryNoReturn(
-        'SELECT LikeId FROM Like WHERE userId = ?1 and PostId = ?2',
+  Future<Like?> findLikeIdByUseridPostid(int userId, int PostId) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Like WHERE userId = ?1 and PostId = ?2',
+        mapper: (Map<String, Object?> row) => Like(
+            LikeId: row['LikeId'] as int?,
+            userId: row['userId'] as int,
+            PostId: row['postId'] as int),
         arguments: [userId, PostId]);
   }
 
@@ -695,7 +699,7 @@ class _$CommentDao extends CommentDao {
                   'is_replied': item.is_replied,
                   'userId': item.userId,
                   'postId': item.postId,
-                  'ReplyCommentId': item.ReplyCommentId
+                  'commentId': item.ReplyCommentId
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -711,6 +715,18 @@ class _$CommentDao extends CommentDao {
     await _queryAdapter.queryNoReturn(
         'SELECT COUNT(commentId) FROM comment WHERE postId = ?1',
         arguments: [postId]);
+  }
+
+  @override
+  Future<Comment?> updateCommentForReply(int ReplyCommentId) async {
+    return _queryAdapter.query(
+        'UPDATE Comment SET ReplyCommentId = ?1 AND is_replied = 1',
+        mapper: (Map<String, Object?> row) => Comment(
+            commentId: row['commentId'] as int?,
+            postId: row['postId'] as int,
+            userId: row['userId'] as int,
+            commentText: row['commentText'] as String),
+        arguments: [ReplyCommentId]);
   }
 
   @override
@@ -755,6 +771,18 @@ class _$CommentLikeDao extends CommentLikeDao {
     await _queryAdapter.queryNoReturn(
         'SELECT COUNT(commentLikeId) FROM commentLike WHERE commentId = ?1',
         arguments: [commentId]);
+  }
+
+  @override
+  Future<CommentLike?> findCommentLikeBYUseridCommentId(
+      int userId, int commentId) async {
+    return _queryAdapter.query(
+        'SELECT * FROM CommentLike WHERE userId = ?1 AND commentId  = ?2',
+        mapper: (Map<String, Object?> row) => CommentLike(
+            commentLikeId: row['commentLikeId'] as int?,
+            userId: row['userId'] as int,
+            commentId: row['commentId'] as int),
+        arguments: [userId, commentId]);
   }
 
   @override

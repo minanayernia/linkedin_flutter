@@ -25,7 +25,8 @@ import 'User.dart';
       ForeignKey(childColumns: ['postId'],
      parentColumns: ['postId'],
       entity: Post ),
-      ForeignKey(childColumns: ['ReplyCommentId'],
+      ForeignKey(
+      childColumns: ['ReplyCommentId'],
       parentColumns: ['commentId'],
       entity: Comment ),
 ] )
@@ -42,7 +43,7 @@ class Comment {
   @ColumnInfo(name: 'postId')
   int postId ;
 
-  @ColumnInfo(name: 'ReplyCommentId')
+  @ColumnInfo(name: 'commentId')
   int? ReplyCommentId ;
   Comment( {
     this.commentId ,
@@ -55,6 +56,9 @@ class Comment {
 abstract class CommentDao {
   @Query('SELECT COUNT(commentId) FROM comment WHERE postId = :postId')
   Future<int?> commentNumber(int postId);
+
+  @Query('UPDATE Comment SET ReplyCommentId = :ReplyCommentId AND is_replied = 1')
+  Future<Comment?> updateCommentForReply(int ReplyCommentId);
 
   @Query('SELECT * FROM comment  WHERE postId = :postId')
   Future<List<Comment>> findAllComment(int postId);

@@ -45,11 +45,12 @@ void countLike(int postId)async{
   likeNumbers = await widget.db.likeDao.likeNumbers(postId);
   widget.db.likeDao.likelist(postId).then((value) => setState((){
     if (value != null){
+      int count = 0 ;
       for(int i = 0 ; i < value.length ; i++){
         // likeNumbers ++ ;
         likelist.add(value[i]?.userId);
         // print()
-        // print(likelist.length);
+        print(likelist[i]);
       }
     }
   }
@@ -62,23 +63,45 @@ void addLike(int postId , int userId)async{
   print("this liked post id : $postId");
   print("this liker userId :$userId");
   var like = Like(userId: userId , PostId: postId);
-  await widget.db.likeDao.insertLike(like).then((value) => setState((){
-    likelist = [];
-    countLike(postId);
+  widget.db.likeDao.findLikeIdByUseridPostid(userId, postId).then((value) => setState(() {
+    if (value != null){
+      print("value is not null");
+      print(value);
+    }
+
+    if (value == null ){
+      print(userId);
+      print("value is nulllllllllllllll");
+      print(value);
+      widget.db.likeDao.insertLike(like).then((value) => setState((){
+      likelist = [];
+      countLike(postId);
   }));
+    }
+  }));
+  
 }
 var commentIds = [];
 List<String?> commentsTexts=[];
 List<int?> commentUserIds= [];
 List<String?> commentsUserNames = [];
+List<int?> commentrEPLY = [] ;
 List<int> temp = [] ;
-  void addComment(int userId , int postId , String commentText)async{
+  void addComment(int userId , int postId , String commentText , String replyto)async{
     var comment = Comment(postId: postId, userId: userId, commentText: commentText);
     await widget.db.commentDao.insertComment(comment);
+    print("controller of replyto :");
+    print(replyto.toString());
+    //for reply
+    // if(replyto != null){
+    //   widget.db.commentDao.updateCommentForReply(int.parse(replyto));
+    // }
+
     print("after inserting comment");
     commentIds = [];
     commentsTexts=[];
     commentUserIds= [];
+    commentrEPLY = [] ;
     allComments(postId);
     newCommentController.text = "" ;
   }
@@ -88,6 +111,7 @@ void allComments(int postId)async{
   commentsTexts = [] ;
   commentsUserNames = [] ;
   commentIds = [] ;
+
   widget.db.commentDao.findAllComment(postId).then((value) => setState(() { 
     if (value != null){
       for (int i = 0 ; i < value.length ; i++){
@@ -116,6 +140,7 @@ void allComments(int postId)async{
         print(value[i].commentId);
         commentIds.add(value[i].commentId);
         commentUserIds.add(value[i].userId);
+        commentrEPLY.add(value[i].ReplyCommentId);
         if (value[i] != null){
           commentsTexts.add(value[i].commentText);
         }
@@ -128,8 +153,15 @@ void allComments(int postId)async{
 
 void likeComment(int commentId , int userId)async{
   var commentLike = CommentLike(userId: userId, commentId: commentId);
-  await widget.db.commentLikeDao.insertCommentLike(commentLike);
-  print("after inserting commentlike ");
+  widget.db.commentLikeDao.findCommentLikeBYUseridCommentId(userId, commentId).then((value) => setState(() {
+    if (value == null){
+      widget.db.commentLikeDao.insertCommentLike(commentLike);
+      print("after inserting commentlike ");
+    }else{
+      print("you have liked this comment before!");
+    }
+  }));
+  
 }
   @override
   void initState() {
@@ -265,7 +297,7 @@ void likeComment(int commentId , int userId)async{
            width: MediaQuery.of(context).size.width*0.8,
            child: TextButton(
              onPressed: (){
-             return addComment(widget.id, widget.postId, newCommentController.text);
+             return addComment(widget.id, widget.postId, newCommentController.text , toWhomCommentController.text);
            }, child: Text("Send")) ,),
          
 
@@ -354,7 +386,10 @@ void likeComment(int commentId , int userId)async{
           Text("  "),
           Text(commentsUserNames.length > 0 ? commentsUserNames[index]! : '0'),
           Text("   likes:"),
-          Text(commentlikes.length > 0 ? commentlikes[index].toString() : '0')
+          Text(commentlikes.length > 0 ? commentlikes[index].toString() : '0'),
+          Text("   Reply to:"),
+          Text(commentrEPLY.length > 0 ? commentrEPLY[index].toString() : ""),
+
           ],),
 
           Container(
