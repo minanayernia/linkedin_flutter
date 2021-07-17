@@ -140,7 +140,7 @@ void allComments(int postId)async{
         print(value[i].commentId);
         commentIds.add(value[i].commentId);
         commentUserIds.add(value[i].userId);
-        commentrEPLY.add(value[i].ReplyCommentId);
+        // commentrEPLY.add(value[i].ReplyCommentId);
         if (value[i] != null){
           commentsTexts.add(value[i].commentText);
         }
@@ -726,6 +726,7 @@ class _NewPostCardState extends State<NewPostCard> {
     var newPost = Post(PostCaption: caption, userId: widget.user);
     await widget.db.postDao.insertPost(newPost);
     print("new post added ");
+    userPosts = [];
     var a = widget.user ;
     widget.db.postDao.findAllPosts(a).then((value) => setState((){
       // if()
@@ -1011,11 +1012,50 @@ class _AddCommentState extends State<AddComment> {
     );
   }
 }
+List<PostCard> otherUserPosts = [] ; 
+class OtherPost extends StatefulWidget {
+  const OtherPost(this.db , this.user);
+  final user ;
+  final AppDatabase db ;
 
+  @override
+  _OtherPostState createState() => _OtherPostState();
+}
 
-class OtherPost extends StatelessWidget {
-  const OtherPost({ Key? key }) : super(key: key);
-
+class _OtherPostState extends State<OtherPost> {
+  void addPostCard( String text , var postId){
+  userPosts.add(new PostCard(text , widget.user , postId, widget.db));
+}
+void getAllUserPosts()async{
+  var a = widget.user ;
+  if (a != null){
+    print("we are in get all posts");
+    widget.db.postDao.findAllPosts(a).then((value) => setState((){
+      if (value != null){
+        print("the list of posts is not empty");
+        for(int i = 0 ; i < value.length ; i++){
+          print("inside for of list posts");
+          // userPosts[i] = value[i];
+          addPostCard(value[i].PostCaption , value[i].PostId);
+          print("post id");
+          print(value[i].PostId);
+          print("post caption");
+          print(value[i].PostCaption);
+          print("userid of post");
+          print(value[i].userId);
+        }
+      }
+    }));
+  }
+}
+@override
+void initState(){
+  print("before get all user posts");
+  getAllUserPosts();
+  print("all posts");
+  print(userPosts);
+  super.initState();
+}
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1034,23 +1074,60 @@ class OtherPost extends StatelessWidget {
         /*Flexible(child: ListView.builder(
         itemCount: list.length,
         itemBuilder: (_,index) => list[index]))*/
-        Container(
-          height: 500,
-          child:SingleChildScrollView(child: Column(children: [
-          // PostCard(),
-        ],),
-        ) ,)
+        Flexible(child: ListView.builder(
+        itemCount: otherUserPosts.length,
+        itemBuilder: (_,index) {
+          return PostCard(otherUserPosts[index].caption , otherUserPosts[index].id, otherUserPosts[index].postId, widget.db);}))
         
         
         
 
       ],)
-      
-      
-      
+
+
+
+
     );
   }
 }
+// class OtherPost extends StatelessWidget {
+//   const OtherPost({ Key? key }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: EdgeInsets.only(top: 20),
+//       height: MediaQuery.of(context).size.height*0.8,
+//       width: MediaQuery.of(context).size.width*0.9,
+//       color: Colors.black87,
+//       child : Column(children: [
+//         Container(
+//           height: 30,
+//           alignment: Alignment.centerLeft,
+//           margin: EdgeInsets.only(left: 10 , top: 7),
+//           child:Text("POSTS" , style: TextStyle(color: Colors.white , fontSize: 15),) 
+//         ,),
+        
+//         /*Flexible(child: ListView.builder(
+//         itemCount: list.length,
+//         itemBuilder: (_,index) => list[index]))*/
+//         Container(
+//           height: 500,
+//           child:SingleChildScrollView(child: Column(children: [
+//           // PostCard(),
+//         ],),
+//         ) ,)
+        
+        
+        
+
+//       ],)
+      
+      
+      
+//     );
+//   }
+// }
 
 
 class HomePosts extends StatefulWidget {
