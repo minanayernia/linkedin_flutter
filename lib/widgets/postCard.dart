@@ -67,9 +67,9 @@ void addLike(int postId , int userId)async{
   }));
 }
 var commentIds = [];
-List<String?> commentsTexts=[];
-List<int?> commentUserIds= [];
-List<String?> commentsUserNames = [];
+List<String> commentsTexts=[];
+List<int> commentUserIds= [];
+List<String> commentsUserNames = [];
 List<int> temp = [] ;
   void addComment(int userId , int postId , String commentText)async{
     var comment = Comment(postId: postId, userId: userId, commentText: commentText);
@@ -78,6 +78,7 @@ List<int> temp = [] ;
     commentIds = [];
     commentsTexts=[];
     commentUserIds= [];
+    commentsUserNames = [] ;
     allComments(postId);
     newCommentController.text = "" ;
   }
@@ -87,23 +88,42 @@ void allComments(int postId)async{
     if (value != null){
       for (int i = 0 ; i < value.length ; i++){
         temp.add(0);
-        var userid = value[i]?.userId ;
-        if (userid != null ){
-          widget.db.userDao.findUserNameByUserId(userid).then((val) => setState(() {
-            commentsUserNames.add(val?.userName);
-            print("username is adding to commentusernamelist");
-          }));
-        }
+        
 
-        print(value[i]?.commentId);
-        commentIds.add(value[i]?.commentId);
-        commentUserIds.add(value[i]?.userId);
+        print(value[i].commentId);
+        commentIds.add(value[i].commentId);
+        commentUserIds.add(value[i].userId);
         if (value[i] != null){
-          commentsTexts.add(value[i]?.commentText);
+          commentsTexts.add(value[i].commentText);
         }
         
         print(commentIds);
       }
+      // var userid = value[i]?.userId ;
+      print("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+      print(commentUserIds);
+      for(int j = 0 ; j < commentUserIds.length ; j++){
+          // int userid = commentUserIds[j]! ;
+          // print(userid) ;
+          widget.db.userDao.findUserNameByUserId(commentUserIds[j]).then((val) => setState(() {
+            if(val != null){
+              print("val is not nulllll");
+              commentsUserNames.add(val.userName);
+              print(commentsUserNames);
+              print(commentsTexts);
+              print(commentUserIds);
+              print(commentIds);
+              print(val.userName);
+            print("username is adding to commentusernamelist");
+            }
+            
+            
+          }));
+        
+      }
+      print("xoxoxoxoxoxoxoxoxoxoxoxoxoxoxoxoxoxo");
+      print(commentsUserNames);
+        
     }
     }));
 }
@@ -321,7 +341,7 @@ void allComments(int postId)async{
         margin: EdgeInsets.only(top:20),
         height: 50,
         width: MediaQuery.of(context).size.width*0.86,
-        color: Colors.redAccent[100],
+        color: Colors.white12,
         child: Container(
           width: MediaQuery.of(context).size.width*0.86,
           height: 30,
@@ -331,16 +351,23 @@ void allComments(int postId)async{
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-          Text("commentId :"),
-          Text(commentIds.length > 0 ? commentIds[index].toString() : '0'),
+          // Text("commentId :"),
+          Container(
+            padding: EdgeInsets.only(left:10),
+            child: Text(commentIds.length > 0 ? commentIds[index].toString() : '0' , style: TextStyle(color: Colors.white),),),
+          
           Text("  "),
-          Text(commentsUserNames.length > 0 ? commentsUserNames[index]! : '0'),
+          // Text(commentsUserNames.length > 0 ? commentsUserNames[index] : '0' , style: TextStyle(color: Colors.white), ),
           ],),
 
           Container(
             width: MediaQuery.of(context).size.width*0.9,
-            color: Colors.white,
-            child: Text(commentsTexts.length > 0 ? commentsTexts[index]! : '0' , style: TextStyle(color: Colors.redAccent),) ,)
+            // color: Colors.white12,
+            child: Container(
+              padding: EdgeInsets.only(left:10),
+              child: Text(commentsTexts.length > 0 ? commentsTexts[index] : '0' , style: TextStyle(color: Colors.white),
+            ) ,)
+            )
           
       ],),
         )
