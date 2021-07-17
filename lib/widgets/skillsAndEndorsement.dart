@@ -644,6 +644,7 @@ class _NewSkillState extends State<NewSkill> {
     print(widget.user);
     if(a != null){
       widget.db.userProfileDao.findProfileByUserId(a).then((value) => setState((){
+        print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
       if(value != null){
         profid = value.ProfileId ;
         print("profid : $profid");
@@ -655,10 +656,10 @@ class _NewSkillState extends State<NewSkill> {
     }
     
     var checkCopyField ;
-     widget.db.skillDao.findSkillByName(skillText , profid).then((value) => setState((){
-      if (value != null ){
+     widget.db.skillDao.findSkillByName(skillText , profid).then((v) => setState((){
+      if (v != null ){
         print("find skill by name is not null");
-        checkCopyField = value ;
+        checkCopyField = v ;
       }else{
         print("find skill by name is null");
         checkCopyField = null ;

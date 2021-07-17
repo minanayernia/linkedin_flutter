@@ -45,8 +45,8 @@ class Comment {
   @ColumnInfo(name: 'postId')
   int postId ; 
 
-  @ColumnInfo(name: 'ReplyCommentId')
-  int? ReplyCommentId ;
+  // @ColumnInfo(name: 'ReplyCommentId')
+  // int? ReplyCommentId ;
   Comment( {
     this.commentId ,
     required this.postId ,

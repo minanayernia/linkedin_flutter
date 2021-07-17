@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
           NewMessage() ,
           InvitationList(widget.user , widget.db),
           PeopleYouMayKnowList(),
-          HomePosts(),
+          HomePosts(widget.db , widget.user),
           
       // SignUpLogIn()
       
