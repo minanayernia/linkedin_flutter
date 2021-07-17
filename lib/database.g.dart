@@ -78,6 +78,8 @@ class _$AppDatabase extends AppDatabase {
 
   CommentDao? _commentDaoInstance;
 
+  CommentLikeDao? _commentLikeDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -96,6 +98,8 @@ class _$AppDatabase extends AppDatabase {
         await callback?.onUpgrade?.call(database, startVersion, endVersion);
       },
       onCreate: (database, version) async {
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `CommentLike` (`commentLikeId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL, `commentId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`commentId`) REFERENCES `Comment` (`commentId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Comment` (`commentId` INTEGER PRIMARY KEY AUTOINCREMENT, `commentText` TEXT NOT NULL, `is_replied` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, `ReplyCommentId` INTEGER, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`ReplyCommentId`) REFERENCES `Comment` (`commentId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -167,6 +171,12 @@ class _$AppDatabase extends AppDatabase {
   CommentDao get commentDao {
     return _commentDaoInstance ??= _$CommentDao(database, changeListener);
   }
+
+  @override
+  CommentLikeDao get commentLikeDao {
+    return _commentLikeDaoInstance ??=
+        _$CommentLikeDao(database, changeListener);
+  }
 }
 
 class _$PostDao extends PostDao {
@@ -234,13 +244,13 @@ class _$UserDao extends UserDao {
   final InsertionAdapter<User> _userInsertionAdapter;
 
   @override
-  Future<List<User?>> searchByUsername(String input) async {
+  Future<List<User?>> searchByUsername(String userName) async {
     return _queryAdapter.queryList('SELECT * FROM User WHERE userName LIKE ?1',
         mapper: (Map<String, Object?> row) => User(
             userId: row['userId'] as int?,
             password: row['password'] as String,
             userName: row['userName'] as String),
-        arguments: [input]);
+        arguments: [userName]);
   }
 
   @override
@@ -717,5 +727,46 @@ class _$CommentDao extends CommentDao {
   @override
   Future<void> insertComment(Comment comment) async {
     await _commentInsertionAdapter.insert(comment, OnConflictStrategy.abort);
+  }
+}
+
+class _$CommentLikeDao extends CommentLikeDao {
+  _$CommentLikeDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _commentLikeInsertionAdapter = InsertionAdapter(
+            database,
+            'CommentLike',
+            (CommentLike item) => <String, Object?>{
+                  'commentLikeId': item.commentLikeId,
+                  'userId': item.userId,
+                  'commentId': item.commentId
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<CommentLike> _commentLikeInsertionAdapter;
+
+  @override
+  Future<int?> commentLikenNumber(int commentId) async {
+    await _queryAdapter.queryNoReturn(
+        'SELECT COUNT(commentLikeId) FROM commentLike WHERE commentId = ?1',
+        arguments: [commentId]);
+  }
+
+  @override
+  Future<int?> commentLikeList(int commentId) async {
+    await _queryAdapter.queryNoReturn(
+        'SELECT commentLikeId FROM CommentLike WHERE commentId ?1',
+        arguments: [commentId]);
+  }
+
+  @override
+  Future<void> insertCommentLike(CommentLike commentLike) async {
+    await _commentLikeInsertionAdapter.insert(
+        commentLike, OnConflictStrategy.abort);
   }
 }

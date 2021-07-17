@@ -19,7 +19,7 @@ class NavigationBar extends StatefulWidget {
 
 class _NavigationBarState extends State<NavigationBar> {
   List<String?> items = [] ;
-  // var loplop = ["mina" , "bahar"] ;
+  var loplop = ["mina" , "bahar"] ;
   // var mylist ;
   void searchUser(String text)async{
     var searchtext = "%"+text+"%" ;
@@ -129,14 +129,14 @@ void m()
                     suffixIcon: PopupMenuButton(
     
                       icon: const Icon(Icons.search),
-                        onSelected: (String? value) {
-                          searchUserController.text = value!;
+                        onSelected: (Icon) {
+                          // searchUserController.text = value!;
                           print("onselceted of pop up menu");
-                          searchUser(searchUserController.text);
+                          // searchUser(searchUserController.text);
                         },
                       
                       itemBuilder: (BuildContext context){
-                          return items.map<PopupMenuItem<String?>>((String? value) {
+                          return loplop.map<PopupMenuItem<String?>>((String? value) {
                             return new PopupMenuItem(child: new Text(value!), value: value);
                           }).toList();
                         },)
