@@ -38,9 +38,9 @@ class _OtherUserViewState extends State<OtherUserView> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             NavigationBar(widget.db,widget.user),
-            //OtherIntro(db),
+            OtherIntro(widget.db),
             OtherAdditionalInfo() ,
-            OtherAccomplish(),
+            OtherAccomplish(widget.db),
             OtherSkill() ,
             OtherLanguage(),
             OtherPost() ,

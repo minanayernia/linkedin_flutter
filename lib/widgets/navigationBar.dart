@@ -18,6 +18,7 @@ class NavigationBar extends StatefulWidget {
 }
 
 class _NavigationBarState extends State<NavigationBar> {
+  bool inOtherPage = false ;
   List<String?> items = [] ;
   var loplop = ["mina" , "bahar"] ;
   // var mylist ;
@@ -47,51 +48,7 @@ class _NavigationBarState extends State<NavigationBar> {
 
 
   }
-  
-void m()
-{
-  final TextEditingController _controller = new TextEditingController();
-  // var items = ['Working a lot harder', 'Being a lot smarter', 'Being a self-starter', 'Placed in charge of trading charter'];
-  runApp(
-    new MaterialApp(
-      title: 'Drop List Example',
-      home: new Scaffold(
-        appBar: new AppBar(title: const Text('Drop List Example')),
-        body: new Center(
-          child: new Container(
-            child: new Column(
-              children: [
-                new Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: new Row(
-                    children: <Widget>[
-                      new Expanded(
-                        child: new TextField(
-                          controller: _controller)
-                      ),
-                      new PopupMenuButton<String?>(
-                        icon: const Icon(Icons.search),
-                        onSelected: (String? value) {
-                          // _controller.text = value!;
-                          searchUser(_controller.text);
-                        },
-                        itemBuilder: (BuildContext context) {
-                          return items.map<PopupMenuItem<String?>>((String? value) {
-                            return new PopupMenuItem(child: new Text(value!), value: value);
-                          }).toList();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
-}
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -109,41 +66,38 @@ void m()
           
           ),
           
-          
-          Row(
+          Container(
+            width: 600,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
 
-              
-              Container(
-                color: Colors.white,
-                    height: 40,
-                    width: 400,
-                    child: TextField(
-                    controller: searchUserController,
-                    textAlign: TextAlign.left,
-                    decoration: InputDecoration(
-                    hintText: "Search user...",
-                    
-                    contentPadding: EdgeInsets.only(left: 10 , top: 9),
-                    hintStyle: TextStyle(color: Colors.redAccent),
-                    suffixIcon: PopupMenuButton(
-    
-                      icon: const Icon(Icons.search),
-                        onSelected: (Icon) {
-                          // searchUserController.text = value!;
-                          print("onselceted of pop up menu");
-                          // searchUser(searchUserController.text);
-                        },
-                      
-                      itemBuilder: (BuildContext context){
-                          return loplop.map<PopupMenuItem<String?>>((String? value) {
-                            return new PopupMenuItem(child: new Text(value!), value: value);
-                          }).toList();
-                        },)
-              ),
-              ),
 
-          ),
+              //       child: TextField(
+              //       controller: searchUserController,
+              //       textAlign: TextAlign.left,
+              //       decoration: InputDecoration(
+              //       hintText: "Search user...",
+                    
+              //       contentPadding: EdgeInsets.only(left: 10 , top: 9),
+              //       hintStyle: TextStyle(color: Colors.redAccent),
+              //       suffixIcon: PopupMenuButton(
+    
+              //         icon: const Icon(Icons.search),
+              //           onSelected: (Icon) {
+              //             // searchUserController.text = value!;
+              //             print("onselceted of pop up menu");
+              //             // searchUser(searchUserController.text);
+              //           },
+                      
+              //         itemBuilder: (BuildContext context){
+              //             return loplop.map<PopupMenuItem<String?>>((String? value) {
+              //               return new PopupMenuItem(child: new Text(value!), value: value);
+              //             }).toList();
+              //           },)
+              // ),
+              // ),
+
                 TextButton(onPressed: (){},
                  child:Text("Home")),
                  TextButton(onPressed: (){},
@@ -152,9 +106,26 @@ void m()
                  child:Text("Message")),
                  TextButton(onPressed: (){},
                  child:Text("My Network")),
+
+                 Visibility(
+                   visible: true,
+                   child: Container(
+                    color: Colors.white,
+                    height: 30,
+                    width: 100,
+                    child: ButtonTheme(
+                    height: 20,
+                    minWidth: MediaQuery.of(context).size.width*0.1,
+                    buttonColor: Colors.white,
+                    child: RaisedButton(onPressed: (){
+          },
+           child: Text("Connect" , style: TextStyle(color: Colors.redAccent),)))
+              ),)
+                 
                  
             ],
-          )
+          ),)
+          
         ],
       ),
       
