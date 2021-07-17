@@ -13,10 +13,12 @@ import '../database.dart';
 
 
 class SearchUserCard extends StatefulWidget {
-  const SearchUserCard(this.db , this.username , this.id);
+
+  const SearchUserCard(this.db , this.username , this.id , this.myuser);
   final username ;
   final AppDatabase db ;
   final id ;
+  final myuser ;
   @override
   _SearchUserCardState createState() => _SearchUserCardState();
 }
@@ -33,7 +35,7 @@ class _SearchUserCardState extends State<SearchUserCard> {
         onTap: (){
            Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => OtherUserView(widget.db , widget.id)),);
+            MaterialPageRoute(builder: (context) => OtherUserView(widget.db , widget.id , widget.myuser)),);
         },
         child: Container(
         alignment: Alignment.centerLeft,
@@ -64,7 +66,7 @@ class Intro extends StatefulWidget {
 class _IntroState extends State<Intro> {
   List<SearchUserCard> list = [];
   void addSearchCard(var db  , String? username , int? id,){
-  list.add(new SearchUserCard(db , username , id)
+  list.add(new SearchUserCard(db , username , id , widget.user)
   );
   setState((){});
 }
@@ -284,7 +286,7 @@ class _IntroState extends State<Intro> {
       ),
             Flexible(child: ListView.builder(
             itemCount: list.length,
-            itemBuilder: (_,index) => SearchUserCard( widget.db ,list[index].username , list[index].id)))
+            itemBuilder: (_,index) => SearchUserCard( widget.db ,list[index].username , list[index].id , widget.user)))
 
           ],),
 

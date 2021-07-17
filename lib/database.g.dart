@@ -101,7 +101,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `CommentLike` (`commentLikeId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL, `commentId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`commentId`) REFERENCES `Comment` (`commentId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Comment` (`commentId` INTEGER PRIMARY KEY AUTOINCREMENT, `commentText` TEXT NOT NULL, `is_replied` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, `commentId` INTEGER, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`ReplyCommentId`) REFERENCES `Comment` (`commentId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+            'CREATE TABLE IF NOT EXISTS `Comment` (`commentId` INTEGER PRIMARY KEY AUTOINCREMENT, `commentText` TEXT NOT NULL, `is_replied` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, `ReplyCommentId` INTEGER, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`ReplyCommentId`) REFERENCES `Comment` (`commentId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Like` (`LikeId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -621,10 +621,48 @@ class _$NetworkDao extends NetworkDao {
   }
 
   @override
-  Future<int?> AllUsersInYourNetwork(int userId) async {
-    await _queryAdapter.queryNoReturn(
-        '((SELECT userReqId as user_id FROM network WHERE userId = ?1) UNION (SELECT userId as user_id FROM network WHERE userReqId = ?1))',
+  Future<List<Network?>> AllUsersInYourNetwork(int userId) async {
+    return _queryAdapter.queryList(
+        '((SELECT * FROM network WHERE userId = ?1) UNION (SELECT * FROM network WHERE userReqId = ?1))',
+        mapper: (Map<String, Object?> row) => Network(networkId: row['networkId'] as int?, userReqId: row['userReqId'] as int?, userId: row['userId'] as int?),
         arguments: [userId]);
+  }
+
+  @override
+  Future<Network?> acceptInvitation(int networkId) async {
+    return _queryAdapter.query(
+        'UPDATE Network SET networkState = 1 WHERE networkId = ?1',
+        mapper: (Map<String, Object?> row) => Network(
+            networkId: row['networkId'] as int?,
+            userReqId: row['userReqId'] as int?,
+            userId: row['userId'] as int?),
+        arguments: [networkId]);
+  }
+
+  @override
+  Future<List<Network?>> invitations(int yourId) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Network WHERE networkState = 0 and userId = ?1',
+        mapper: (Map<String, Object?> row) => Network(
+            networkId: row['networkId'] as int?,
+            userReqId: row['userReqId'] as int?,
+            userId: row['userId'] as int?),
+        arguments: [yourId]);
+  }
+
+  @override
+  Future<Network?> findNetwork(int myuser, int anotheruser) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Network WHERE (userId = ?1 and userReqId = ?2) or (userId = ?2 and userReqId = ?1)',
+        mapper: (Map<String, Object?> row) => Network(networkId: row['networkId'] as int?, userReqId: row['userReqId'] as int?, userId: row['userId'] as int?),
+        arguments: [myuser, anotheruser]);
+  }
+
+  @override
+  Future<void> deletNetwork(int anotheruser, int myid) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE FROM Network WHERE userReqId = ?1 and userId = ?2',
+        arguments: [anotheruser, myid]);
   }
 
   @override
@@ -699,7 +737,7 @@ class _$CommentDao extends CommentDao {
                   'is_replied': item.is_replied,
                   'userId': item.userId,
                   'postId': item.postId,
-                  'commentId': item.ReplyCommentId
+                  'ReplyCommentId': item.ReplyCommentId
                 });
 
   final sqflite.DatabaseExecutor database;

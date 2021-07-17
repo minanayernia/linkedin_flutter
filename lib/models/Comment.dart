@@ -43,7 +43,7 @@ class Comment {
   @ColumnInfo(name: 'postId')
   int postId ;
 
-  @ColumnInfo(name: 'commentId')
+  @ColumnInfo(name: 'ReplyCommentId')
   int? ReplyCommentId ;
   Comment( {
     this.commentId ,

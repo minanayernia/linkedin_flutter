@@ -1,5 +1,6 @@
 
 
+import 'package:dbproject/models/Network.dart';
 import 'package:dbproject/models/User.dart';
 import 'package:flutter/material.dart';
 
@@ -10,9 +11,10 @@ TextEditingController searchUserController = TextEditingController();
 
   // var items = ['Working a lot harder', 'Being a lot smarter', 'Being a self-starter', 'Placed in charge of trading charter'];
 class NavigationBar extends StatefulWidget {
-  const NavigationBar(this.db, this.user) ;
+  const NavigationBar(this.db, this.user , this.myuser) ;
   final AppDatabase db ;
   final user ;
+  final myuser ;
   @override
   _NavigationBarState createState() => _NavigationBarState();
 }
@@ -47,6 +49,24 @@ class _NavigationBarState extends State<NavigationBar> {
     }
 
 
+  }
+
+  void addToNetwork(int user , int myuser)async{
+    if(user == myuser){
+      print("you cant connect to your self");
+    }else{
+      widget.db.netwokDao.findNetwork(myuser, user).then((value) => setState((){
+        print("inside finding network");
+        print(value);
+        if (value != null){
+          print("you are connected already !");
+        }else{
+          var network = Network(userId: user , userReqId: myuser);
+          widget.db.netwokDao.insertNetwork(network);
+          print("networkadded!");
+        }
+      }));
+    }
   }
 
   @override
@@ -118,6 +138,7 @@ class _NavigationBarState extends State<NavigationBar> {
                     minWidth: MediaQuery.of(context).size.width*0.1,
                     buttonColor: Colors.white,
                     child: RaisedButton(onPressed: (){
+                      return addToNetwork(widget.user , widget.myuser);
           },
            child: Text("Connect" , style: TextStyle(color: Colors.redAccent),)))
               ),)

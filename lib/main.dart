@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       crossAxisAlignment: CrossAxisAlignment.center,
     children: [
-      NavigationBar(widget.db,widget.user),
+      NavigationBar(widget.db,widget.user , widget.user),
           
           Intro( db : widget.db , user :widget.user),
 
@@ -118,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
           EditLanguageCard(),
           Message() ,
           NewMessage() ,
-          InvitationList(),
+          InvitationList(widget.user , widget.db),
           PeopleYouMayKnowList(),
           HomePosts(),
           
