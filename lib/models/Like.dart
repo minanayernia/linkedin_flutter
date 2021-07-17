@@ -43,6 +43,9 @@ abstract class LikeDao {
   @Query('SELECT COUNT(LikeId) FROM Like WHERE PostId = :postId')
   Future<int?> likeNumbers(int postId);
 
+  @Query('SELECT LikeId FROM Like WHERE userId = :userId and PostId = :PostId')
+  Future<int?> findLikeIdByUseridPostid(int userId, int PostId );
+
 
   @Query('SELECT * FROM Like where PostId = :postId')
   Future<List<Like?>> likelist(int postId);

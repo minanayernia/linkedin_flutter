@@ -9,7 +9,7 @@ import 'package:dbproject/widgets/skillsAndEndorsement.dart';
 import 'package:flutter/material.dart';
 
 import '../database.dart';
-
+ 
 class PostCard extends StatefulWidget {
   const PostCard(this.caption , this.id ,  this.postId ,this.db);
   final postId ;
@@ -67,9 +67,10 @@ void addLike(int postId , int userId)async{
   }));
 }
 var commentIds = [];
-var commentsTexts=[];
-var commentUserIds= [];
-var commentsUserNames = [];
+List<String?> commentsTexts=[];
+List<int?> commentUserIds= [];
+List<String?> commentsUserNames = [];
+List<int> temp = [] ;
   void addComment(int userId , int postId , String commentText)async{
     var comment = Comment(postId: postId, userId: userId, commentText: commentText);
     await widget.db.commentDao.insertComment(comment);
@@ -85,6 +86,7 @@ void allComments(int postId)async{
   widget.db.commentDao.findAllComment(postId).then((value) => setState(() { 
     if (value != null){
       for (int i = 0 ; i < value.length ; i++){
+        temp.add(0);
         var userid = value[i]?.userId ;
         if (userid != null ){
           widget.db.userDao.findUserNameByUserId(userid).then((val) => setState(() {
@@ -96,7 +98,10 @@ void allComments(int postId)async{
         print(value[i]?.commentId);
         commentIds.add(value[i]?.commentId);
         commentUserIds.add(value[i]?.userId);
-        commentsTexts.add(value[i]?.commentText);
+        if (value[i] != null){
+          commentsTexts.add(value[i]?.commentText);
+        }
+        
         print(commentIds);
       }
     }
@@ -299,10 +304,19 @@ void allComments(int postId)async{
 
     //End new comment
 
+
     
     Flexible(child: ListView.builder(
-      itemCount: commentIds.length,
+      itemCount: commentsTexts.length,
       itemBuilder: (_,index) {
+      // return Container(child: Column(children: [
+      //   Row(children: [
+          
+      //     Text(commentIds.length > 0 ? commentIds[index].toString() : '0'),
+      //     Text(commentsUserNames.length > 0 ? commentsUserNames[index]! : '0'),
+      //     ],),
+      //     Text(commentsTexts.length > 0 ? commentsTexts[index]! : '0'),
+      // ],),);
       return Container(
         margin: EdgeInsets.only(top:20),
         height: 50,
@@ -317,15 +331,16 @@ void allComments(int postId)async{
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-          Text(commentIds[index].toString() , style: TextStyle(color: Colors.white),),
+          Text("commentId :"),
+          Text(commentIds.length > 0 ? commentIds[index].toString() : '0'),
           Text("  "),
-          Text(commentsUserNames[index].toString(), style: TextStyle(color: Colors.white),),
+          Text(commentsUserNames.length > 0 ? commentsUserNames[index]! : '0'),
           ],),
 
           Container(
             width: MediaQuery.of(context).size.width*0.9,
             color: Colors.white,
-            child: Text(commentsTexts[index] , style: TextStyle(color: Colors.redAccent),) ,)
+            child: Text(commentsTexts.length > 0 ? commentsTexts[index]! : '0' , style: TextStyle(color: Colors.redAccent),) ,)
           
       ],),
         )

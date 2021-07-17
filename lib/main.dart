@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       crossAxisAlignment: CrossAxisAlignment.center,
     children: [
-      NavigationBar(),
+      NavigationBar(widget.db,widget.user),
           
           Intro( db : widget.db , user :widget.user),
 
