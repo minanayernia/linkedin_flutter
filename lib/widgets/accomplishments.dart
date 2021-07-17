@@ -654,15 +654,19 @@ class _EditedCardState extends State<EditedCard> {
 //   }
 // }
 
+class OtherAccomplish extends StatefulWidget {
+  final AppDatabase db ;
+  const OtherAccomplish(this.db);
 
-class OtherAccomplish extends StatelessWidget {
-  const OtherAccomplish({ Key? key }) : super(key: key);
+  @override
+  _OtherAccomplishState createState() => _OtherAccomplishState();
+}
 
+class _OtherAccomplishState extends State<OtherAccomplish> {
   @override
   Widget build(BuildContext context) {
     return Container(
-
-         margin: EdgeInsets.only(top: 20),
+       margin: EdgeInsets.only(top: 20),
 
       height: 200,
       width: MediaQuery.of(context).size.width*0.9,
@@ -693,11 +697,53 @@ class OtherAccomplish extends StatelessWidget {
 
       ], 
       )
-
       
     );
   }
 }
+// class OtherAccomplish extends StatelessWidget {
+//   const OtherAccomplish({ Key? key }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+
+//          margin: EdgeInsets.only(top: 20),
+
+//       height: 200,
+//       width: MediaQuery.of(context).size.width*0.9,
+//       color: Colors.black87,
+//       child: 
+//       Column(children: [
+//         Container(
+//           color: Colors.redAccent,
+//           child: Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//           children: [
+//         Container(
+          
+//           height: 30,
+//           margin: EdgeInsets.only(left: 10 , top: 7),
+//           child: Text("ACCOMPLISHMENTS",
+//           style: TextStyle(color: Colors.white , fontSize: 15),
+//           ),
+//         ),
+
+//       ],) ,),
+        
+
+//       /*Flexible(child: ListView.builder(
+//         itemCount: list.length,
+//         itemBuilder: (_,index) => list[index]))*/
+//       OtherAccomplishCard() ,
+
+//       ], 
+//       )
+
+      
+//     );
+//   }
+// }
 
 class OtherAccomplishCard extends StatelessWidget {
   const OtherAccomplishCard({ Key? key }) : super(key: key);
