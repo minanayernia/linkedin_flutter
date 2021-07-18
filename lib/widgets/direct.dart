@@ -52,6 +52,7 @@ void addmsg(var text , var name){
   });
 }
 void conversation(int myid , String othername )async{
+  msg.clear();
   print("we are in conversation!!!");
   widget.db.userDao.findeUserByUserName(othername).then((v) => setState((){
 
