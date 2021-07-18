@@ -721,3 +721,20 @@ class _EditedCardState extends State<EditedCard> {
 //     );
 //   }
 // }
+
+
+class OtherFeature extends StatefulWidget {
+  const OtherFeature({ Key? key }) : super(key: key);
+
+  @override
+  _OtherFeatureState createState() => _OtherFeatureState();
+}
+
+class _OtherFeatureState extends State<OtherFeature> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      
+    );
+  }
+}
