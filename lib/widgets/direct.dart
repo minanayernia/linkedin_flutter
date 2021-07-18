@@ -54,6 +54,7 @@ void conversation(int myid , String othername )async{
       widget.db.messageeDao.showMessage(myid, otherid!).then((value) => setState((){
     if(value != null){
       print("value of show message is not null");
+      msg.clear();
       for(int i =0 ; i < value.length ; i++){
         if (value[i] != null){
           var t1 = value[i]?.messageText ;
