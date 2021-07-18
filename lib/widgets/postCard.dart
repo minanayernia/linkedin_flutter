@@ -65,8 +65,12 @@ void addLike(int postId , int userId)async{
   var like = Like(userId: userId , PostId: postId);
   widget.db.likeDao.findLikeIdByUseridPostid(userId, postId).then((value) => setState(() {
     if (value != null){
+      print("this is user id that we want:");
+      print(userId);
       print("value is not null");
-      print(value);
+      print(value.LikeId);
+      print(userId);
+      
     }
 
     if (value == null ){
@@ -165,6 +169,9 @@ void likeComment(int commentId , int userId)async{
 }
   @override
   void initState() {
+    print("we are in init");
+    print(widget.id);
+
     getUserName();
     countLike(widget.postId);
     allComments(widget.postId);
@@ -592,6 +599,8 @@ addSkillCard(){
   setState((){});
 }
 void addPostCard( String text , var postId){
+  print("in adding post function lets see the id");
+  print(widget.user);
   userPosts.add(new PostCard(text , widget.user , postId, widget.db));
 }
 
@@ -605,6 +614,7 @@ void getAllUserPosts()async{
         for(int i = 0 ; i < value.length ; i++){
           print("inside for of list posts");
           // userPosts[i] = value[i];
+          print("before calling addpostcard?!!!!!!!!!!!!!!");
           addPostCard(value[i].PostCaption , value[i].PostId);
           print("post id");
           print(value[i].PostId);
@@ -621,6 +631,8 @@ void getAllUserPosts()async{
 
 @override
 void initState(){
+  print("adding post useridddddddddd");
+  print(widget.user);
   print("before get all user posts");
   getAllUserPosts();
   print("all posts");
@@ -646,7 +658,7 @@ void initState(){
         Flexible(child: ListView.builder(
         itemCount: userPosts.length,
         itemBuilder: (_,index) {
-          return PostCard(userPosts[index].caption , userPosts[index].id, userPosts[index].postId, widget.db);}))
+          return PostCard(userPosts[index].caption , widget.user, userPosts[index].postId, widget.db);}))
       
         
 
@@ -1013,10 +1025,424 @@ class _AddCommentState extends State<AddComment> {
   }
 }
 
+class OtherPostCard extends StatefulWidget {
+  const OtherPostCard(this.postId , this.id , this.caption, this.db , this.myid);
+  final postId ;
+  final id ;
+  final caption;
+  final AppDatabase db ;
+  final myid ;
+
+  @override
+  _OtherPostCardState createState() => _OtherPostCardState();
+}
+
+class _OtherPostCardState extends State<OtherPostCard> {
+
+
+  TextEditingController newCommentController = TextEditingController();
+  TextEditingController toWhomCommentController = TextEditingController();
+  TextEditingController likeCommentController = TextEditingController();
+
+
+  String username= '' ;
+  void getUserName()async{
+    widget.db.userDao.findUserNameByUserId(widget.id).then((value) => setState((){
+      print("entered the query");
+      if (value != null){
+        username = value.userName ;
+        print("the username is : $username");
+      }
+    }));
+
+  }
+var likeNumbers ;
+List<int?> likelist  = [] ;
+
+void countLike(int postId)async{
+  likeNumbers = await widget.db.likeDao.likeNumbers(postId);
+  widget.db.likeDao.likelist(postId).then((value) => setState((){
+    if (value != null){
+      int count = 0 ;
+      for(int i = 0 ; i < value.length ; i++){
+        // likeNumbers ++ ;
+        likelist.add(value[i]?.userId);
+        // print()
+        print(likelist[i]);
+      }
+    }
+  }
+  
+  ));
+
+}
+
+void addLike(int postId , int userId)async{
+  print("this liked post id : $postId");
+  print("this liker userId :$userId");
+  var like = Like(userId: userId , PostId: postId);
+  widget.db.likeDao.findLikeIdByUseridPostid(userId, postId).then((value) => setState(() {
+    if (value != null){
+      print("this is user id that we want:");
+      print(userId);
+      print("value is not null");
+      print(value.LikeId);
+      print(userId);
+      
+    }
+
+    if (value == null ){
+      print(userId);
+      print("value is nulllllllllllllll");
+      print(value);
+      widget.db.likeDao.insertLike(like).then((value) => setState((){
+      likelist = [];
+      countLike(postId);
+  }));
+    }
+  }));
+  
+}
+var commentIds = [];
+List<String?> commentsTexts=[];
+List<int?> commentUserIds= [];
+List<String?> commentsUserNames = [];
+List<int?> commentrEPLY = [] ;
+List<int> temp = [] ;
+  void addComment(int userId , int postId , String commentText , String replyto)async{
+    var comment = Comment(postId: postId, userId: userId, commentText: commentText);
+    await widget.db.commentDao.insertComment(comment);
+    print("controller of replyto :");
+    print(replyto.toString());
+    //for reply
+    // if(replyto != null){
+    //   widget.db.commentDao.updateCommentForReply(int.parse(replyto));
+    // }
+
+    print("after inserting comment");
+    commentIds = [];
+    commentsTexts=[];
+    commentUserIds= [];
+    commentrEPLY = [] ;
+    allComments(postId);
+    newCommentController.text = "" ;
+  }
+List<int> commentlikes = [];
+void allComments(int postId)async{
+  commentlikes = [] ;
+  commentsTexts = [] ;
+  commentsUserNames = [] ;
+  commentIds = [] ;
+
+  widget.db.commentDao.findAllComment(postId).then((value) => setState(() { 
+    if (value != null){
+      for (int i = 0 ; i < value.length ; i++){
+        temp.add(0);
+        var userid = value[i].userId ;
+        if (userid != null ){
+          widget.db.userDao.findUserNameByUserId(userid).then((val) => setState(() {
+            commentsUserNames.add(val?.userName);
+            print("username is adding to commentusernamelist");
+          }));
+        }
+        //adding commentlikes ;
+        var com = value[i].commentId ;
+        if (com != null){
+          widget.db.commentLikeDao.commentLikes(com).then((value) => setState(() {
+            int count = 0 ;
+            for(int i = 0 ; i < value.length ; i++){
+              count ++ ;
+            }
+            commentlikes.add(count);
+          }));
+        }
+        
+
+
+        print(value[i].commentId);
+        commentIds.add(value[i].commentId);
+        commentUserIds.add(value[i].userId);
+        // commentrEPLY.add(value[i].ReplyCommentId);
+        if (value[i] != null){
+          commentsTexts.add(value[i].commentText);
+        }
+        
+        print(commentIds);
+      }
+    }
+    }));
+}
+
+void likeComment(int commentId , int userId)async{
+  var commentLike = CommentLike(userId: userId, commentId: commentId);
+  widget.db.commentLikeDao.findCommentLikeBYUseridCommentId(userId, commentId).then((value) => setState(() {
+    if (value == null){
+      widget.db.commentLikeDao.insertCommentLike(commentLike);
+      print("after inserting commentlike ");
+    }else{
+      print("you have liked this comment before!");
+    }
+  }));
+  
+}
+  @override
+  void initState() {
+    print("we are in init");
+    print(widget.myid);
+    print(widget.id);
+    print("end of init");
+
+    getUserName();
+    countLike(widget.postId);
+    allComments(widget.postId);
+    super.initState();
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height*1.2,
+      width: MediaQuery.of(context).size.width*0.86,
+      color: Colors.redAccent,
+      margin: EdgeInsets.only(top: 20 , bottom: 20),
+      child: Column(
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+
+        Container(
+          height: 30,
+          child:Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+          Container(
+            margin: EdgeInsets.only(left: 15),
+            child: Text(username , 
+            style: TextStyle(color: Colors.white , fontSize: 13),
+            ),
+          ) , 
+          TextButton(onPressed: (){}, child: Text("..."))
+        ],) ,),
+
+        
+        Container(
+          height: MediaQuery.of(context).size.height*0.35,
+          width: MediaQuery.of(context).size.width*0.84,
+          color: Colors.white12,
+        ),
+
+        Container(
+          height: MediaQuery.of(context).size.height*0.1,
+          width: MediaQuery.of(context).size.width*0.84,
+          color: Colors.redAccent[100],
+          child:Container(
+            padding: EdgeInsets.only(left: 10 , top: 5),
+            child: Text(widget.caption , style: TextStyle(color: Colors.white),),),
+          
+        ),
+
+        Row(children: [
+        
+        Container(
+          child: TextButton(
+            onPressed: (){
+              return addLike(widget.postId, widget.myid);
+          }, child: Text("Likes" ,style: TextStyle(color: Colors.white , fontSize: 13),
+          ))
+          ),
+        Text(likelist.length.toString() , style: TextStyle(color: Colors.white),),
+        Container(
+          margin: EdgeInsets.only(left: 5),
+          child: TextButton(
+            onPressed: (){}, child: Text("Comments" ,style: TextStyle(color: Colors.white , fontSize: 13),
+            ))
+            ,),
+            Text(commentIds.length.toString(),style: TextStyle(color: Colors.white),),
+            
+        
+
+        ],
+        
+        ),
+
+        // NewCommentCard(),
+
+        //start new comment
+        Row(children: [
+
+          Container(
+      margin: EdgeInsets.only(top: 20),
+      height: 130,
+      width: MediaQuery.of(context).size.width*0.6,
+      color: Colors.redAccent[100],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+
+          Container(
+            padding: EdgeInsets.only(left: 10),
+          alignment: Alignment.centerLeft,  
+          child: Text("User" , style: TextStyle(color: Colors.white),),) ,
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+            Container(
+              width: 300,
+              child: TextField(
+            controller: toWhomCommentController,
+            textAlign: TextAlign.left,
+            style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+          fillColor: Colors.white,
+          border: OutlineInputBorder(),
+          hintText: 'To whom ?' , 
+          hintStyle: TextStyle(color: Colors.white )  
+         ),),
+         ),
+
+         Container(
+           width: 400,
+           child: TextField(
+            controller: newCommentController,
+            textAlign: TextAlign.left,
+            style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+          fillColor: Colors.white,
+          border: OutlineInputBorder(),
+          hintText: 'Add a comment...' , 
+          hintStyle: TextStyle(color: Colors.redAccent )  
+         ),),)
+
+          ],),
+         Container(
+           alignment: Alignment.bottomRight,
+           width: MediaQuery.of(context).size.width*0.8,
+           child: TextButton(
+             onPressed: (){
+             return addComment(widget.myid, widget.postId, newCommentController.text , toWhomCommentController.text);
+           }, child: Text("Send")) ,),
+         
+
+        ],
+      ), 
+    ),
+      Container(
+      margin: EdgeInsets.only(top: 20),
+      height: 130,
+      width: MediaQuery.of(context).size.width*0.3,
+      color: Colors.white10,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+
+          Container(
+            padding: EdgeInsets.only(left: 10),
+          alignment: Alignment.centerLeft,  
+          child: Text("User" , style: TextStyle(color: Colors.white),),) ,
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+            
+            Container(
+              width: 300,
+              child: TextField(
+            controller: likeCommentController,
+            textAlign: TextAlign.left,
+            style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+          fillColor: Colors.white,
+          border: OutlineInputBorder(),
+          hintText: 'Which Comment ?' , 
+          hintStyle: TextStyle(color: Colors.white )  
+         ),),
+         ),
+
+          ],),
+         Container(
+           alignment: Alignment.center,
+           width: MediaQuery.of(context).size.width*0.8,
+           child: ButtonTheme(
+          height: 30,
+          minWidth: MediaQuery.of(context).size.width*0.2,
+          buttonColor: Colors.white,
+          child: RaisedButton(onPressed: (){
+            likeComment(int.parse(likeCommentController.text), widget.id);
+            allComments(widget.postId);
+          },
+           child: Text("Like" , style: TextStyle(color: Colors.redAccent),)))
+           
+           ),
+         
+
+        ],
+      ), 
+    ),
+
+        ],),
+        
+
+    //End new comment
+
+
+    
+    Flexible(child: ListView.builder(
+      itemCount: commentsTexts.length,
+      itemBuilder: (_,index) {
+      return Container(
+        margin: EdgeInsets.only(top:20),
+        height: 50,
+        width: MediaQuery.of(context).size.width*0.86,
+        color: Colors.redAccent[100],
+        child: Container(
+          width: MediaQuery.of(context).size.width*0.86,
+          height: 30,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+          Text("commentId :"),
+          Text(commentIds.length > 0 ? commentIds[index].toString() : '0'),
+          Text("  "),
+          // Text(commentsUserNames.length > 0 ? commentsUserNames[index]! : '0'),
+          Text("   likes:"),
+          Text(commentlikes.length > 0 ? commentlikes[index].toString() : '0'),
+          Text("   Reply to:"),
+          Text(commentrEPLY.length > 0 ? commentrEPLY[index].toString() : ""),
+
+          ],),
+
+          Container(
+            width: MediaQuery.of(context).size.width*0.9,
+            color: Colors.white,
+            child: Text(commentsTexts.length > 0 ? commentsTexts[index]! : '0' , style: TextStyle(color: Colors.redAccent),) ,)
+          
+      ],),
+        )
+      
+      );
+      }))
+
+        // Row(children: [
+        //   TextButton(onPressed: (){}, child: Text("Like")),
+        //   TextButton(onPressed: (){}, child: Text("Comment")),
+        //   TextButton(onPressed: (){}, child: Text("Share"))
+        // ],)
+      ],),
+
+      
+    );
+  }
+}
+
 class OtherPost extends StatefulWidget {
-  const OtherPost(this.db , this.user);
+  const OtherPost(this.db , this.user , this.myid);
   final user ;
   final AppDatabase db ;
+  final myid ;
   
 
 
@@ -1025,9 +1451,9 @@ class OtherPost extends StatefulWidget {
 }
 
 class _OtherPostState extends State<OtherPost> {
-  List<PostCard> otherUserPosts = [] ; 
+  List<OtherPostCard> otherUserPosts = [] ; 
   void addPostCard( String text , var postId){
-  otherUserPosts.add(new PostCard(text , widget.user , postId, widget.db));
+  otherUserPosts.add(new OtherPostCard(text , widget.user , postId, widget.db , widget.myid));
 }
 void getAllUserPosts()async{
   var a = widget.user ;
@@ -1080,7 +1506,7 @@ void initState(){
         Flexible(child: ListView.builder(
         itemCount: otherUserPosts.length,
         itemBuilder: (_,index) {
-          return PostCard(otherUserPosts[index].caption , otherUserPosts[index].id, otherUserPosts[index].postId, widget.db);}))
+          return OtherPostCard(otherUserPosts[index].caption , otherUserPosts[index].id, otherUserPosts[index].postId, widget.db , widget.myid);}))
         
         
         
