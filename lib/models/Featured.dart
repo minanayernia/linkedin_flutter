@@ -44,11 +44,11 @@ abstract class FeaturedDao {
   @Query('SELECT * FROM Featured WHERE profileId = :profileId')
   Future<List<Featured?>> allAdditionalInfo(int profileId);
 
-  @Query('SELECT * FROM Featured WHERE featuredId = :featuredId ')
-  Future<Featured?> findFeaturedById(int featuredId);
+  @Query('SELECT * FROM Featured WHERE featuredId = :featuredId and profileId = :profid')
+  Future<Featured?> findFeaturedById(int featuredId , int profid);
 
-  @Query('SELECT * FROM Featured WHERE featuredText = :featuredText')
-  Future<Featured?> findFeaturedByText(String featuredText);
+  @Query('SELECT * FROM Featured WHERE featuredText = :featuredText and profileId = :profid')
+  Future<Featured?> findFeaturedByText(String featuredText , int profid);
 
   @Query('UPDATE Featured SET featuredText = :featuredText WHERE featuredId = :featuredId')
   Future<Featured?> editFeatured(String featuredText , int featuredId);

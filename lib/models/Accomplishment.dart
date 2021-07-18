@@ -33,11 +33,11 @@ abstract class AccomplishmentDao {
   @Query('SELECT * FROM Accomplishment WHERE profileId = :profileId')
   Future<List<Accomplishment?>> allAccomplishments(int profileId);
 
-  @Query('SELECT * FROM Accomplishment WHERE AcomplishmentId = :id')
-  Future<Accomplishment?> findAccomplishmentById(int id);
+  @Query('SELECT * FROM Accomplishment WHERE AcomplishmentId = :id and profileId = :profid')
+  Future<Accomplishment?> findAccomplishmentById(int id , int profid);
 
-  @Query('SELECT * FROM Accomplishment WHERE AccomplishmentText = :AccomplishmentText')
-  Future<Accomplishment?> findAccomplishmentByText(String AccomplishmentText);
+  @Query('SELECT * FROM Accomplishment WHERE AccomplishmentText = :AccomplishmentText and profileId = :profid')
+  Future<Accomplishment?> findAccomplishmentByText(String AccomplishmentText , int profid);
 
   @Query('UPDATE Accomplishment SET AccomplishmentText =  :accomplishmentText WHERE  AcomplishmentId = :accomplishmentId')
   Future<Accomplishment?> editAccomplishment(String accomplishmentText ,int accomplishmentId);

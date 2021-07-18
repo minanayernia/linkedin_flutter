@@ -324,19 +324,64 @@ class _NewAccomplishState extends State<NewAccomplish> {
   }
 
   void addAccomplishToDatabase(String accomplishmentText)async{
-    final checkCopyField = await widget.db.accomplishmentDao.findAccomplishmentByText(accomplishmentText);
-    var a = widget.user;
-    var profileId ;
-    var accomplishment ;
 
-        setState(() {
-      if(checkCopyField != null){
-        checkCopy = true ;
-      }
-      if(checkCopyField == null){
+
+
+
+    // final checkCopyField = await widget.db.accomplishmentDao.findAccomplishmentByText(accomplishmentText);
+    var a = widget.user;
+    // var profileId ;
+    // var accomplishment ;
+
+    if (a != null){
+      widget.db.userProfileDao.findProfileByUserId(a).then((value) => setState((){
+        print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+      if(value != null){
+        var checkCopyField ;
+          widget.db.accomplishmentDao.findAccomplishmentByText(accomplishmentText , value.ProfileId!).then((v) => setState((){
+            if (v != null ){
+             print("find skill by name is not null");
+             checkCopyField = v ;
+             checkCopy = true ;
+
+          }else{
+        print("find skill by name is null");
+        checkCopyField = null ;
         checkCopy = false ;
+        if(accomplishmentText != "" && checkCopyField == null){
+          var profileId ;
+           var accmplishment ;
+            widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
+            if (val != null) {
+            profileId = val.ProfileId;
+          print("this profileid in test card $profileId");
+          accmplishment = Accomplishment(AccomplishmentText: accomplishmentText ,profileId: profileId);
+          widget.db.accomplishmentDao.insertAccomplishment(accmplishment);
+          }
       }
-    });
+      
+      ));
+      addAccomplishController.text = ''  ;
+    }
+      }
+    }));
+        
+        // print("profid : $profid");
+      }
+      else{
+        print("null in find userprofile");
+      }
+    }));
+    }
+
+    //     setState(() {
+    //   if(checkCopyField != null){
+    //     checkCopy = true ;
+    //   }
+    //   if(checkCopyField == null){
+    //     checkCopy = false ;
+    //   }
+    // });
 
     setState(() {
     if(accomplishmentText == ""){
@@ -348,38 +393,38 @@ class _NewAccomplishState extends State<NewAccomplish> {
 
 
     });
-    if(accomplishmentText != "" && checkCopyField == null){
-    if (a != null){
-      widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
-        if (val != null) {
-          profileId = val.ProfileId;
-          print("this profileid in test card $profileId");
-          accomplishment = Accomplishment(AccomplishmentText: accomplishmentText ,profileId: profileId);
-          widget.db.accomplishmentDao.insertAccomplishment(accomplishment);
-          // widget.db.skillDao.allSkills(profileId).then((value) => setState((){
-          //    if (value != null){
-          //     for (int i = 0 ; i < value.length ; i++){
-          //       if (value[i] != null){
-          //         // addSkillCard(id, text)
-          //         print(value[i]?.SkillText);
-          //         print("this is the skillid :");
-          //         print(value[i]?.SkillId);
-          //         addSkillCard(value[i]?.SkillId , value[i]?.SkillText );
-          //         var li = list[i].text;
-          //         print("$i , $li");
-          //       }
+    // if(accomplishmentText != "" && checkCopyField == null){
+    // if (a != null){
+    //   widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
+    //     if (val != null) {
+    //       profileId = val.ProfileId;
+    //       print("this profileid in test card $profileId");
+    //       accomplishment = Accomplishment(AccomplishmentText: accomplishmentText ,profileId: profileId);
+    //       widget.db.accomplishmentDao.insertAccomplishment(accomplishment);
+    //       // widget.db.skillDao.allSkills(profileId).then((value) => setState((){
+    //       //    if (value != null){
+    //       //     for (int i = 0 ; i < value.length ; i++){
+    //       //       if (value[i] != null){
+    //       //         // addSkillCard(id, text)
+    //       //         print(value[i]?.SkillText);
+    //       //         print("this is the skillid :");
+    //       //         print(value[i]?.SkillId);
+    //       //         addSkillCard(value[i]?.SkillId , value[i]?.SkillText );
+    //       //         var li = list[i].text;
+    //       //         print("$i , $li");
+    //       //       }
                 
-          //     }
-          //    }
-          // }));
-          // print(skill);
-          }
-      }
+    //       //     }
+    //       //    }
+    //       // }));
+    //       // print(skill);
+    //       }
+    //   }
       
-      ));
-      addAccomplishController.text = ''  ;
-    }
-    }
+    //   ));
+    //   addAccomplishController.text = ''  ;
+    // }
+    // }
 
     
     // print("this my profileid $profileId");
@@ -497,16 +542,59 @@ class _EditedCardState extends State<EditedCard> {
     
     if(idNumber != ""){
     int id = int.parse(editNumberAccomplishController.value.text);
-    final checkFieldNumber = await widget.db.accomplishmentDao.findAccomplishmentById(id);
+    var a = widget.user; 
+    if(a != null){
+      widget.db.userProfileDao.findProfileByUserId(a).then((value) => setState((){
+        print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+      if(value != null){
+        var checkFieldNumber ;
+          widget.db.accomplishmentDao.findAccomplishmentById(id , value.ProfileId!).then((v) => setState((){
+            if (v != null ){
+             print("find skill by name is not null");
+             checkFieldNumber = v ;
+             checkEditFieldNumber = false ;
+             if(skillText != "" && checkFieldNumber != null){
+          print("this is userid:");
+      print(a);
+      widget.db.accomplishmentDao.editAccomplishment(skillText, id) ;
+      widget.db.accomplishmentDao.findAccomplishmentById(id , value.ProfileId!).then((val) => setState((){
+        print("we are in editskilldatabase");
+        print(val?.AcomplishmentId);
+        if (val != null){
+          print("skilltext is going to change");
+          skillText = val.AccomplishmentText ;
+          }
+          else{
+            print("value is null");
+          }
+      }));
+    }
 
-    setState(() {
-      if (checkFieldNumber == null){
+          }else{
+        print("find skill by name is null");
+        checkFieldNumber = null ;
         checkEditFieldNumber = true ;
+
       }
-      if (checkFieldNumber != null){
-        checkEditFieldNumber = false ;
+    }));
+        
+        // print("profid : $profid");
       }
-    });
+      else{
+        print("null in find userprofile");
+      }
+    }));
+    }
+    // final checkFieldNumber = await widget.db.accomplishmentDao.findAccomplishmentById(id);
+
+    // setState(() {
+    //   if (checkFieldNumber == null){
+    //     checkEditFieldNumber = true ;
+    //   }
+    //   if (checkFieldNumber != null){
+    //     checkEditFieldNumber = false ;
+    //   }
+    // });
     setState(() {
       if(skillText == ""){
         checkEditFieldName = true ;
@@ -516,25 +604,25 @@ class _EditedCardState extends State<EditedCard> {
       }
 
     });
-    if(skillText != "" && checkFieldNumber != null){
-    var a = widget.user;
-    if (a != null){
-      print("this is userid:");
-      print(a);
-      await widget.db.accomplishmentDao.editAccomplishment(skillText, id) ;
-      widget.db.accomplishmentDao.findAccomplishmentById(id).then((val) => setState((){
-        print("we are in editskilldatabase");
-        // print(val?.SkillId);
-        if (val != null){
-          print("skilltext is going to change");
-          accopmlishText = val ;
-          }
-          else{
-            print("value is null");
-          }
-      }));
-    }
-    }
+    // if(skillText != "" && checkFieldNumber != null){
+    // var a = widget.user;
+    // if (a != null){
+    //   print("this is userid:");
+    //   print(a);
+    //   await widget.db.accomplishmentDao.editAccomplishment(skillText, id) ;
+    //   widget.db.accomplishmentDao.findAccomplishmentById(id).then((val) => setState((){
+    //     print("we are in editskilldatabase");
+    //     // print(val?.SkillId);
+    //     if (val != null){
+    //       print("skilltext is going to change");
+    //       accopmlishText = val ;
+    //       }
+    //       else{
+    //         print("value is null");
+    //       }
+    //   }));
+    // }
+    // }
     }
   }
   @override

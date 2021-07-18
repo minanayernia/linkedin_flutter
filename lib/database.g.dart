@@ -445,13 +445,14 @@ class _$SkillDao extends SkillDao {
   }
 
   @override
-  Future<Skill?> findSkillById(int id) async {
-    return _queryAdapter.query('SELECT * FROM Skill WHERE skillId = ?1',
+  Future<Skill?> findSkillById(int id, int profid) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Skill WHERE skillId = ?1 and profileId = ?2',
         mapper: (Map<String, Object?> row) => Skill(
             SkillId: row['SkillId'] as int?,
             SkillText: row['SkillText'] as String,
             profileId: row['profileId'] as int),
-        arguments: [id]);
+        arguments: [id, profid]);
   }
 
   @override
@@ -503,26 +504,20 @@ class _$AccomplishmentDao extends AccomplishmentDao {
   }
 
   @override
-  Future<Accomplishment?> findAccomplishmentById(int id) async {
+  Future<Accomplishment?> findAccomplishmentById(int id, int profid) async {
     return _queryAdapter.query(
-        'SELECT * FROM Accomplishment WHERE AcomplishmentId = ?1',
-        mapper: (Map<String, Object?> row) => Accomplishment(
-            AcomplishmentId: row['AcomplishmentId'] as int?,
-            AccomplishmentText: row['AccomplishmentText'] as String,
-            profileId: row['profileId'] as int),
-        arguments: [id]);
+        'SELECT * FROM Accomplishment WHERE AcomplishmentId = ?1 and profileId = ?2',
+        mapper: (Map<String, Object?> row) => Accomplishment(AcomplishmentId: row['AcomplishmentId'] as int?, AccomplishmentText: row['AccomplishmentText'] as String, profileId: row['profileId'] as int),
+        arguments: [id, profid]);
   }
 
   @override
   Future<Accomplishment?> findAccomplishmentByText(
-      String AccomplishmentText) async {
+      String AccomplishmentText, int profid) async {
     return _queryAdapter.query(
-        'SELECT * FROM Accomplishment WHERE AccomplishmentText = ?1',
-        mapper: (Map<String, Object?> row) => Accomplishment(
-            AcomplishmentId: row['AcomplishmentId'] as int?,
-            AccomplishmentText: row['AccomplishmentText'] as String,
-            profileId: row['profileId'] as int),
-        arguments: [AccomplishmentText]);
+        'SELECT * FROM Accomplishment WHERE AccomplishmentText = ?1 and profileId = ?2',
+        mapper: (Map<String, Object?> row) => Accomplishment(AcomplishmentId: row['AcomplishmentId'] as int?, AccomplishmentText: row['AccomplishmentText'] as String, profileId: row['profileId'] as int),
+        arguments: [AccomplishmentText, profid]);
   }
 
   @override
@@ -573,23 +568,25 @@ class _$FeaturedDao extends FeaturedDao {
   }
 
   @override
-  Future<Featured?> findFeaturedById(int featuredId) async {
-    return _queryAdapter.query('SELECT * FROM Featured WHERE featuredId = ?1',
+  Future<Featured?> findFeaturedById(int featuredId, int profid) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Featured WHERE featuredId = ?1 and profileId = ?2',
         mapper: (Map<String, Object?> row) => Featured(
             featuredId: row['featuredId'] as int?,
             featuredText: row['featuredText'] as String,
             profileId: row['profileId'] as int?),
-        arguments: [featuredId]);
+        arguments: [featuredId, profid]);
   }
 
   @override
-  Future<Featured?> findFeaturedByText(String featuredText) async {
-    return _queryAdapter.query('SELECT * FROM Featured WHERE featuredText = ?1',
+  Future<Featured?> findFeaturedByText(String featuredText, int profid) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Featured WHERE featuredText = ?1 and profileId = ?2',
         mapper: (Map<String, Object?> row) => Featured(
             featuredId: row['featuredId'] as int?,
             featuredText: row['featuredText'] as String,
             profileId: row['profileId'] as int?),
-        arguments: [featuredText]);
+        arguments: [featuredText, profid]);
   }
 
   @override

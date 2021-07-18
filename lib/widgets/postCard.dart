@@ -1211,3 +1211,90 @@ void initState(){
     );
   }
 }
+
+
+
+
+class LikeCommentPost extends StatefulWidget {
+  const LikeCommentPost(this.db , this.user);
+  final user ;
+  final AppDatabase db ;
+
+  @override
+  _LikeCommentPostState createState() => _LikeCommentPostState();
+}
+
+class _LikeCommentPostState extends State<LikeCommentPost> {
+      List<PostCard> likeCommentPost = [] ; 
+  void addPostCard( String text , var postId , var userId){
+  likeCommentPost.add(new PostCard(text , userId , postId, widget.db));
+}
+void getAllUserPosts()async{
+  var a = widget.user ;
+  if (a != null){
+    print("okokokokokokokokokokoookokokokoo");
+    widget.db.postDao.postlikedByNetwork(a).then((value) => setState((){
+      if (value != null){
+        print("the list of posts is not empty");
+        for(int i = 0 ; i < value.length ; i++){
+          print("inside for of list posts");
+          // userPosts[i] = value[i];
+          addPostCard(value[i].PostCaption , value[i].PostId , value[i].userId);
+          print("post is added in likecomment post");
+          print("post id");
+          print(value[i].PostId);
+          print("post caption");
+          print(value[i].PostCaption);
+          print("userid of post");
+          print(value[i].userId);
+        }
+      }
+    }));
+  }
+}
+@override
+void initState(){
+  print("before get all user posts");
+  getAllUserPosts();
+  print("all posts");
+  print(userPosts);
+  super.initState();
+}
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 20),
+      height: MediaQuery.of(context).size.height*1,
+      width: MediaQuery.of(context).size.width*0.9,
+      color: Colors.black87,
+      child : Column(children: [
+        Container(
+          padding: EdgeInsets.only(left: 10),
+          height: 40,
+          color: Colors.redAccent,
+          child:Align(alignment: Alignment.centerLeft,
+        child: Text("HOME POSTS" , style: TextStyle(color: Colors.white),)
+        
+        
+        )
+         ,),
+
+         
+        
+        Flexible(child: ListView.builder(
+        itemCount: likeCommentPost.length,
+        itemBuilder: (_,index) {
+          return Container(child: Column(children: [
+            Text("Liked by :") ,
+            Text("Commented by :") ,
+            PostCard(likeCommentPost[index].caption , likeCommentPost[index].id, likeCommentPost[index].postId, widget.db)
+          ],),) 
+          
+          ;}))
+      
+      ] 
+      )
+      
+    );
+  }
+}

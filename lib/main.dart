@@ -121,6 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
           InvitationList(widget.user , widget.db),
           PeopleYouMayKnowList(),
           HomePosts(widget.db , widget.user),
+          LikeCommentPost(widget.db, widget.user),
           
       // SignUpLogIn()
       
