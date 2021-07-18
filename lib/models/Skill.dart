@@ -39,10 +39,10 @@ abstract class SkillDao {
   @Query('DELETE FROM Skill')
   Future<void> deleteSkills();
 
-  @Query('SELECT * FROM Skill WHERE skillText = :skillText')
-  Future<Skill?> findSkillByName(String skillText);
+  @Query('SELECT * FROM Skill WHERE skillText = :skillText and profileId = :profid')
+  Future<Skill?> findSkillByName(String skillText , int profid);
 
-  @Query('SELECT * FROM Skill WHERE skillId = :id')
+  @Query('SELECT * FROM Skill WHERE skillId = :id ')
   Future<Skill?> findSkillById(int id);
 
   @Query('UPDATE skill SET skillText = :skillText WHERE skillId = :skillId')

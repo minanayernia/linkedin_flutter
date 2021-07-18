@@ -726,7 +726,7 @@ class _NewPostCardState extends State<NewPostCard> {
     var newPost = Post(PostCaption: caption, userId: widget.user);
     await widget.db.postDao.insertPost(newPost);
     print("new post added ");
-    userPosts = [];
+    // userPosts = [];
     var a = widget.user ;
     widget.db.postDao.findAllPosts(a).then((value) => setState((){
       // if()
@@ -1012,19 +1012,22 @@ class _AddCommentState extends State<AddComment> {
     );
   }
 }
-List<PostCard> otherUserPosts = [] ; 
+
 class OtherPost extends StatefulWidget {
   const OtherPost(this.db , this.user);
   final user ;
   final AppDatabase db ;
+  
+
 
   @override
   _OtherPostState createState() => _OtherPostState();
 }
 
 class _OtherPostState extends State<OtherPost> {
+  List<PostCard> otherUserPosts = [] ; 
   void addPostCard( String text , var postId){
-  userPosts.add(new PostCard(text , widget.user , postId, widget.db));
+  otherUserPosts.add(new PostCard(text , widget.user , postId, widget.db));
 }
 void getAllUserPosts()async{
   var a = widget.user ;
@@ -1131,13 +1134,49 @@ void initState(){
 
 
 class HomePosts extends StatefulWidget {
-  const HomePosts({ Key? key }) : super(key: key);
+  const HomePosts(this.db , this.user);
+  final user ;
+  final AppDatabase db ;
 
   @override
   _HomePostsState createState() => _HomePostsState();
 }
 
 class _HomePostsState extends State<HomePosts> {
+    List<PostCard> allPosts = [] ; 
+  void addPostCard( String text , var postId , var userId){
+  allPosts.add(new PostCard(text , userId , postId, widget.db));
+}
+void getAllUserPosts()async{
+  var a = widget.user ;
+  if (a != null){
+    print("we are in get all posts");
+    widget.db.postDao.allNetworkPosts(a).then((value) => setState((){
+      if (value != null){
+        print("the list of posts is not empty");
+        for(int i = 0 ; i < value.length ; i++){
+          print("inside for of list posts");
+          // userPosts[i] = value[i];
+          addPostCard(value[i].PostCaption , value[i].PostId , value[i].userId);
+          print("post id");
+          print(value[i].PostId);
+          print("post caption");
+          print(value[i].PostCaption);
+          print("userid of post");
+          print(value[i].userId);
+        }
+      }
+    }));
+  }
+}
+@override
+void initState(){
+  print("before get all user posts");
+  getAllUserPosts();
+  print("all posts");
+  print(userPosts);
+  super.initState();
+}
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1156,6 +1195,11 @@ class _HomePostsState extends State<HomePosts> {
         
         )
          ,),
+
+         Flexible(child: ListView.builder(
+        itemCount: allPosts.length,
+        itemBuilder: (_,index) {
+          return PostCard(allPosts[index].caption , allPosts[index].id, allPosts[index].postId, widget.db);}))
         
         
       
