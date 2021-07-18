@@ -24,10 +24,20 @@ class pm extends StatelessWidget {
   final msg ;
   @override
   Widget build(BuildContext context) {
-    return Container( height: 60,
-                      child: Column(children: [
-                        Text(name),
-                        Text(msg)
+    return Container( 
+      color: Colors.white12,
+      margin: EdgeInsets.only(top:10),
+      height: 60,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                        Container(
+                          padding: EdgeInsets.only(left:10),
+                          child: Text(name + " :" , style: TextStyle(color: Colors.white),),),
+                        Container(
+                          padding: EdgeInsets.only(left:10),
+                          child: Text(msg , style: TextStyle(color: Colors.white),) ,)
                       ],),
                       
                     );
@@ -148,8 +158,12 @@ void conversation(int myid , String othername )async{
                 ],
               ),
               TextField(
+                style: TextStyle(color: Colors.white),
                 controller: searchMessageController,
-                decoration: InputDecoration(hintText: "Search user" ,suffixIcon: IconButton(
+                decoration: InputDecoration(
+                  fillColor: Colors.white,
+                  hintStyle: TextStyle(color: Colors.white),
+                  hintText: "Search user" ,suffixIcon: IconButton(
                     onPressed: () {
                       searchUser(searchMessageController.text);
                     },
@@ -208,8 +222,12 @@ void conversation(int myid , String othername )async{
                     itemCount: msgs.length,
                     itemBuilder: (_, index) => pm(msgs[index].name, msgs[index].msg))),
               TextField(
+                style: TextStyle(color: Colors.redAccent),
                 controller: sendMessageController,
-                decoration: InputDecoration(hintText: "type..."),
+                decoration: InputDecoration(
+                  fillColor: Colors.redAccent,
+                  hintStyle: TextStyle(color: Colors.redAccent),
+                  hintText: "type..."),
               ),
               TextButton(onPressed: () {
                 return conversation(widget.myid, sendMessageController.text);
@@ -468,9 +486,11 @@ class _NewMessageState extends State<NewMessage> {
                 ],
               ),
               TextField(
+                style: TextStyle(color: Colors.white),
                 controller: searchNewMessageController,
                 decoration: InputDecoration(
-                  hintText: "Search User",
+                  hintText: "Search user",
+                  fillColor: Colors.white,
                   contentPadding: EdgeInsets.only(left: 10, top: 15),
                   hintStyle: TextStyle(color: Colors.white),
                   suffixIcon: IconButton(
@@ -515,11 +535,12 @@ class _NewMessageState extends State<NewMessage> {
                 height: 30,
                 width: 400,
                 child: TextField(
+                  style: TextStyle(color: Colors.redAccent),
                   controller: searchUserController,
                   textAlign: TextAlign.left,
                   decoration: InputDecoration(
                     hintText: "Type a name...",
-
+                    fillColor: Colors.redAccent,
                     contentPadding: EdgeInsets.only(left: 10),
                     hintStyle: TextStyle(color: Colors.redAccent),
                     //         suffixIcon: IconButton(
@@ -533,8 +554,10 @@ class _NewMessageState extends State<NewMessage> {
               Container(
                 margin: EdgeInsets.only(top: 400),
                 child: TextField(
+                  style: TextStyle(color: Colors.redAccent),
                   controller: newMessageController,
                   decoration: InputDecoration(
+                      fillColor: Colors.redAccent,
                       hintText: "Write a message...",
                       hintStyle: TextStyle(color: Colors.redAccent)),
                 ),
