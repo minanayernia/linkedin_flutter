@@ -101,7 +101,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `CommentLike` (`commentLikeId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL, `commentId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`commentId`) REFERENCES `Comment` (`commentId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Comment` (`commentId` INTEGER PRIMARY KEY AUTOINCREMENT, `commentText` TEXT NOT NULL, `is_replied` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, `commentId` INTEGER, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`ReplyCommentId`) REFERENCES `Comment` (`commentId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+            'CREATE TABLE IF NOT EXISTS `Comment` (`commentId` INTEGER PRIMARY KEY AUTOINCREMENT, `commentText` TEXT NOT NULL, `is_replied` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Like` (`LikeId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -698,8 +698,7 @@ class _$CommentDao extends CommentDao {
                   'commentText': item.commentText,
                   'is_replied': item.is_replied,
                   'userId': item.userId,
-                  'postId': item.postId,
-                  'commentId': item.ReplyCommentId
+                  'postId': item.postId
                 });
 
   final sqflite.DatabaseExecutor database;

@@ -25,11 +25,13 @@ import 'User.dart';
       ForeignKey(childColumns: ['postId'],
      parentColumns: ['postId'],
       entity: Post ),
-      ForeignKey(
-      childColumns: ['ReplyCommentId'],
-      parentColumns: ['commentId'],
-      entity: Comment ),
-] )
+      // ForeignKey(
+      // childColumns: ['ReplyCommentId'],
+      // parentColumns: ['commentId'],
+      // entity: Comment ),
+] 
+
+)
 class Comment {
   @PrimaryKey  (autoGenerate: true , ) 
   int? commentId ;
@@ -43,8 +45,8 @@ class Comment {
   @ColumnInfo(name: 'postId')
   int postId ;
 
-  @ColumnInfo(name: 'commentId')
-  int? ReplyCommentId ;
+  // @ColumnInfo(name: 'commentId')
+  // int? ReplyCommentId ;
   Comment( {
     this.commentId ,
     required this.postId ,
