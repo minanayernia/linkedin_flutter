@@ -121,6 +121,31 @@ List<int> temp = [] ;
   void addComment(int userId , int postId , String commentText , String replyto)async{
     var comment = Comment(postId: postId, userId: userId, commentText: commentText);
     await widget.db.commentDao.insertComment(comment);
+
+  //adding notification
+      widget.db.postDao.findPostByPostId(postId).then((v) => setState(() {
+        if (v!=null){
+          print("start of sending notif by finding the reciever");
+          var receiver = v.userId ;
+          widget.db.netwokDao.findNetwork(userId, receiver).then((vl) => setState(() {
+            print("reciever is : $receiver");
+            print("myid is : $userId");
+            if(vl != null){
+              print("network of notification founded");
+              var netid = vl.networkId ;
+              int n = 4 ;
+              var notif = Notificationn(networkId: netid, notificationType: n , receiver: receiver);
+              widget.db.notificationnDao.insertNotif(notif);
+              print("notif added successfully!!!!");
+            }
+          }));
+
+        }
+        
+        
+      }));
+      ///end of adding notification
+
     print("controller of replyto :");
     print(replyto.toString());
     //for reply
@@ -187,6 +212,35 @@ void likeComment(int commentId , int userId)async{
   widget.db.commentLikeDao.findCommentLikeBYUseridCommentId(userId, commentId).then((value) => setState(() {
     if (value == null){
       widget.db.commentLikeDao.insertCommentLike(commentLike);
+
+
+          //adding notification
+      widget.db.commentDao.findCommentBycommentId(commentId).then((v) => setState(() {
+        if (v!=null){
+          print("start of sending notif by finding the reciever");
+          var receiver = v.userId ;
+          widget.db.netwokDao.findNetwork(userId, receiver).then((vl) => setState(() {
+            print("reciever is : $receiver");
+            print("myid is : $userId");
+            if(vl != null){
+              print("network of notification founded");
+              var netid = vl.networkId ;
+              int n = 5 ;  //for like or comment on a comment
+              var notif = Notificationn(networkId: netid, notificationType: n , receiver: receiver);
+              widget.db.notificationnDao.insertNotif(notif);
+              print("notif added successfully!!!!");
+            }else{
+              print("not common network");
+            }
+          }));
+
+        }
+        
+        
+      }));
+      //end of adding notification
+
+
       print("after inserting commentlike ");
     }else{
       print("you have liked this comment before!");
@@ -1166,6 +1220,33 @@ List<int> temp = [] ;
   void addComment(int userId , int postId , String commentText , String replyto)async{
     var comment = Comment(postId: postId, userId: userId, commentText: commentText);
     await widget.db.commentDao.insertComment(comment);
+
+
+    //adding notification
+      widget.db.postDao.findPostByPostId(postId).then((v) => setState(() {
+        if (v!=null){
+          print("start of sending notif by finding the reciever");
+          var receiver = v.userId ;
+          widget.db.netwokDao.findNetwork(userId, receiver).then((vl) => setState(() {
+            print("reciever is : $receiver");
+            print("myid is : $userId");
+            if(vl != null){
+              print("network of notification founded");
+              var netid = vl.networkId ;
+              int n = 3 ;  //for comment post
+              var notif = Notificationn(networkId: netid, notificationType: n , receiver: receiver);
+              widget.db.notificationnDao.insertNotif(notif);
+              print("notif added successfully!!!!");
+            }
+          }));
+
+        }
+        
+        
+      }));
+      //end of adding notification
+
+
     print("controller of replyto :");
     print(replyto.toString());
     //for reply
@@ -1232,6 +1313,35 @@ void likeComment(int commentId , int userId)async{
   widget.db.commentLikeDao.findCommentLikeBYUseridCommentId(userId, commentId).then((value) => setState(() {
     if (value == null){
       widget.db.commentLikeDao.insertCommentLike(commentLike);
+
+
+      //adding notification
+      widget.db.commentDao.findCommentBycommentId(commentId).then((v) => setState(() {
+        if (v!=null){
+          print("start of sending notif by finding the reciever");
+          var receiver = v.userId ;
+          widget.db.netwokDao.findNetwork(userId, receiver).then((vl) => setState(() {
+            print("reciever is : $receiver");
+            print("myid is : $userId");
+            if(vl != null){
+              print("network of notification founded");
+              var netid = vl.networkId ;
+              int n = 5 ;  //for like or comment on a comment
+              var notif = Notificationn(networkId: netid, notificationType: n , receiver: receiver);
+              widget.db.notificationnDao.insertNotif(notif);
+              print("notif added successfully!!!!");
+            }
+          }));
+
+        }
+        
+        
+      }));
+      //end of adding notification
+    
+
+
+
       print("after inserting commentlike ");
     }else{
       print("you have liked this comment before!");

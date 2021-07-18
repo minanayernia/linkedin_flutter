@@ -829,6 +829,17 @@ class _$CommentDao extends CommentDao {
   }
 
   @override
+  Future<Comment?> findCommentBycommentId(int commentId) async {
+    return _queryAdapter.query('SELECT * From Comment WHERE commentId = ?1',
+        mapper: (Map<String, Object?> row) => Comment(
+            commentId: row['commentId'] as int?,
+            postId: row['postId'] as int,
+            userId: row['userId'] as int,
+            commentText: row['commentText'] as String),
+        arguments: [commentId]);
+  }
+
+  @override
   Future<void> insertComment(Comment comment) async {
     await _commentInsertionAdapter.insert(comment, OnConflictStrategy.abort);
   }
