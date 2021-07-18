@@ -722,18 +722,141 @@ class _EditedCardState extends State<EditedCard> {
 //   }
 // }
 
-
+var otherFeatured ;
+ List<OtherFeatureCard> otherList = [];
 class OtherFeature extends StatefulWidget {
-  const OtherFeature({ Key? key }) : super(key: key);
+  const OtherFeature(this.db , this.user);
+  final AppDatabase db ;
+  final int? user  ;
 
   @override
   _OtherFeatureState createState() => _OtherFeatureState();
 }
 
 class _OtherFeatureState extends State<OtherFeature> {
+      List accomplishmentsText = [] ;
+    List accomplishmentsId = [] ;
+
+void addFeatureCard(var id , var text){
+  
+  otherList.add(new OtherFeatureCard(id , text));
+  setState((){});
+}
+
+  void getFeature()async{
+    var a = widget.user;
+    var profileId ;
+   
+
+    if (a != null){
+      widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
+        if (val != null) {
+          profileId = val.ProfileId;
+          // print("this profileid in test card $profileId");
+          // skill = Skill(SkillText: "android" ,profileId: profileId);
+          // widget.db.skillDao.insertSkill(skill);q
+
+          widget.db.featuredDao.allAdditionalInfo(profileId).then((value) => setState((){
+             if (value != null){
+              for (int i = 0 ; i < value.length ; i++){
+                if (value[i] != null){
+                  print(value[i]?.featuredText);
+                  print("this is the skillid :");
+                  print(value[i]?.featuredId);
+                  addFeatureCard(value[i]?.featuredId , value[i]?.featuredText );
+                  var li = otherList[i].text;
+                  print("$i , $li");
+                }
+                
+              }
+             }
+          }));
+          print(otherFeatured);
+          }
+      }));
+    }
+
+    
+    // print("this my profileid $profileId");
+    
+  }
+  @override
+  void initState() {
+    getFeature();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
+       margin: EdgeInsets.only(top: 20),
+
+      height: 200,
+      width: MediaQuery.of(context).size.width*0.9,
+      color: Colors.black87,
+      child: 
+      Column(children: [
+        Container(
+          color: Colors.redAccent,
+          child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+        Container(
+          
+          height: 30,
+          margin: EdgeInsets.only(left: 10 , top: 7),
+          child: Text("FEATURED",
+          style: TextStyle(color: Colors.white , fontSize: 15),
+          ),
+        ),
+
+      ],) ,),
+        
+      Flexible(child:
+       ListView.builder(
+        itemCount: otherList.length,
+        itemBuilder: (_,index) { 
+          return OtherFeatureCard(otherList[index].id.toString(), otherList[index].text);
+          }))
+      /*Flexible(child: ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (_,index) => list[index]))*/
+      // OtherAccomplishCard() ,
+
+      ], 
+      )
+      
+    );
+  }
+}
+
+
+class OtherFeatureCard extends StatefulWidget {
+  const OtherFeatureCard(this.id , this.text);
+  final id ;
+  final text ;
+
+  @override
+  _OtherFeatureCardState createState() => _OtherFeatureCardState();
+}
+
+class _OtherFeatureCardState extends State<OtherFeatureCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      height: 50,
+      width: MediaQuery.of(context).size.width*0.88,
+      color: Colors.redAccent,
+      child: Container(margin: EdgeInsets.only(left: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+        Text(widget.id , style: TextStyle(color: Colors.white),) ,
+            Container(
+              padding: EdgeInsets.only(left: 5),
+              child: Text(widget.text , style: TextStyle(color: Colors.white),),)
+      ],)
+      )
       
     );
   }

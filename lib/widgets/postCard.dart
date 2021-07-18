@@ -1651,14 +1651,16 @@ class LikeCommentPost extends StatefulWidget {
 }
 
 class _LikeCommentPostState extends State<LikeCommentPost> {
-      List<PostCard> likeCommentPost = [] ; 
+      List<OtherPostCard> likeCommentPost = [] ; 
   void addPostCard( String text , var postId , var userId){
-  likeCommentPost.add(new PostCard(text , userId , postId, widget.db));
+
+
+  likeCommentPost.add(new OtherPostCard(text , userId , postId, widget.db , widget.user));
 }
 void getAllUserPosts()async{
   var a = widget.user ;
   if (a != null){
-    print("okokokokokokokokokokoookokokokoo");
+    print("post like by network is called");
     widget.db.postDao.postlikedByNetwork(a).then((value) => setState((){
       if (value != null){
         print("the list of posts is not empty");
@@ -1713,7 +1715,7 @@ void initState(){
           return Container(child: Column(children: [
             Text("Liked by :") ,
             Text("Commented by :") ,
-            PostCard(likeCommentPost[index].caption , likeCommentPost[index].id, likeCommentPost[index].postId, widget.db)
+            OtherPostCard(likeCommentPost[index].caption , likeCommentPost[index].id, likeCommentPost[index].postId, widget.db , widget.user)
           ],),) 
           
           ;}))
