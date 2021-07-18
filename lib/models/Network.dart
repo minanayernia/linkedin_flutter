@@ -66,6 +66,9 @@ abstract class NetworkDao{
   @Query('DELETE FROM Network WHERE userReqId = :anotheruser and userId = :myid')
   Future<void> deletNetwork(int anotheruser , int myid);
 
+  @Query('SELECT * FROM Network WHERE networkId = :networkid and (userReqId = :id or userId = :id)')
+  Future<Network?> findNetworkByoneIdNetworkid(int networkid , int id );
+
   @insert 
   Future<void> insertNetwork(Network network);
 }

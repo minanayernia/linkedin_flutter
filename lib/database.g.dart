@@ -82,6 +82,8 @@ class _$AppDatabase extends AppDatabase {
 
   MessageeDao? _messageeDaoInstance;
 
+  NotificationnDao? _notificationnDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -100,6 +102,8 @@ class _$AppDatabase extends AppDatabase {
         await callback?.onUpgrade?.call(database, startVersion, endVersion);
       },
       onCreate: (database, version) async {
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Notificationn` (`notificationId` INTEGER PRIMARY KEY AUTOINCREMENT, `networkId` INTEGER, `notificationType` INTEGER, `receiver` INTEGER, FOREIGN KEY (`networkId`) REFERENCES `Network` (`networkId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Messagee` (`messageId` INTEGER PRIMARY KEY AUTOINCREMENT, `recieverId` INTEGER NOT NULL, `senderId` INTEGER NOT NULL, `messageText` TEXT NOT NULL, `archived` INTEGER NOT NULL, `unread` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, FOREIGN KEY (`recieverId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`senderId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -186,6 +190,12 @@ class _$AppDatabase extends AppDatabase {
   MessageeDao get messageeDao {
     return _messageeDaoInstance ??= _$MessageeDao(database, changeListener);
   }
+
+  @override
+  NotificationnDao get notificationnDao {
+    return _notificationnDaoInstance ??=
+        _$NotificationnDao(database, changeListener);
+  }
 }
 
 class _$PostDao extends PostDao {
@@ -240,6 +250,16 @@ class _$PostDao extends PostDao {
         'SELECT * FROM post WHERE postId in (select DISTINCT postId from comments WHERE userId in (select DISTINCT userReqId from network WHERE networkState = 1 and userId = ?1))',
         mapper: (Map<String, Object?> row) => Post(PostId: row['PostId'] as int?, PostCaption: row['PostCaption'] as String, userId: row['userId'] as int),
         arguments: [userId]);
+  }
+
+  @override
+  Future<Post?> findPostByPostId(int postId) async {
+    return _queryAdapter.query('SELECT * from post WHERE postId = ?1',
+        mapper: (Map<String, Object?> row) => Post(
+            PostId: row['PostId'] as int?,
+            PostCaption: row['PostCaption'] as String,
+            userId: row['userId'] as int),
+        arguments: [postId]);
   }
 
   @override
@@ -689,6 +709,14 @@ class _$NetworkDao extends NetworkDao {
   }
 
   @override
+  Future<Network?> findNetworkByoneIdNetworkid(int networkid, int id) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Network WHERE networkId = ?1 and (userReqId = ?2 or userId = ?2)',
+        mapper: (Map<String, Object?> row) => Network(networkId: row['networkId'] as int?, userReqId: row['userReqId'] as int?, userId: row['userId'] as int?),
+        arguments: [networkid, id]);
+  }
+
+  @override
   Future<void> insertNetwork(Network network) async {
     await _networkInsertionAdapter.insert(network, OnConflictStrategy.abort);
   }
@@ -898,5 +926,45 @@ class _$MessageeDao extends MessageeDao {
   @override
   Future<void> insertMessage(Messagee msg) async {
     await _messageeInsertionAdapter.insert(msg, OnConflictStrategy.abort);
+  }
+}
+
+class _$NotificationnDao extends NotificationnDao {
+  _$NotificationnDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _notificationnInsertionAdapter = InsertionAdapter(
+            database,
+            'Notificationn',
+            (Notificationn item) => <String, Object?>{
+                  'notificationId': item.notificationId,
+                  'networkId': item.networkId,
+                  'notificationType': item.notificationType,
+                  'receiver': item.receiver
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Notificationn> _notificationnInsertionAdapter;
+
+  @override
+  Future<List<Notificationn?>> showNotif(int receiver) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Notificationn WHERE receiver = ?1',
+        mapper: (Map<String, Object?> row) => Notificationn(
+            notificationId: row['notificationId'] as int?,
+            networkId: row['networkId'] as int?,
+            notificationType: row['notificationType'] as int?,
+            receiver: row['receiver'] as int?),
+        arguments: [receiver]);
+  }
+
+  @override
+  Future<void> insertNotif(Notificationn notif) async {
+    await _notificationnInsertionAdapter.insert(
+        notif, OnConflictStrategy.abort);
   }
 }

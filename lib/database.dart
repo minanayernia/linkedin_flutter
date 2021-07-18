@@ -7,6 +7,7 @@ import 'package:dbproject/models/CommentLike.dart';
 import 'package:dbproject/models/Featured.dart';
 import 'package:dbproject/models/Like.dart';
 import 'package:dbproject/models/Network.dart';
+import 'package:dbproject/models/Notification.dart';
 import 'package:dbproject/models/User.dart';
 import 'package:dbproject/models/UserProfile.dart';
 import 'package:floor/floor.dart';
@@ -21,7 +22,7 @@ import 'models/post.dart';
 import 'models/Featured.dart';
 part 'database.g.dart'; // 
 
-@Database(version: 1, entities: [Messagee ,CommentLike , Comment ,Like ,Post , User , UserProfile , Skill , Accomplishment , Featured , Network ,])
+@Database(version: 1, entities: [ Notificationn ,Messagee ,CommentLike , Comment ,Like ,Post , User , UserProfile , Skill , Accomplishment , Featured , Network ,])
 
 abstract class AppDatabase extends FloorDatabase {
   
@@ -36,6 +37,7 @@ abstract class AppDatabase extends FloorDatabase {
   CommentDao get commentDao ;
   CommentLikeDao get commentLikeDao ;
   MessageeDao get messageeDao ;
+  NotificationnDao get notificationnDao ;
 
 
 }
