@@ -43,8 +43,10 @@ class pm extends StatelessWidget {
                     );
   }
 }
-class _MessageState extends State<Message> {
+
 List<pm> msgs=[];
+class _MessageState extends State<Message> {
+
 void addmsg(var text , var name){
   msgs.add(new pm(name, text));
   setState(() {
@@ -52,7 +54,7 @@ void addmsg(var text , var name){
   });
 }
 void conversation(int myid , String othername )async{
-  msg.clear();
+  msgs.clear();
   print("we are in conversation!!!");
   widget.db.userDao.findeUserByUserName(othername).then((v) => setState((){
 
