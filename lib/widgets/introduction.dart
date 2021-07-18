@@ -1,5 +1,6 @@
 
 
+import 'package:dbproject/models/Notification.dart';
 import 'package:dbproject/models/User.dart';
 import 'package:dbproject/views/otherUserView.dart';
 import 'package:dbproject/widgets/accomplishments.dart';
@@ -24,6 +25,18 @@ class SearchUserCard extends StatefulWidget {
 }
 
 class _SearchUserCardState extends State<SearchUserCard> {
+
+  //send notif for see the profile
+  void seenNotif()async{
+    var notif = Notificationn(sender: widget.myuser, notificationType: 2, receiver: widget.id);
+    await widget.db.notificationnDao.insertNotif(notif);
+    print("after inserting seen notif");
+    Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => OtherUserView(widget.db , widget.id , widget.myuser)),);
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,9 +46,7 @@ class _SearchUserCardState extends State<SearchUserCard> {
       color: Colors.redAccent,
       child: GestureDetector(
         onTap: (){
-           Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => OtherUserView(widget.db , widget.id , widget.myuser)),);
+          return seenNotif();
         },
         child: Container(
         alignment: Alignment.centerLeft,
