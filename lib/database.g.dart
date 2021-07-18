@@ -84,6 +84,8 @@ class _$AppDatabase extends AppDatabase {
 
   NotificationnDao? _notificationnDaoInstance;
 
+  AdditionalInfoDao? _additionalInfoDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -126,6 +128,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `Featured` (`featuredId` INTEGER PRIMARY KEY AUTOINCREMENT, `profileId` INTEGER, `featuredText` TEXT NOT NULL, FOREIGN KEY (`profileId`) REFERENCES `UserProfile` (`ProfileId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Network` (`networkId` INTEGER PRIMARY KEY AUTOINCREMENT, `userReqId` INTEGER, `userId` INTEGER, `networkState` INTEGER, FOREIGN KEY (`userReqId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `AdditionalInfo` (`jobId` INTEGER PRIMARY KEY AUTOINCREMENT, `profileId` INTEGER, `companyName` TEXT NOT NULL, `jobName` TEXT NOT NULL, FOREIGN KEY (`profileId`) REFERENCES `UserProfile` (`profileId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -195,6 +199,12 @@ class _$AppDatabase extends AppDatabase {
   NotificationnDao get notificationnDao {
     return _notificationnDaoInstance ??=
         _$NotificationnDao(database, changeListener);
+  }
+
+  @override
+  AdditionalInfoDao get additionalInfoDao {
+    return _additionalInfoDaoInstance ??=
+        _$AdditionalInfoDao(database, changeListener);
   }
 }
 
@@ -977,5 +987,74 @@ class _$NotificationnDao extends NotificationnDao {
   Future<void> insertNotif(Notificationn notif) async {
     await _notificationnInsertionAdapter.insert(
         notif, OnConflictStrategy.abort);
+  }
+}
+
+class _$AdditionalInfoDao extends AdditionalInfoDao {
+  _$AdditionalInfoDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _additionalInfoInsertionAdapter = InsertionAdapter(
+            database,
+            'AdditionalInfo',
+            (AdditionalInfo item) => <String, Object?>{
+                  'jobId': item.jobId,
+                  'profileId': item.profileId,
+                  'companyName': item.companyName,
+                  'jobName': item.jobName
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<AdditionalInfo> _additionalInfoInsertionAdapter;
+
+  @override
+  Future<List<AdditionalInfo>> allAdditionalInfo(int profileId) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM AdditionalInfo WHERE profileId = ?1',
+        mapper: (Map<String, Object?> row) => AdditionalInfo(
+            jobId: row['jobId'] as int?,
+            companyName: row['companyName'] as String,
+            jobName: row['jobName'] as String,
+            profileId: row['profileId'] as int?),
+        arguments: [profileId]);
+  }
+
+  @override
+  Future<AdditionalInfo?> findAdditionalInfoById(int jobid, int profid) async {
+    return _queryAdapter.query(
+        'SELECT * FROM AdditionalInfo WHERE jobId = ?1 and profileId = ?2',
+        mapper: (Map<String, Object?> row) => AdditionalInfo(
+            jobId: row['jobId'] as int?,
+            companyName: row['companyName'] as String,
+            jobName: row['jobName'] as String,
+            profileId: row['profileId'] as int?),
+        arguments: [jobid, profid]);
+  }
+
+  @override
+  Future<AdditionalInfo?> findAdditionalInfoByText(
+      String jobname, String companyname, int profid) async {
+    return _queryAdapter.query(
+        'SELECT * FROM AdditionalInfo WHERE jobName = ?1 and companyName = ?2 and profileId = ?3',
+        mapper: (Map<String, Object?> row) => AdditionalInfo(jobId: row['jobId'] as int?, companyName: row['companyName'] as String, jobName: row['jobName'] as String, profileId: row['profileId'] as int?),
+        arguments: [jobname, companyname, profid]);
+  }
+
+  @override
+  Future<void> editAditinallInfo(
+      String jobname, String companyname, int jobid) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE AdditionalInfo SET jobName = ?1 , companyName = ?2 WHERE jobId = ?3',
+        arguments: [jobname, companyname, jobid]);
+  }
+
+  @override
+  Future<void> insertAditionalInfo(AdditionalInfo additionalInfo) async {
+    await _additionalInfoInsertionAdapter.insert(
+        additionalInfo, OnConflictStrategy.abort);
   }
 }
