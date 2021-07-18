@@ -92,6 +92,7 @@ class _PostCardState extends State<PostCard> {
             print("network of notification founded");               
             int n = 4;
             var notif = Notificationn(
+              // post: ,
             sender: userId,       
             notificationType: n,
             receiver: receiver);
