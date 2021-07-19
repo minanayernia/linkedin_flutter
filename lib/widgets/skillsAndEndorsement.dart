@@ -4,6 +4,8 @@
 
 // import 'dart:js_util';
 
+import 'package:dbproject/models/Endorse.dart';
+import 'package:dbproject/models/Notification.dart';
 import 'package:dbproject/models/Skill.dart';
 import 'package:flutter/material.dart';
 
@@ -24,9 +26,10 @@ List<SkillCard> list = [];
 // }
 
 class SkillCard extends StatefulWidget {
-  const SkillCard(this.id , this.text);
+  const SkillCard(this.id , this.text , this.db);
   final id ;
   final text ;
+  final AppDatabase db ;
    
 
 
@@ -37,33 +40,70 @@ class SkillCard extends StatefulWidget {
 
 
 class _SkillCardState extends State<SkillCard> {
+List<String?> endorseName =[];
+void getindorse()async{
+  print("get indorse ");
+  print(widget.id);
+      widget.db.endorseDao.findAllEndorse(int.parse(widget.id)).then((value) => setState((){
+        if(value!=null){
+          for(int i = 0 ; i< value.length ; i++){
+            print("finding each endorsement");
+            var us = value[i]?.userId;
+            widget.db.userDao.findUserNameByUserId(us!).then((val) => setState((){
+              var name = val?.userName ;
+              endorseName.add(name);
+              print("endorsement added to list");
+            }));
 
+          }
+        }
+      }));
+    }
     
-
+  @override
+  void initState() {
+    getindorse();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
+
     return Container(
       margin: EdgeInsets.only(top: 5 , bottom: 5),
-      height: 50,
+      height: 70,
       width: MediaQuery.of(context).size.width*0.86,
       color: Colors.redAccent,
       child: Container(margin: EdgeInsets.only(left: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-        Row(children: [
-            Text(widget.id , style: TextStyle(color: Colors.white),) ,
-            Container(
-              padding: EdgeInsets.only(left: 5),
-              child: Text(widget.text , style: TextStyle(color: Colors.white),),)
-            
+          Column(children: [
+            Row(children: [
+              Text(widget.id , style: TextStyle(color: Colors.white),) ,
+              Container(
+                padding: EdgeInsets.only(left: 5),
+                child: Text(widget.text , style: TextStyle(color: Colors.white),),)
+              
 
 
-        ],),
-        Row(children: [
-          // TextButton(onPressed: (){}, child: Text("Endorse")),
-          TextButton(onPressed: (){}, child: Text("Edit")),
+          ],),
+          Text("ENDORSED BY :"),
+          Container(
+            height: 20,
+            width: MediaQuery.of(context).size.width*0.86,
+            child:
+       ListView.builder(
+         scrollDirection: Axis.horizontal,
+        itemCount: endorseName.length,
+        itemBuilder: (_,index) { 
+          return Container(child: Text(endorseName[index].toString()),);
+          ;}))
         ],)
+          
+        // Row(children: [
+        //   // TextButton(onPressed: (){}, child: Text("Endorse")),
+        //   TextButton(onPressed: (){}, child: Text("Edit")),
+        // ],)
 
       ],),
       )
@@ -134,7 +174,7 @@ void addSkillCard(var id , var text){
   });
   
   if(text != "" && checkCopy == false){
-  list.add(new SkillCard(id , text));
+  list.add(new SkillCard(id , text , widget.db));
   setState((){});
   }
 }
@@ -272,7 +312,7 @@ void addSkillCard(var id , var text){
        ListView.builder(
         itemCount: list.length,
         itemBuilder: (_,index) { 
-          return SkillCard(list[index].id.toString(), list[index].text);
+          return SkillCard(list[index].id.toString(), list[index].text , widget.db);
           ;}))
       
       ] 
@@ -286,9 +326,10 @@ void addSkillCard(var id , var text){
 var otherSkill ;
  List<OtherSkillCard> otherList = [];
 class OtherSkill extends StatefulWidget {
-  const OtherSkill(this.db , this.user);
+  const OtherSkill(this.db , this.user , this.myid);
   final AppDatabase db ;
   final int? user  ;
+  final myid ;
 
   @override
   _OtherSkillState createState() => _OtherSkillState();
@@ -299,9 +340,9 @@ class _OtherSkillState extends State<OtherSkill> {
       List accomplishmentsText = [] ;
     List accomplishmentsId = [] ;
 
-void addSkillCard(var id , var text){
+void addSkillCard(var id , var text , var myid){
   
-  otherList.add(new OtherSkillCard(id , text));
+  otherList.add(new OtherSkillCard(id , text , myid ,widget.db,widget.user));
   setState((){});
 }
 
@@ -325,7 +366,7 @@ void addSkillCard(var id , var text){
                   print(value[i]?.SkillText);
                   print("this is the skillid :");
                   print(value[i]?.SkillId);
-                  addSkillCard(value[i]?.SkillId , value[i]?.SkillText );
+                  addSkillCard(value[i]?.SkillId , value[i]?.SkillText ,widget.myid );
                   var li = otherList[i].text;
                   print("$i , $li");
                 }
@@ -379,7 +420,7 @@ void addSkillCard(var id , var text){
        ListView.builder(
         itemCount: otherList.length,
         itemBuilder: (_,index) { 
-          return OtherSkillCard(otherList[index].id.toString(), otherList[index].text);
+          return OtherSkillCard(otherList[index].id.toString(), otherList[index].text , widget.myid , widget.db , widget.user);
           }))
       // OtherSkillCard(),
       /*Flexible(child: ListView.builder(
@@ -436,15 +477,36 @@ void addSkillCard(var id , var text){
 
 
 class OtherSkillCard extends StatefulWidget {
-  const OtherSkillCard(this.id , this.text);
+  const OtherSkillCard(this.id , this.text , this.myid , this.db , this.otheruserid);
   final id ;
   final text ;
+  final myid ;
+  final AppDatabase db;
+  final otheruserid ;
 
   @override
   _OtherSkillCardState createState() => _OtherSkillCardState();
 }
 
 class _OtherSkillCardState extends State<OtherSkillCard> {
+
+  void addendorsementToDatabase()async{
+    if(widget.myid != widget.otheruserid){
+      print("addendorsementToDatabase if");
+      var endorse = Endorse(widget.myid, int.parse(widget.id));
+      print("endorse : $endorse");
+      await widget.db.endorseDao.insertEndorse(endorse);
+      print("endorse inserted successfuly!");
+      //add endorse notif
+        var notif = Notificationn(notificationType: 6, receiver: widget.otheruserid, sender: widget.myid);
+        widget.db.notificationnDao.insertNotif(notif);
+        print("notif endorsement sent!");
+      //end
+    }
+    
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -466,7 +528,9 @@ class _OtherSkillCardState extends State<OtherSkillCard> {
 
         ],),
         Row(children: [
-          TextButton(onPressed: (){}, child: Text("Endorse")),
+          TextButton(onPressed: (){
+            return addendorsementToDatabase();
+          }, child: Text("Endorse")),
         ],)
 
       ],),
@@ -632,7 +696,7 @@ class _NewSkillState extends State<NewSkill> {
 
   void addSkillCard(var id , var text){
     if(text != ""&& checkCopy == false){
-    list.add(new SkillCard(id , text));
+    list.add(new SkillCard(id , text , widget.db));
     setState((){});
     }
   }

@@ -86,6 +86,8 @@ class _$AppDatabase extends AppDatabase {
 
   AdditionalInfoDao? _additionalInfoDaoInstance;
 
+  EndorseDao? _endorseDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -104,6 +106,8 @@ class _$AppDatabase extends AppDatabase {
         await callback?.onUpgrade?.call(database, startVersion, endVersion);
       },
       onCreate: (database, version) async {
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Endorse` (`endorseId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL, `skillId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`skillId`) REFERENCES `Skill` (`skillId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Notificationn` (`notificationId` INTEGER PRIMARY KEY AUTOINCREMENT, `notificationType` INTEGER, `sender` INTEGER, `receiver` INTEGER, `post` INTEGER, `comment` INTEGER)');
         await database.execute(
@@ -205,6 +209,11 @@ class _$AppDatabase extends AppDatabase {
   AdditionalInfoDao get additionalInfoDao {
     return _additionalInfoDaoInstance ??=
         _$AdditionalInfoDao(database, changeListener);
+  }
+
+  @override
+  EndorseDao get endorseDao {
+    return _endorseDaoInstance ??= _$EndorseDao(database, changeListener);
   }
 }
 
@@ -518,6 +527,16 @@ class _$SkillDao extends SkillDao {
             SkillText: row['SkillText'] as String,
             profileId: row['profileId'] as int),
         arguments: [id, profid]);
+  }
+
+  @override
+  Future<Skill?> findSkilByJustid(int id) async {
+    return _queryAdapter.query('SELECT * FROM Skill WHERE skillId = ?1',
+        mapper: (Map<String, Object?> row) => Skill(
+            SkillId: row['SkillId'] as int?,
+            SkillText: row['SkillText'] as String,
+            profileId: row['profileId'] as int),
+        arguments: [id]);
   }
 
   @override
@@ -1114,5 +1133,39 @@ class _$AdditionalInfoDao extends AdditionalInfoDao {
   Future<void> insertAditionalInfo(AdditionalInfo additionalInfo) async {
     await _additionalInfoInsertionAdapter.insert(
         additionalInfo, OnConflictStrategy.abort);
+  }
+}
+
+class _$EndorseDao extends EndorseDao {
+  _$EndorseDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _endorseInsertionAdapter = InsertionAdapter(
+            database,
+            'Endorse',
+            (Endorse item) => <String, Object?>{
+                  'endorseId': item.endorseId,
+                  'userId': item.userId,
+                  'skillId': item.skillId
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Endorse> _endorseInsertionAdapter;
+
+  @override
+  Future<List<Endorse?>> findAllEndorse(int skillid) async {
+    return _queryAdapter.queryList('SELECT * FROM Endorse WHERE skillId = ?1',
+        mapper: (Map<String, Object?> row) =>
+            Endorse(row['userId'] as int, row['skillId'] as int),
+        arguments: [skillid]);
+  }
+
+  @override
+  Future<void> insertEndorse(Endorse endorse) async {
+    await _endorseInsertionAdapter.insert(endorse, OnConflictStrategy.abort);
   }
 }

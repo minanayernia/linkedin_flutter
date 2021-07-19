@@ -45,6 +45,9 @@ abstract class SkillDao {
   @Query('SELECT * FROM Skill WHERE skillId = :id and profileId = :profid')
   Future<Skill?> findSkillById(int id , int profid);
 
+  @Query('SELECT * FROM Skill WHERE skillId = :id')
+  Future<Skill?> findSkilByJustid(int id);
+
   @Query('UPDATE skill SET skillText = :skillText WHERE skillId = :skillId')
   Future<Skill?> editSkill(String skillText , int skillId);
   

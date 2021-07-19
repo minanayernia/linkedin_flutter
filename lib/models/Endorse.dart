@@ -38,6 +38,10 @@ class Endorse  {
 
 @dao 
 abstract class EndorseDao {
+
+  @Query('SELECT * FROM Endorse WHERE skillId = :skillid')
+  Future<List<Endorse?>> findAllEndorse(int skillid);
+
   @insert
   Future<void> insertEndorse(Endorse endorse);
 }
