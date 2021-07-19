@@ -36,9 +36,11 @@ class Notificationn {
   */
   int? sender ;
   int? receiver ;
+  int? post ;
 
   Notificationn({
     this.notificationId ,
+    this.post = null ,
     // required this.networkId ,
     required this.notificationType ,
     required this.receiver ,
