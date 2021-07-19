@@ -119,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Message(widget.db , widget.user) ,
           NewMessage(widget.db , widget.user) ,
           InvitationList(widget.user , widget.db),
-          PeopleYouMayKnowList(),
+          PeopleYouMayKnowList(widget.db , widget.user),
           HomePosts(widget.db , widget.user),
           LikeCommentPost(widget.db, widget.user ),
           

@@ -732,7 +732,7 @@ class _$NetworkDao extends NetworkDao {
   @override
   Future<List<Network?>> allNetwork(int userId) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM Network WHERE networkState = 1 AND (userReqId = ?1 or userId = ?1)',
+        'SELECT * FROM Network WHERE networkState = 1 AND userReqId = ?1 or ( networkState = 1 and userId = ?1 )',
         mapper: (Map<String, Object?> row) => Network(networkId: row['networkId'] as int?, userReqId: row['userReqId'] as int?, userId: row['userId'] as int?),
         arguments: [userId]);
   }

@@ -1,5 +1,5 @@
-import 'package:dbproject/widgets/accomplishments.dart';
 import 'package:flutter/material.dart';
+import 'package:dbproject/models/Network.dart';
 
 import '../database.dart';
 
@@ -175,18 +175,118 @@ class _InvitationCardState extends State<InvitationCard> {
 // }
 
 class PeopleYouMayKnowList extends StatefulWidget {
-  const PeopleYouMayKnowList({Key? key}) : super(key: key);
+  const PeopleYouMayKnowList(this.db , this.user);
+  final AppDatabase db ;
+  final int? user  ;
 
   @override
   _PeopleYouMayKnowListState createState() => _PeopleYouMayKnowListState();
 }
 
 class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
-  List<InvitationCard> list = [];
-  // addSkillCard() {
-  //   list.add(new InvitationCard());
-  //   setState(() {});
-  // }
+  List<PeopleCard> list = [];
+  addPeopleCard(var id , var username) {
+    list.add(new PeopleCard(id , username));
+    setState(() {});
+  }
+
+
+
+  void getPeopleYouMayKnow() async{
+
+    var a = widget.user ;
+    if(a != null){
+      widget.db.netwokDao.allNetwork(a).then((value) => setState((){
+        print("we are in your network");
+          if(value != null){
+            for(int i = 0 ; i < value.length ; i++){
+              
+              var userid = value[i]?.userId ;
+              print("userid is: $userid");
+              
+              var user1  = value[i]?.userReqId;
+              print("user1 is: $user1");
+              if(userid != widget.user){
+              widget.db.netwokDao.allNetwork(userid!).then((val) => setState((){
+                      print(val);
+                      print("we r in userid network");
+                      if(val != null){
+                        for(int j = 0 ; j < val.length ; j++){
+                            print("j = $j");
+                            var ui = val[j]?.userId ;
+                            print("ui is : $ui") ;
+
+                            var ur = val[j]?.userReqId ;
+                            print("ur is : $ur") ;
+
+                            if(ui != user1 && ur == userid){
+                            widget.db.userDao.findUserNameByUserId(ui!).then((v) => setState((){
+                              print("finding username1 :");
+                                  if (v != null){
+                                      addPeopleCard(ui , v.userName) ;
+                                  }
+                            }));
+                            }
+                            if(ur != user1 && ui == userid){
+                              widget.db.userDao.findUserNameByUserId(ur!).then((v) => setState((){
+                                print("finding username2 :");
+                                  if (v != null){
+                                      addPeopleCard(ur , v.userName) ;
+                                  }
+                            }));
+
+                            }
+                        }
+                      }
+
+              }));
+              }
+              else{
+                print("we r in else");
+                  widget.db.netwokDao.allNetwork(user1!).then((vl) => setState((){
+                    print("we r in user1 network");
+                        if(vl != null){
+                          for(int k = 0 ; k < vl.length ; k++){
+                            var ui = vl[k]?.userId ;
+                            print("ui is : $ui") ;
+                            var ur = vl[k]?.userReqId ;
+                            print("ur is : $ur") ;
+
+                            if(ui != userid && ur == user1){
+                            widget.db.userDao.findUserNameByUserId(ui!).then((v) => setState((){
+                              print("finding username1 :");
+                                  if (v != null){
+                                      addPeopleCard(ui , v.userName) ;
+                                  }
+                            }));
+                            }
+                            if(ur != userid && ui == user1){
+                              widget.db.userDao.findUserNameByUserId(ur!).then((v) => setState((){
+                                print("finding username2 :");
+                                  if (v != null){
+                                      addPeopleCard(ur , v.userName) ;
+                                  }
+                            }));
+
+                            }
+                          }
+                        }
+                  }));
+              }
+            }
+          }
+
+      }));
+
+    }
+
+
+  }
+  @override
+  void initState() {
+    getPeopleYouMayKnow();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -213,23 +313,32 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
                 ],
               ),
             ),
-            Flexible(
-                child: ListView.builder(
-                    itemCount: list.length,
-                    itemBuilder: (_, index) => list[index])),
-            PeopleCard(),
+            Flexible(child:
+       ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (_,index) { 
+          return PeopleCard(list[index].id.toString(), list[index].username);
+          ;}))
           ],
         ));
   }
 }
 
-class PeopleCard extends StatelessWidget {
-  const PeopleCard({Key? key}) : super(key: key);
 
+class PeopleCard extends StatefulWidget {
+ const PeopleCard(this.id , this.username);
+  final id ;
+  final username ;
+
+  @override
+  _PeopleCardState createState() => _PeopleCardState();
+}
+
+class _PeopleCardState extends State<PeopleCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.only(top: 10),
+      margin: EdgeInsets.only(top: 10),
         height: 50,
         width: MediaQuery.of(context).size.width * 0.88,
         color: Colors.redAccent,
@@ -238,12 +347,52 @@ class PeopleCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "User Name",
+                Row(children: [
+
+                  Text(
+                  widget.id,
                   style: TextStyle(color: Colors.white),
                 ),
+
+                  Text(
+                  widget.username,
+                  style: TextStyle(color: Colors.white),
+                ),
+
+                ],),
+                
                 TextButton(onPressed: () {}, child: Text("Connect")),
               ],
-            )));
+            ))
+      
+    );
   }
 }
+
+// class PeopleCard extends StatelessWidget {
+//   const PeopleCard(this.id , this.username);
+//   final id ;
+//   final username ;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//         margin: EdgeInsets.only(top: 10),
+//         height: 50,
+//         width: MediaQuery.of(context).size.width * 0.88,
+//         color: Colors.redAccent,
+//         child: Container(
+//             margin: EdgeInsets.only(left: 5),
+//             child: Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 Text(
+//                   widget.uername,
+//                   style: TextStyle(color: Colors.white),
+//                 ),
+//                 TextButton(onPressed: () {}, child: Text("Connect")),
+//               ],
+//             ))
+//             );
+//   }
+// }
