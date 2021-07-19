@@ -739,7 +739,15 @@ class _$NetworkDao extends NetworkDao {
   @override
   Future<Network?> findNetwork(int myuser, int anotheruser) async {
     return _queryAdapter.query(
-        'SELECT * FROM Network WHERE (userId = ?1 and userReqId = ?2) or (userId = ?2 and userReqId = ?1)',
+        'SELECT * FROM Network WHERE (userId = ?1 and userReqId = ?2 AND networkState = 1) or (userId = ?2 and userReqId = ?1 AND networkState = 1)',
+        mapper: (Map<String, Object?> row) => Network(networkId: row['networkId'] as int?, userReqId: row['userReqId'] as int?, userId: row['userId'] as int?),
+        arguments: [myuser, anotheruser]);
+  }
+
+  @override
+  Future<Network?> findUnAcceptedNetwork(int myuser, int anotheruser) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Network WHERE (userId = ?1 and userReqId = ?2 AND networkState = 0) or (userId = ?2 and userReqId = ?1 AND networkState = 0)',
         mapper: (Map<String, Object?> row) => Network(networkId: row['networkId'] as int?, userReqId: row['userReqId'] as int?, userId: row['userId'] as int?),
         arguments: [myuser, anotheruser]);
   }
