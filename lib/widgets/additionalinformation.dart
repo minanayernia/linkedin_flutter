@@ -1,4 +1,6 @@
 import 'package:dbproject/models/AditionallInfo.dart';
+import 'package:dbproject/models/Network.dart';
+import 'package:dbproject/models/Notification.dart';
 import 'package:dbproject/widgets/additionalinformation.dart';
 import 'package:flutter/material.dart';
 
@@ -428,6 +430,37 @@ class NewInfo extends StatefulWidget {
 }
 
 class _NewInfoState extends State<NewInfo> {
+
+
+ List<int> parseNetwork(List<Network?> network, userId) { 
+  List<int> myNet = [];
+
+  for (var i in network){
+    if (i?.userId == userId){
+      var k = i?.userReqId;
+        myNet.add(k!);
+    } else {
+      var j = i?.userId ;
+      myNet.add(j!);
+    }
+  }
+
+  return myNet;
+}
+
+  int findNumberOfMutualConnections(List network1,List network2) { 
+  int n = 0;
+
+  for (var i in network1){
+    if (network2.contains(i)){
+      n++;
+    }
+  }
+  return n;
+}
+
+
+
     void addInfoCard(var job , var company , var id){
     if(company != "" && job != ""){
     list.add(new AboutCard(job , company , id));
@@ -449,6 +482,20 @@ class _NewInfoState extends State<NewInfo> {
             var profileId = value.ProfileId ;
             var info = AdditionalInfo(companyName: additionalInfoCompany, jobName: additionalInfoJob, profileId: profileId);
             widget.db.additionalInfoDao.insertAditionalInfo(info);
+
+            //adding notification type7 for job change
+            widget.db.netwokDao.allNetwork(a).then((val) => setState((){
+              var mycons = parseNetwork(val, a);
+              for( var i in mycons){
+                var notif = Notificationn(notificationType: 7, receiver: i, sender: a);
+              widget.db.notificationnDao.insertNotif(notif);
+              print("current job notif changed");
+              }
+              
+            }));
+            //end of notif
+
+            
             addInfoJobController.text = "" ;
             addInfoCompanyController.text = "";
             

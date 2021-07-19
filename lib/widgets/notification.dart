@@ -34,6 +34,7 @@ class _NotificatioCardState extends State<NotificatioCard> {
     }else if (widget.notiftype == 6 ){
       notiftext = "$d emdorsed your skill";
     }else if (widget.notiftype == 7 ){
+      print("get into notif 7");
       notiftext = "job position changed - congratulate to :$d ";
     }
 

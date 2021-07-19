@@ -125,8 +125,7 @@ class _IntroState extends State<Intro> {
       makemy();
       return _textFromFile;
   }
-
-  List<int> parseNetwork(List<Network?> network, userId) { 
+ List<int> parseNetwork(List<Network?> network, userId) { 
   List<int> myNet = [];
 
   for (var i in network){
@@ -152,7 +151,6 @@ class _IntroState extends State<Intro> {
   }
   return n;
 }
-  
 
 
 

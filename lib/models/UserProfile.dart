@@ -74,6 +74,12 @@ abstract class UserProfileDao {
   @Query('UPDATE UserProfile SET firstName = :firstname , lastName = :lastname, about =  :about , location = :location   WHERE userId =  :userId')
   Future<UserProfile?> editAllProfile(int userId, String firstname , String lastname , String about  , String location );
 
+  @Query('SELECT * FROM userProfile WHERE location = :location')
+  Future<UserProfile?> filterByLocation(String location);
+
+  @Query('SELECT * FROM userProfile WHERE profileId in (SELECT LAST profileId from additionalInfo where CompanyName = :CompanyName)')
+  Future<UserProfile?> filterByCompanyname(String CompanyName);
+
   @insert
   Future<void> insertUserProfile(UserProfile userProfile);
   
