@@ -323,11 +323,15 @@ class _PostCardState extends State<PostCard> {
                     style: TextStyle(color: Colors.white, fontSize: 13),
                   ),
                 ),
+                Container(
+                  margin: EdgeInsets.only(bottom:4),
+                  child:Text("Post shared from :  " + sharedname , style: TextStyle(color: Colors.white),),
+                  ),
                 TextButton(onPressed: () {}, child: Text("..."))
               ],
             ),
           ),
-          Text(sharedname),
+          
 
           Container(
             height: MediaQuery.of(context).size.height * 0.35,

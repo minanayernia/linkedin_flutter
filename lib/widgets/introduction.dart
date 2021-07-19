@@ -234,6 +234,15 @@ class _IntroState extends State<Intro> {
 
 
   }
+
+
+  void searchLocation(String text)async{
+    var searchtext = "%"+text+"%" ;
+    var a = widget.user;
+    
+
+
+  }
   
 
   @override
