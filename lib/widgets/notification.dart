@@ -119,29 +119,40 @@ class _NotifListState extends State<NotifList> {
       widget.db.notificationnDao.showNotif(widget.myid).then((value) => setState((){
         if (value!= null ){
           for(int i = 0 ; i < value.length ; i++){
-            var nt = value[i]?.networkId ;
+            // var nt = value[i]?.networkId ;
             var typ = value[i]?.notificationType ;
             print("we are in getAllNotif and type is :");
             print("$typ");
-            widget.db.netwokDao.findNetworkByoneIdNetworkid(nt!, widget.myid).then((val) => setState((){
+            var sender = value[i]?.sender ;
+            print("notif sender : $sender");
+            var reciever = value[i]?.receiver ;
+            print("notif reciever : $reciever");
+            widget.db.userDao.findUserNameByUserId(sender!).then((val) => setState((){
               if(val != null){
-                var vuserid  = val.userId;
-                var vuserreqid = val.userReqId ;
-                if( vuserid != widget.myid ){
-                  widget.db.userDao.findUserNameByUserId(vuserid!).then((v) => setState((){
-                    var un = v?.userName ;
-                    addNotificatioCard(typ!, un!);
-                  }));
-                  
-                }else{
-                  widget.db.userDao.findUserNameByUserId(vuserreqid!).then((vl) => setState((){
-                    var un = vl?.userName ;
-                    addNotificatioCard(typ!, un!);
-                  }));
-                  
-                }
+                addNotificatioCard(typ!, val.userName);
+                print("after adding notif card");
               }
             }));
+
+            // widget.db.netwokDao.findNetworkByoneIdNetworkid(nt!, widget.myid).then((val) => setState((){
+            //   if(val != null){
+            //     var vuserid  = val.userId;
+            //     var vuserreqid = val.userReqId ;
+            //     if( vuserid != widget.myid ){
+            //       widget.db.userDao.findUserNameByUserId(vuserid!).then((v) => setState((){
+            //         var un = v?.userName ;
+            //         addNotificatioCard(typ!, un!);
+            //       }));
+                  
+            //     }else{
+            //       widget.db.userDao.findUserNameByUserId(vuserreqid!).then((vl) => setState((){
+            //         var un = vl?.userName ;
+            //         addNotificatioCard(typ!, un!);
+            //       }));
+                  
+            //     }
+            //   }
+            // }));
             
           }
         }

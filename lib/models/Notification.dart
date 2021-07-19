@@ -11,17 +11,18 @@ import 'package:floor/floor.dart';
 
 // )
 
-@Entity(foreignKeys:[
-    ForeignKey(childColumns: ['networkId'],
-     parentColumns: ['networkId'],
-      entity: Network ),
-] )
+// @Entity(foreignKeys:[
+//     ForeignKey(childColumns: ['networkId'],
+//      parentColumns: ['networkId'],
+//       entity: Network ),
+// ] )
+@entity
 class Notificationn {
   @PrimaryKey  (autoGenerate: true , ) 
   int? notificationId;
 
-  @ColumnInfo(name: 'networkId')
-  int? networkId ;
+  // @ColumnInfo(name: 'networkId')
+  // int? networkId ;
 
   int? notificationType ;
   /*
@@ -33,14 +34,15 @@ class Notificationn {
   6 => endorse your skill
   7 => your network job changed
   */
-
+  int? sender ;
   int? receiver ;
 
   Notificationn({
     this.notificationId ,
-    required this.networkId ,
+    // required this.networkId ,
     required this.notificationType ,
-    required this.receiver 
+    required this.receiver ,
+    required this.sender 
   });
   
 }

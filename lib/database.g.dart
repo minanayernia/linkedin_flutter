@@ -105,7 +105,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Notificationn` (`notificationId` INTEGER PRIMARY KEY AUTOINCREMENT, `networkId` INTEGER, `notificationType` INTEGER, `receiver` INTEGER, FOREIGN KEY (`networkId`) REFERENCES `Network` (`networkId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+            'CREATE TABLE IF NOT EXISTS `Notificationn` (`notificationId` INTEGER PRIMARY KEY AUTOINCREMENT, `notificationType` INTEGER, `sender` INTEGER, `receiver` INTEGER)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Messagee` (`messageId` INTEGER PRIMARY KEY AUTOINCREMENT, `recieverId` INTEGER NOT NULL, `senderId` INTEGER NOT NULL, `messageText` TEXT NOT NULL, `archived` INTEGER NOT NULL, `unread` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, FOREIGN KEY (`recieverId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`senderId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -839,6 +839,17 @@ class _$CommentDao extends CommentDao {
   }
 
   @override
+  Future<Comment?> findCommentBycommentId(int commentId) async {
+    return _queryAdapter.query('SELECT * From Comment WHERE commentId = ?1',
+        mapper: (Map<String, Object?> row) => Comment(
+            commentId: row['commentId'] as int?,
+            postId: row['postId'] as int,
+            userId: row['userId'] as int,
+            commentText: row['commentText'] as String),
+        arguments: [commentId]);
+  }
+
+  @override
   Future<void> insertComment(Comment comment) async {
     await _commentInsertionAdapter.insert(comment, OnConflictStrategy.abort);
   }
@@ -947,8 +958,8 @@ class _$NotificationnDao extends NotificationnDao {
             'Notificationn',
             (Notificationn item) => <String, Object?>{
                   'notificationId': item.notificationId,
-                  'networkId': item.networkId,
                   'notificationType': item.notificationType,
+                  'sender': item.sender,
                   'receiver': item.receiver
                 });
 
@@ -966,9 +977,9 @@ class _$NotificationnDao extends NotificationnDao {
         'SELECT * FROM Notificationn WHERE receiver = ?1',
         mapper: (Map<String, Object?> row) => Notificationn(
             notificationId: row['notificationId'] as int?,
-            networkId: row['networkId'] as int?,
             notificationType: row['notificationType'] as int?,
-            receiver: row['receiver'] as int?),
+            receiver: row['receiver'] as int?,
+            sender: row['sender'] as int?),
         arguments: [receiver]);
   }
 
