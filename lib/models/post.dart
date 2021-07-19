@@ -54,6 +54,9 @@ abstract class PostDao {
   @Query('SELECT * FROM post WHERE postId in (select DISTINCT postId from comment WHERE userId in (select DISTINCT userReqId from network WHERE networkState = 1 and userId = :userId UNION SELECT DISTINCT userId FROM Network WHERE networkState = 1 and userReqId = :userId ))')
   Future<List<Post>> postCommentedByNetwork(int userId) ;
 
+  @Query('SELECT * from post WHERE postId = :postId')
+  Future<Post?> findPostByPostId(int postId);
+
   @insert
   Future<void> insertPost(Post post);
 }

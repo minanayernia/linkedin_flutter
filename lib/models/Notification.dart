@@ -16,19 +16,41 @@ import 'package:floor/floor.dart';
      parentColumns: ['networkId'],
       entity: Network ),
 ] )
-class Notification {
+class Notificationn {
   @PrimaryKey  (autoGenerate: true , ) 
   int? notificationId;
 
   @ColumnInfo(name: 'networkId')
-  int networkId ;
+  int? networkId ;
 
-  int notificationType ;
+  int? notificationType ;
+  /*
+  1 => birthday 
+  2 => see profile
+  3 => comment on your post
+  4 => like your post
+  5 => like or comment your comment
+  6 => endorse your skill
+  7 => your network job changed
+  */
 
-  Notification({
+  int? receiver ;
+
+  Notificationn({
     this.notificationId ,
     required this.networkId ,
-    required this.notificationType
+    required this.notificationType ,
+    required this.receiver 
   });
   
+}
+
+@dao 
+abstract class NotificationnDao {
+
+  @Query('SELECT * FROM Notificationn WHERE receiver = :receiver')
+  Future<List<Notificationn?>> showNotif(int receiver);
+
+  @insert 
+  Future<void> insertNotif(Notificationn notif);
 }

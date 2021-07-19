@@ -1,11 +1,14 @@
 
 import 'dart:ffi';
+// import 'dart:html';
 
 import 'package:dbproject/models/Comment.dart';
 import 'package:dbproject/models/CommentLike.dart';
 import 'package:dbproject/models/Like.dart';
 import 'package:dbproject/models/User.dart';
+import 'package:dbproject/models/Notification.dart';
 import 'package:dbproject/models/post.dart';
+import 'package:dbproject/widgets/direct.dart';
 import 'package:dbproject/widgets/skillsAndEndorsement.dart';
 import 'package:flutter/material.dart';
 
@@ -77,9 +80,33 @@ void addLike(int postId , int userId)async{
       print(userId);
       print("value is nulllllllllllllll");
       print(value);
-      widget.db.likeDao.insertLike(like).then((value) => setState((){
+      widget.db.likeDao.insertLike(like).then((val) => setState((){
+        print("inside liking the post!");
       likelist = [];
       countLike(postId);
+      //adding notification
+      widget.db.postDao.findPostByPostId(postId).then((v) => setState(() {
+        if (v!=null){
+          print("start of sending notif by finding the reciever");
+          var receiver = v.userId ;
+          widget.db.netwokDao.findNetwork(userId, receiver).then((vl) => setState(() {
+            print("reciever is : $receiver");
+            print("myid is : $userId");
+            if(vl != null){
+              print("network of notification founded");
+              var netid = vl.networkId ;
+              int n = 4 ;
+              var notif = Notificationn(networkId: netid, notificationType: n , receiver: receiver);
+              widget.db.notificationnDao.insertNotif(notif);
+              print("notif added successfully!!!!");
+            }
+          }));
+
+        }
+        
+        
+      }));
+
   }));
     }
   }));
@@ -178,7 +205,7 @@ void likeComment(int commentId , int userId)async{
     super.initState();
   }
   @override
-  void setState(VoidCallback fn) {
+  void setState(fn) {
     // countLike(widget.postId);
     super.setState(fn);
   }
@@ -1085,6 +1112,7 @@ void countLike(int postId)async{
 void addLike(int postId , int userId)async{
   print("this liked post id : $postId");
   print("this liker userId :$userId");
+  print(widget.id);
   var like = Like(userId: userId , PostId: postId);
   widget.db.likeDao.findLikeIdByUseridPostid(userId, postId).then((value) => setState(() {
     if (value != null){
@@ -1103,6 +1131,27 @@ void addLike(int postId , int userId)async{
       widget.db.likeDao.insertLike(like).then((value) => setState((){
       likelist = [];
       countLike(postId);
+      //adding notification
+      widget.db.postDao.findPostByPostId(postId).then((v) => setState(() {
+        if (v!=null){
+          print("start of sending notif by finding the reciever");
+          var receiver = v.userId ;
+          widget.db.netwokDao.findNetwork(userId, receiver).then((vl) => setState(() {
+            print("reciever is : $receiver");
+            print("myid is : $userId");
+            if(vl != null){
+              print("network of notification founded");
+              var netid = vl.networkId ;
+              var notif = Notificationn(networkId: netid, notificationType: 4, receiver: receiver);
+              widget.db.notificationnDao.insertNotif(notif);
+              print("notif added successfully!!!!");
+            }
+          }));
+
+        }
+        
+        
+      }));
   }));
     }
   }));
@@ -1373,7 +1422,7 @@ void likeComment(int commentId , int userId)async{
           minWidth: MediaQuery.of(context).size.width*0.2,
           buttonColor: Colors.white,
           child: RaisedButton(onPressed: (){
-            likeComment(int.parse(likeCommentController.text), widget.id);
+            likeComment(int.parse(likeCommentController.text), widget.myid);
             allComments(widget.postId);
           },
            child: Text("Like" , style: TextStyle(color: Colors.redAccent),)))
@@ -1568,8 +1617,8 @@ void initState(){
 
 
 class HomePosts extends StatefulWidget {
-  const HomePosts(this.db , this.user);
-  final user ;
+  const HomePosts(this.db , this.myid);
+  final myid ;
   final AppDatabase db ;
 
   @override
@@ -1577,12 +1626,12 @@ class HomePosts extends StatefulWidget {
 }
 
 class _HomePostsState extends State<HomePosts> {
-    List<PostCard> allPosts = [] ; 
-  void addPostCard( String text , var postId , var userId){
-  allPosts.add(new PostCard(text , userId , postId, widget.db));
+    List<OtherPostCard> allPosts = [] ; 
+  void addPostCard( String text , var postId , var userId ){
+  allPosts.add(new OtherPostCard(postId, userId, text, widget.db, widget.myid));
 }
 void getAllUserPosts()async{
-  var a = widget.user ;
+  var a = widget.myid ;
   if (a != null){
     print("we are in get all posts");
     widget.db.postDao.allNetworkPosts(a).then((value) => setState((){
@@ -1591,7 +1640,7 @@ void getAllUserPosts()async{
         for(int i = 0 ; i < value.length ; i++){
           print("inside for of list posts");
           // userPosts[i] = value[i];
-          addPostCard(value[i].PostCaption , value[i].PostId , value[i].userId);
+          addPostCard(value[i].PostCaption , value[i].PostId , value[i].userId );
           print("post id");
           print(value[i].PostId);
           print("post caption");
@@ -1633,7 +1682,7 @@ void initState(){
          Flexible(child: ListView.builder(
         itemCount: allPosts.length,
         itemBuilder: (_,index) {
-          return PostCard(allPosts[index].caption , allPosts[index].id, allPosts[index].postId, widget.db);}))
+          return OtherPostCard(allPosts[index].postId, allPosts[index].id, allPosts[index].caption, widget.db, widget.myid);}))
         
         
       

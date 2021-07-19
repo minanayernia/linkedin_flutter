@@ -113,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
           EditFeaturedCard(widget.db , widget.user),
           AddPost(widget.db , widget.user),
           PostList(widget.db,widget.user),
-          NotifList(),
+          NotifList(widget.db , widget.user),
           LanguageList(),
           EditLanguageCard(),
           Message(widget.db , widget.user) ,
