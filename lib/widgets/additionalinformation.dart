@@ -252,7 +252,7 @@ addInfoCard(var job , var company , var id){
                   print(value[i].jobName);
                   print("this is the skillid :");
                   print(value[i].jobId);
-                  addInfoCard(value[i].jobName  , value[i].companyName , profileId);
+                  addInfoCard(value[i].jobName  , value[i].companyName , value[i].jobId);
                   // var li = list[i].text;
                   // print("$i , $li");
                 }

@@ -443,8 +443,9 @@ class _$UserProfileDao extends UserProfileDao {
   }
 
   @override
-  Future<UserProfile?> filterByLocation(String location) async {
-    return _queryAdapter.query('SELECT * FROM userProfile WHERE location = ?1',
+  Future<List<UserProfile>> filterByLocation(String location) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM userProfile WHERE location LIKE ?1',
         mapper: (Map<String, Object?> row) => UserProfile(
             ProfileId: row['ProfileId'] as int?,
             userId: row['userId'] as int?,

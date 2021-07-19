@@ -10,7 +10,34 @@ import 'package:dbproject/widgets/editintro.dart';
 import 'package:flutter/material.dart';
 import '../database.dart';
 
+class LocationCompanyUserCard extends StatefulWidget {
+  const LocationCompanyUserCard(this.db , this.username , this.id , this.myuser);
+  final username ;
+  final AppDatabase db ;
+  final id ;
+  final myuser ;
 
+
+  @override
+  _LocationCompanyUserCardState createState() => _LocationCompanyUserCardState();
+}
+
+class _LocationCompanyUserCardState extends State<LocationCompanyUserCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      height: 50,
+      width: MediaQuery.of(context).size.width*0.2,
+      color: Colors.redAccent, 
+        child: Container(
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.only(left: 10),
+        child: Text(widget.username),),
+      
+    );
+  }
+}
 
 TextEditingController searchLocationController = TextEditingController();
 
@@ -80,8 +107,16 @@ class Intro extends StatefulWidget {
 
 class _IntroState extends State<Intro> {
   List<SearchUserCard> list = [];
+  List<LocationCompanyUserCard> listLocation = [] ;
+  List<LocationCompanyUserCard> listCompany = [] ;
   void addSearchCard(var db  , String? username , int? id,int mutualcon){
   list.add(new SearchUserCard(db , username , id , widget.user , mutualcon)
+  );
+  setState((){});
+}
+
+  void addLocationCompanyCard(var db  , String? username , int? id){
+  listLocation.add(new LocationCompanyUserCard(db , username , id , widget.user)
   );
   setState((){});
 }
@@ -235,11 +270,38 @@ class _IntroState extends State<Intro> {
 
 
   void searchLocation(String text)async{
+    list.clear();
+    listLocation.clear();
     var searchtext = "%"+text+"%" ;
     var a = widget.user;
+    widget.db.userProfileDao.filterByLocation(searchtext).then((value) => setState((){
+          print("we r finding location");
+          if(value != null){
+            for(int i = 0 ; i < value.length ; i++){
+                var ui = value[i].userId ;
+                widget.db.userDao.findUserNameByUserId(ui!).then((val) => setState((){
+                  if(val != null){
+                      var un = val.userName;
+                      print("ui is : $ui");
+                      addLocationCompanyCard(widget.db , un , value[i].userId) ;
+                  }
+
+                }));
+                
+            }
+          }
+          else{
+            
+          }
+
+    }));
     
 
 
+  }
+
+  void searchCompany(String text)async{
+    var searchtext = "%"+text+"%" ;
   }
   
 
@@ -395,7 +457,7 @@ class _IntroState extends State<Intro> {
                   hintStyle: TextStyle(color: Colors.blue),
                   suffixIcon: IconButton(
                     onPressed: () {
-                      return searchUser(searchUserController.text);
+                      return searchLocation(searchLocationController.text);
                     },
                     icon: Icon(Icons.search),
                     
@@ -434,7 +496,16 @@ class _IntroState extends State<Intro> {
       ),
             Flexible(child: ListView.builder(
             itemCount: list.length,
-            itemBuilder: (_,index) => SearchUserCard( widget.db ,list[index].username , list[index].id , widget.user,list[index].mutual)))
+            itemBuilder: (_,index) => SearchUserCard( widget.db ,list[index].username , list[index].id , widget.user,list[index].mutual))),
+
+             Flexible(child: ListView.builder(
+            itemCount: listLocation.length,
+            itemBuilder: (_,index) => LocationCompanyUserCard( widget.db ,listLocation[index].username , listLocation[index].id , widget.user))),
+
+
+            Flexible(child: ListView.builder(
+            itemCount: listCompany.length,
+            itemBuilder: (_,index) => LocationCompanyUserCard( widget.db ,listCompany[index].username , listCompany[index].id , widget.user)))
 
           ],),
 

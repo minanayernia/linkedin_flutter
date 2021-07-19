@@ -194,7 +194,11 @@ class _InvitationCardState extends State<InvitationCard> {
       width: MediaQuery.of(context).size.width * 0.88,
       color: Colors.redAccent,
       margin: EdgeInsets.only(top: 10),
-      child: Row(
+      child: Column(children: [
+
+        Text("Number of mutual connection : " + widget.mutual.toString() , style: TextStyle(color: Colors.white),),
+
+        Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
@@ -215,6 +219,10 @@ class _InvitationCardState extends State<InvitationCard> {
           )
         ],
       ),
+
+      ],),
+      
+      
     );
   }
 }
@@ -529,7 +537,9 @@ class _PeopleCardState extends State<PeopleCard> {
         height: 50,
         width: MediaQuery.of(context).size.width * 0.88,
         color: Colors.redAccent,
-        child: Container(
+        child: Column(children: [
+          Text("Number of mutual connection : " + widget.mutual.toString() , style: TextStyle(color: Colors.white),),
+          Container(
             margin: EdgeInsets.only(left: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -551,6 +561,9 @@ class _PeopleCardState extends State<PeopleCard> {
                 TextButton(onPressed: () {}, child: Text("Connect")),
               ],
             ))
+        ],)
+        
+        
       
     );
   }
