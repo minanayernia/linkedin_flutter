@@ -41,7 +41,7 @@ class _OtherUserViewState extends State<OtherUserView> {
           children: [
             NavigationBar(widget.db,widget.user , widget.myuser),
             OtherIntro (db: widget.db, user: widget.user,),
-            OtherAdditionalInfo() ,
+            OtherAdditionalInfo(widget.db , widget.user) ,
             OtherAccomplish(widget.db , widget.user),
             OtherSkill(widget.db , widget.user) ,
             OtherFeature(widget.db , widget.user),

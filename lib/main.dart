@@ -104,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
           EditIntrCard( db : widget.db , user :widget.user),
           AdditionalInfoList(widget.db , widget.user),
-          EditInfoCard(),
+          EditInfoCard(widget.db , widget.user),
           AddSkill(widget.db , widget.user),
           EditSkillCard(widget.db , widget.user),
           AddAccomplish(widget.db , widget.user),

@@ -27,9 +27,13 @@ class AdditionalInfo {
   String companyName ;
   String jobName ;
 
-  AdditionalInfo(
-    this.companyName ,
-    this.jobName
+  AdditionalInfo({
+    this.jobId,
+    required this.companyName ,
+    required this.jobName,
+    required this.profileId,
+    }
+
   );
 
 
@@ -40,9 +44,16 @@ abstract class AdditionalInfoDao {
 
   @Query('SELECT * FROM AdditionalInfo WHERE profileId = :profileId')
   Future<List<AdditionalInfo>> allAdditionalInfo(int profileId);
+
+
+  @Query('SELECT * FROM AdditionalInfo WHERE jobId = :jobid and profileId = :profid')
+  Future<AdditionalInfo?> findAdditionalInfoById(int jobid , int profid);
+
+  @Query('SELECT * FROM AdditionalInfo WHERE jobName = :jobname and companyName = :companyname and profileId = :profid')
+  Future<AdditionalInfo?> findAdditionalInfoByText(String jobname ,  String companyname , int profid);
   
-  @Query('UPDATE AdditionalInfo SET jobName = :jobName WHERE profileId in (SELECT profileId From userProfile WHERE userId = :userId')
-  Future <AdditionalInfo> editAditinallInfo(String jobName , int userId , );
+  @Query('UPDATE AdditionalInfo SET jobName = :jobname , companyName = :companyname WHERE jobId = :jobid ')
+  Future <void> editAditinallInfo(String jobname , String companyname ,  int jobid);
   @insert 
-  Future<Void> insertAditionalInfo(AdditionalInfo additionalInfo);
+  Future<void> insertAditionalInfo(AdditionalInfo additionalInfo);
 }
