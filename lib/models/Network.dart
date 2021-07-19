@@ -69,7 +69,7 @@ abstract class NetworkDao{
   @Query('SELECT * FROM Network WHERE networkId = :networkid and (userReqId = :id or userId = :id)')
   Future<Network?> findNetworkByoneIdNetworkid(int networkid , int id );
 
-  @Query('SELECT * FROM Network WHERE networkState = 1 AND (userReqId = :userId or userId = :userId)')
+  @Query('SELECT * FROM Network WHERE networkState = 1 AND userReqId = :userId or ( networkState = 1 and userId = :userId )')
   Future<List<Network?>> allNetwork(int userId);
 
   @insert 

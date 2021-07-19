@@ -105,7 +105,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Notificationn` (`notificationId` INTEGER PRIMARY KEY AUTOINCREMENT, `notificationType` INTEGER, `sender` INTEGER, `receiver` INTEGER)');
+            'CREATE TABLE IF NOT EXISTS `Notificationn` (`notificationId` INTEGER PRIMARY KEY AUTOINCREMENT, `notificationType` INTEGER, `sender` INTEGER, `receiver` INTEGER, `post` INTEGER)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Messagee` (`messageId` INTEGER PRIMARY KEY AUTOINCREMENT, `recieverId` INTEGER NOT NULL, `senderId` INTEGER NOT NULL, `messageText` TEXT NOT NULL, `archived` INTEGER NOT NULL, `unread` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, FOREIGN KEY (`recieverId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`senderId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -727,6 +727,14 @@ class _$NetworkDao extends NetworkDao {
   }
 
   @override
+  Future<List<Network?>> allNetwork(int userId) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Network WHERE networkState = 1 AND userReqId = ?1 or ( networkState = 1 and userId = ?1 )',
+        mapper: (Map<String, Object?> row) => Network(networkId: row['networkId'] as int?, userReqId: row['userReqId'] as int?, userId: row['userId'] as int?),
+        arguments: [userId]);
+  }
+
+  @override
   Future<void> insertNetwork(Network network) async {
     await _networkInsertionAdapter.insert(network, OnConflictStrategy.abort);
   }
@@ -960,7 +968,8 @@ class _$NotificationnDao extends NotificationnDao {
                   'notificationId': item.notificationId,
                   'notificationType': item.notificationType,
                   'sender': item.sender,
-                  'receiver': item.receiver
+                  'receiver': item.receiver,
+                  'post': item.post
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -977,6 +986,7 @@ class _$NotificationnDao extends NotificationnDao {
         'SELECT * FROM Notificationn WHERE receiver = ?1',
         mapper: (Map<String, Object?> row) => Notificationn(
             notificationId: row['notificationId'] as int?,
+            post: row['post'] as int?,
             notificationType: row['notificationType'] as int?,
             receiver: row['receiver'] as int?,
             sender: row['sender'] as int?),

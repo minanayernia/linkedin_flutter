@@ -11,7 +11,9 @@ import '../database.dart';
 
 
 
+TextEditingController searchLocationController = TextEditingController();
 
+TextEditingController searchCompanyController = TextEditingController();
 
 class SearchUserCard extends StatefulWidget {
 
@@ -179,7 +181,7 @@ class _IntroState extends State<Intro> {
           children: [
         Container(
           margin: EdgeInsets.only(top: 20),
-      height: 200,
+      height: 400,
       width: MediaQuery.of(context).size.width * 0.7,
       color: Colors.redAccent,
       child: Column(
@@ -190,7 +192,7 @@ class _IntroState extends State<Intro> {
 
           color: Colors.white12,
           width: MediaQuery.of(context).size.width * 0.9,
-          height: 70, child :
+          height: 150, child :
           Stack( 
             
             children: [
@@ -261,18 +263,19 @@ class _IntroState extends State<Intro> {
 
         Container(
           margin: EdgeInsets.only(top: 20),
-          height: 200,
+          height: 400,
           width: MediaQuery.of(context).size.width * 0.2,
-          color: Colors.black87,
+          color: Colors.redAccent[100],
 
           child: Column(children: [
             Container(
           color: Colors.redAccent,
-          child: Row(
+          child: Column(children: [
+              Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
         Container(
-          width: 250,
+          width: MediaQuery.of(context).size.width * 0.2,
           height: 50,
           child: TextField(
             style: TextStyle(color: Colors.blue),
@@ -293,9 +296,61 @@ class _IntroState extends State<Intro> {
                 ),
               ),
         ),
+
+
         // TextButton(onPressed:(){}, child: Text("Add")) ,
 
       ],) ,
+
+            Container(
+          width: 250,
+          height: 50,
+          child: TextField(
+            style: TextStyle(color: Colors.blue),
+                controller: searchLocationController,
+                decoration: InputDecoration(
+                  hintText: "Search location",
+                  fillColor: Colors.blue,
+                  contentPadding: EdgeInsets.only(left: 10 , top: 15),
+                  hintStyle: TextStyle(color: Colors.blue),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      return searchUser(searchUserController.text);
+                    },
+                    icon: Icon(Icons.search),
+                    
+                    
+             ),
+                ),
+              ),
+        ),
+
+          Container(
+          width: 250,
+          height: 50,
+          child: TextField(
+            style: TextStyle(color: Colors.blue),
+                controller: searchCompanyController,
+                decoration: InputDecoration(
+                  hintText: "Search current company",
+                  fillColor: Colors.blue,
+                  contentPadding: EdgeInsets.only(left: 10 , top: 15),
+                  hintStyle: TextStyle(color: Colors.blue),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      return searchUser(searchUserController.text);
+                    },
+                    icon: Icon(Icons.search),
+                    
+                    
+             ),
+                ),
+              ),
+        ),
+
+          ],),
+          
+          
       ),
             Flexible(child: ListView.builder(
             itemCount: list.length,

@@ -1,5 +1,5 @@
-import 'package:dbproject/widgets/accomplishments.dart';
 import 'package:flutter/material.dart';
+import 'package:dbproject/models/Network.dart';
 
 import '../database.dart';
 
@@ -185,10 +185,10 @@ class PeopleYouMayKnowList extends StatefulWidget {
 
 class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
   List<PeopleCard> list = [];
-  // addPeopleCard() {
-  //   list.add(new PeopleCard());
-  //   setState(() {});
-  // }
+  addPeopleCard(var id , var username) {
+    list.add(new PeopleCard(id , username));
+    setState(() {});
+  }
 
 
 
@@ -196,11 +196,96 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
 
     var a = widget.user ;
     if(a != null){
+      widget.db.netwokDao.allNetwork(a).then((value) => setState((){
+        print("we are in your network");
+          if(value != null){
+            for(int i = 0 ; i < value.length ; i++){
+              
+              var userid = value[i]?.userId ;
+              print("userid is: $userid");
+              
+              var user1  = value[i]?.userReqId;
+              print("user1 is: $user1");
+              if(userid != widget.user){
+              widget.db.netwokDao.allNetwork(userid!).then((val) => setState((){
+                      print(val);
+                      print("we r in userid network");
+                      if(val != null){
+                        for(int j = 0 ; j < val.length ; j++){
+                            print("j = $j");
+                            var ui = val[j]?.userId ;
+                            print("ui is : $ui") ;
 
+                            var ur = val[j]?.userReqId ;
+                            print("ur is : $ur") ;
+
+                            if(ui != user1 && ur == userid){
+                            widget.db.userDao.findUserNameByUserId(ui!).then((v) => setState((){
+                              print("finding username1 :");
+                                  if (v != null){
+                                      addPeopleCard(ui , v.userName) ;
+                                  }
+                            }));
+                            }
+                            if(ur != user1 && ui == userid){
+                              widget.db.userDao.findUserNameByUserId(ur!).then((v) => setState((){
+                                print("finding username2 :");
+                                  if (v != null){
+                                      addPeopleCard(ur , v.userName) ;
+                                  }
+                            }));
+
+                            }
+                        }
+                      }
+
+              }));
+              }
+              else{
+                print("we r in else");
+                  widget.db.netwokDao.allNetwork(user1!).then((vl) => setState((){
+                    print("we r in user1 network");
+                        if(vl != null){
+                          for(int k = 0 ; k < vl.length ; k++){
+                            var ui = vl[k]?.userId ;
+                            print("ui is : $ui") ;
+                            var ur = vl[k]?.userReqId ;
+                            print("ur is : $ur") ;
+
+                            if(ui != userid && ur == user1){
+                            widget.db.userDao.findUserNameByUserId(ui!).then((v) => setState((){
+                              print("finding username1 :");
+                                  if (v != null){
+                                      addPeopleCard(ui , v.userName) ;
+                                  }
+                            }));
+                            }
+                            if(ur != userid && ui == user1){
+                              widget.db.userDao.findUserNameByUserId(ur!).then((v) => setState((){
+                                print("finding username2 :");
+                                  if (v != null){
+                                      addPeopleCard(ur , v.userName) ;
+                                  }
+                            }));
+
+                            }
+                          }
+                        }
+                  }));
+              }
+            }
+          }
+
+      }));
 
     }
 
 
+  }
+  @override
+  void initState() {
+    getPeopleYouMayKnow();
+    super.initState();
   }
 
   @override
@@ -228,11 +313,12 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
                 ],
               ),
             ),
-            // Flexible(
-            //     child: ListView.builder(
-            //         itemCount: list.length,
-            //         itemBuilder: (_, index) => list[index])),
-            // PeopleCard(),
+            Flexible(child:
+       ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (_,index) { 
+          return PeopleCard(list[index].id.toString(), list[index].username);
+          ;}))
           ],
         ));
   }
