@@ -37,10 +37,12 @@ class Notificationn {
   int? sender ;
   int? receiver ;
   int? post ;
+  int? comment ;
 
   Notificationn({
     this.notificationId ,
-    this.post = null ,
+    this.post  ,
+    this.comment  ,
     // required this.networkId ,
     required this.notificationType ,
     required this.receiver ,

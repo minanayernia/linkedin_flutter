@@ -3,9 +3,10 @@ import 'package:dbproject/widgets/accomplishments.dart';
 import 'package:flutter/material.dart';
 
 class NotificatioCard extends StatefulWidget {
-  const NotificatioCard(this.notiftype , this.doer) ;
+  const NotificatioCard(this.notiftype , this.doer , this.compost) ;
   final notiftype ;
   final doer ;
+  final compost ;
   
 
   @override
@@ -53,8 +54,8 @@ class _NotificatioCardState extends State<NotificatioCard> {
       width: MediaQuery.of(context).size.width*0.88,
       color: Colors.redAccent,
       margin: EdgeInsets.only(top: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(children: [
+        Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
         Container(
           margin: EdgeInsets.only(left: 10),
@@ -65,6 +66,9 @@ class _NotificatioCardState extends State<NotificatioCard> {
         TextButton(onPressed: (){}, child: Text("..."))
 
       ],),
+      Text(widget.compost)
+      ],)
+       
       
     );
   }
@@ -110,27 +114,64 @@ class NotifList extends StatefulWidget {
 class _NotifListState extends State<NotifList> {
   List<NotificatioCard> list =[];
 
-    void addNotificatioCard(int nt , String d){
-      list.add(new NotificatioCard(nt, d));
+    void addNotificatioCard(int nt , String d , String compost){
+      list.add(new NotificatioCard(nt, d , compost));
     }
 
     void getAllNotif()async{
       list.clear();
       widget.db.notificationnDao.showNotif(widget.myid).then((value) => setState((){
+        print("we are in showing notif");
         if (value!= null ){
           for(int i = 0 ; i < value.length ; i++){
             // var nt = value[i]?.networkId ;
             var typ = value[i]?.notificationType ;
-            print("we are in getAllNotif and type is :");
-            print("$typ");
+            print("type : $typ");
             var sender = value[i]?.sender ;
-            print("notif sender : $sender");
+            print("sender : $sender");
             var reciever = value[i]?.receiver ;
-            print("notif reciever : $reciever");
+            print("reciever : $reciever");
             widget.db.userDao.findUserNameByUserId(sender!).then((val) => setState((){
               if(val != null){
-                addNotificatioCard(typ!, val.userName);
+                var compost ;
+                if (typ == 3){//this is comment on a post
+                var tmp = value[i]?.post ;
+                  widget.db.postDao.findPostByPostId(tmp!).then((v) => setState((){
+                    if(v != null){
+                    compost = v.PostCaption ;
+                    print("tmp in comment is : $tmp");
+                    print(compost);
+                    addNotificatioCard(typ!, val.userName , compost);
+                    print("after adding notif card");
+                    }else{
+                      print("our v is null");
+                    }
+                  
+                  }));
+                }
+                if(typ == 4){// like post
+                var tmp = value[i]?.post ;
+                print("tmp is $tmp");
+                print("we are in type 4");
+                  widget.db.postDao.findPostByPostId(tmp!).then((v) => setState((){
+                    if(v != null){
+                      print("we find the post like");
+                      compost = v.PostCaption ;
+                      print(compost);
+                      addNotificatioCard(typ!, val.userName , compost);
+                      print("after adding notif card");
+                    }
+                    else{
+                      print("post like not found");
+                    }
+                    
+                  }));
+                }else{
+                  compost = " " ;
+                  addNotificatioCard(typ!, val.userName , compost);
                 print("after adding notif card");
+                }
+                
               }
             }));
 
@@ -188,7 +229,7 @@ class _NotifListState extends State<NotifList> {
         height: 350 ,    
         child:ListView.builder(
                     itemCount: list.length,
-                    itemBuilder: (_, index) => NotificatioCard(list[index].notiftype, list[index].doer)
+                    itemBuilder: (_, index) => NotificatioCard(list[index].notiftype, list[index].doer , list[index].compost)
                     ), )
           
         ],

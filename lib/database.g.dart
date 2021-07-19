@@ -105,7 +105,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Notificationn` (`notificationId` INTEGER PRIMARY KEY AUTOINCREMENT, `notificationType` INTEGER, `sender` INTEGER, `receiver` INTEGER)');
+            'CREATE TABLE IF NOT EXISTS `Notificationn` (`notificationId` INTEGER PRIMARY KEY AUTOINCREMENT, `notificationType` INTEGER, `sender` INTEGER, `receiver` INTEGER, `post` INTEGER, `comment` INTEGER)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Messagee` (`messageId` INTEGER PRIMARY KEY AUTOINCREMENT, `recieverId` INTEGER NOT NULL, `senderId` INTEGER NOT NULL, `messageText` TEXT NOT NULL, `archived` INTEGER NOT NULL, `unread` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, FOREIGN KEY (`recieverId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`senderId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -115,7 +115,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Like` (`LikeId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Post` (`PostId` INTEGER PRIMARY KEY AUTOINCREMENT, `PostCaption` TEXT NOT NULL, `userId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+            'CREATE TABLE IF NOT EXISTS `Post` (`PostId` INTEGER PRIMARY KEY AUTOINCREMENT, `PostCaption` TEXT NOT NULL, `sharedPost` INTEGER, `userId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `User` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT, `password` TEXT NOT NULL, `userName` TEXT NOT NULL)');
         await database.execute(
@@ -217,6 +217,7 @@ class _$PostDao extends PostDao {
             (Post item) => <String, Object?>{
                   'PostId': item.PostId,
                   'PostCaption': item.PostCaption,
+                  'sharedPost': item.sharedPost,
                   'userId': item.userId
                 });
 
@@ -233,6 +234,7 @@ class _$PostDao extends PostDao {
     return _queryAdapter.queryList('SELECT * FROM Post WHERE userId = ?1',
         mapper: (Map<String, Object?> row) => Post(
             PostId: row['PostId'] as int?,
+            sharedPost: row['sharedPost'] as int?,
             PostCaption: row['PostCaption'] as String,
             userId: row['userId'] as int),
         arguments: [userId]);
@@ -242,7 +244,7 @@ class _$PostDao extends PostDao {
   Future<List<Post>> allNetworkPosts(int userId) async {
     return _queryAdapter.queryList(
         'SELECT * FROM post WHERE userId in (select DISTINCT userReqId from network WHERE networkState = 1 and userId = ?1 UNION select DISTINCT userId from network WHERE networkState = 1 and userReqId = ?1)',
-        mapper: (Map<String, Object?> row) => Post(PostId: row['PostId'] as int?, PostCaption: row['PostCaption'] as String, userId: row['userId'] as int),
+        mapper: (Map<String, Object?> row) => Post(PostId: row['PostId'] as int?, sharedPost: row['sharedPost'] as int?, PostCaption: row['PostCaption'] as String, userId: row['userId'] as int),
         arguments: [userId]);
   }
 
@@ -250,7 +252,7 @@ class _$PostDao extends PostDao {
   Future<List<Post>> postlikedByNetwork(int userId) async {
     return _queryAdapter.queryList(
         'SELECT * FROM post  WHERE postId in (select DISTINCT postId from Like WHERE userId in (SELECT DISTINCT userReqId FROM Network WHERE networkState = 1 and userId = ?1 UNION SELECT DISTINCT userId FROM Network WHERE networkState = 1 and userReqId = ?1 ) )',
-        mapper: (Map<String, Object?> row) => Post(PostId: row['PostId'] as int?, PostCaption: row['PostCaption'] as String, userId: row['userId'] as int),
+        mapper: (Map<String, Object?> row) => Post(PostId: row['PostId'] as int?, sharedPost: row['sharedPost'] as int?, PostCaption: row['PostCaption'] as String, userId: row['userId'] as int),
         arguments: [userId]);
   }
 
@@ -258,7 +260,7 @@ class _$PostDao extends PostDao {
   Future<List<Post>> postCommentedByNetwork(int userId) async {
     return _queryAdapter.queryList(
         'SELECT * FROM post WHERE postId in (select DISTINCT postId from comment WHERE userId in (select DISTINCT userReqId from network WHERE networkState = 1 and userId = ?1 UNION SELECT DISTINCT userId FROM Network WHERE networkState = 1 and userReqId = ?1 ))',
-        mapper: (Map<String, Object?> row) => Post(PostId: row['PostId'] as int?, PostCaption: row['PostCaption'] as String, userId: row['userId'] as int),
+        mapper: (Map<String, Object?> row) => Post(PostId: row['PostId'] as int?, sharedPost: row['sharedPost'] as int?, PostCaption: row['PostCaption'] as String, userId: row['userId'] as int),
         arguments: [userId]);
   }
 
@@ -267,6 +269,7 @@ class _$PostDao extends PostDao {
     return _queryAdapter.query('SELECT * from post WHERE postId = ?1',
         mapper: (Map<String, Object?> row) => Post(
             PostId: row['PostId'] as int?,
+            sharedPost: row['sharedPost'] as int?,
             PostCaption: row['PostCaption'] as String,
             userId: row['userId'] as int),
         arguments: [postId]);
@@ -727,6 +730,14 @@ class _$NetworkDao extends NetworkDao {
   }
 
   @override
+  Future<List<Network?>> allNetwork(int userId) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Network WHERE networkState = 1 AND (userReqId = ?1 or userId = ?1)',
+        mapper: (Map<String, Object?> row) => Network(networkId: row['networkId'] as int?, userReqId: row['userReqId'] as int?, userId: row['userId'] as int?),
+        arguments: [userId]);
+  }
+
+  @override
   Future<void> insertNetwork(Network network) async {
     await _networkInsertionAdapter.insert(network, OnConflictStrategy.abort);
   }
@@ -960,7 +971,9 @@ class _$NotificationnDao extends NotificationnDao {
                   'notificationId': item.notificationId,
                   'notificationType': item.notificationType,
                   'sender': item.sender,
-                  'receiver': item.receiver
+                  'receiver': item.receiver,
+                  'post': item.post,
+                  'comment': item.comment
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -977,6 +990,8 @@ class _$NotificationnDao extends NotificationnDao {
         'SELECT * FROM Notificationn WHERE receiver = ?1',
         mapper: (Map<String, Object?> row) => Notificationn(
             notificationId: row['notificationId'] as int?,
+            post: row['post'] as int?,
+            comment: row['comment'] as int?,
             notificationType: row['notificationType'] as int?,
             receiver: row['receiver'] as int?,
             sender: row['sender'] as int?),

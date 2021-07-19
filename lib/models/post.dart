@@ -27,12 +27,15 @@ class Post {
 
   String PostCaption ;
 
+  int? sharedPost;
+
   @ColumnInfo(name: 'userId')
   int userId ;
   // final DateTime EndorseAt;
 
   Post({
     this.PostId,
+    this.sharedPost ,
     required this.PostCaption , 
     required this.userId});
 }

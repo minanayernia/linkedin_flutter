@@ -29,16 +29,36 @@ class _PostCardState extends State<PostCard> {
   TextEditingController likeCommentController = TextEditingController();
 
   String username = '';
+  
   void getUserName() async {
-    widget.db.userDao
-        .findUserNameByUserId(widget.id)
-        .then((value) => setState(() {
-              print("entered the query");
-              if (value != null) {
-                username = value.userName;
-                print("the username is : $username");
-              }
-            }));
+    widget.db.userDao.findUserNameByUserId(widget.id).then((value) => setState(() {
+      print("entered the query");
+      if (value != null) {
+        username = value.userName;
+        print("the username is : $username");
+      }
+    }));
+  }
+  String sharedname = '';
+  void getSharedname()async{
+    widget.db.postDao.findPostByPostId(widget.postId).then((value) => setState((){
+      if(value != null){
+        if(value.sharedPost != null){ //so this is a shred post and we shoulf find the username
+          widget.db.postDao.findPostByPostId(value.sharedPost!).then((val) => setState(() {
+            if(val != null){
+              var shareduserid = val.userId ;
+              widget.db.userDao.findUserNameByUserId(shareduserid).then((v) => setState(() {
+                if(v!= null){
+                  sharedname = v.userName ;
+                }
+              }));
+            }
+          }));
+        }else{//this is not a shared post 
+          sharedname = " " ;
+        }
+      }
+    }));
   }
 
   var likeNumbers;
@@ -89,15 +109,16 @@ class _PostCardState extends State<PostCard> {
             if( receiver != userId){
               print("reciever is : $receiver");
             print("myid is : $userId");
-            print("network of notification founded");               
+            // print("network of notification founded");               
             int n = 4;
             var notif = Notificationn(
-              // post: ,
+            post: postId,
             sender: userId,       
             notificationType: n,
             receiver: receiver);
+            print("before adding notif like");
             widget.db.notificationnDao.insertNotif(notif);
-            print("notif added successfully!!!!");
+            print("notif like added successfully!!!!");
             }
             
                   }
@@ -134,6 +155,7 @@ class _PostCardState extends State<PostCard> {
             print("network of notification founded");               
             int n = 3;
             var notif = Notificationn(
+              post: postId,
             sender: userId,       
             notificationType: n,
             receiver: receiver);
@@ -185,9 +207,7 @@ class _PostCardState extends State<PostCard> {
               //adding commentlikes ;
               var com = value[i].commentId;
               if (com != null) {
-                widget.db.commentLikeDao
-                    .commentLikes(com)
-                    .then((value) => setState(() {
+                widget.db.commentLikeDao.commentLikes(com).then((value) => setState(() {
                           int count = 0;
                           for (int i = 0; i < value.length; i++) {
                             count++;
@@ -216,25 +236,38 @@ class _PostCardState extends State<PostCard> {
               if (value == null) {
                 widget.db.commentLikeDao.insertCommentLike(commentLike);
             //adding notification
-            widget.db.commentLikeDao.findCommentLikeBYUseridCommentId(userId, commentId).then((v) => setState(() {
-              if (v != null) {
-            print("start of sending notif by finding the reciever");
-            var receiver = v.userId;
-            if( receiver != userId){
-              print("reciever is : $receiver");
-            print("myid is : $userId");
-            print("network of notification founded");               
-            int n = 5;
-            var notif = Notificationn(
-            sender: userId,       
-            notificationType: n,
-            receiver: receiver);
-            widget.db.notificationnDao.insertNotif(notif);
-            print("notif added successfully!!!!");
+
+          widget.db.commentDao.findCommentBycommentId(commentId).then((val) => setState((){
+            if(val != null){
+              var reciever = val.userId ;
+              var compost = val.commentText ;
+              var notif = Notificationn(notificationType: 5, receiver: reciever, sender: userId);
+              widget.db.notificationnDao.insertNotif(notif);
+              print("notif comment like added successfully!!!!");
+
             }
+          }));
+
+        //     widget.db.commentLikeDao.findCommentLikeBYUseridCommentId(userId, commentId).then((v) => setState(() {
+        //       if (v != null) {
+        //     print("start of sending notif by finding the reciever");
+        //     var receiver = v.userId;
+        //     if( receiver != userId){
+        //       print("reciever is : $receiver");
+        //     print("myid is : $userId");
+        //     print("network of notification founded");               
+        //     int n = 5;
+        //     var notif = Notificationn(
+        //       comment: commentId,
+        //     sender: userId,       
+        //     notificationType: n,
+        //     receiver: receiver);
+        //     widget.db.notificationnDao.insertNotif(notif);
+        //     print("notif added successfully!!!!");
+        //     }
             
-                  }
-        }));
+        //           }
+        // }));
         //end of adding notif
 
                 print("after inserting commentlike ");
@@ -250,6 +283,7 @@ class _PostCardState extends State<PostCard> {
     print(widget.id);
 
     getUserName();
+    getSharedname();
     countLike(widget.postId);
     allComments(widget.postId);
     super.initState();
@@ -287,6 +321,7 @@ class _PostCardState extends State<PostCard> {
               ],
             ),
           ),
+          Text(sharedname),
 
           Container(
             height: MediaQuery.of(context).size.height * 0.35,
@@ -1177,12 +1212,15 @@ class _OtherPostCardState extends State<OtherPostCard> {
             print("myid is : $userId");
             print("network of notification founded");               
             int n = 4;
+            
             var notif = Notificationn(
+            post: postId,
             sender: userId,       
             notificationType: n,
             receiver: receiver);
             widget.db.notificationnDao.insertNotif(notif);
-            print("notif added successfully!!!!");
+            print("notif like added successfully!!!!");
+            print(postId);
             }
             
                   }
@@ -1217,6 +1255,7 @@ class _OtherPostCardState extends State<OtherPostCard> {
             print("network of notification founded");               
             int n = 3;
             var notif = Notificationn(
+              post: postId,
             sender: userId,       
             notificationType: n,
             receiver: receiver);
@@ -1303,22 +1342,30 @@ class _OtherPostCardState extends State<OtherPostCard> {
                 widget.db.commentLikeDao.insertCommentLike(commentLike);
 
             //adding notification
-            widget.db.commentLikeDao.findCommentLikeBYUseridCommentId(userId, commentId).then((v) => setState(() {
-              if (v != null) {
-            print("start of sending notif by finding the reciever");
-            var receiver = v.userId;
-            if(receiver != userId){
-              print("reciever is : $receiver");
-            print("myid is : $userId");
-            print("network of notification founded");               
-            int n = 5;
-            var notif = Notificationn(
-            sender: userId,       
-            notificationType: n,
-            receiver: receiver);
-            widget.db.notificationnDao.insertNotif(notif);
-            print("notif added successfully!!!!");
-            }
+            widget.db.commentDao.findCommentBycommentId(commentId).then((val) => setState((){
+            if(val != null){
+              var reciever = val.userId ;
+              var compost = val.commentText ;
+              var notif = Notificationn(notificationType: 5, receiver: reciever, sender: userId);
+              widget.db.notificationnDao.insertNotif(notif);
+              print("notif comment like added successfully!!!!");
+            // widget.db.commentLikeDao.findCommentLikeBYUseridCommentId(userId, commentId).then((v) => setState(() {
+            //   if (v != null) {
+            // print("start of sending notif by finding the reciever");
+            // var receiver = v.userId;
+            // if(receiver != userId){
+            //   print("reciever is : $receiver");
+            // print("myid is : $userId");
+            // print("network of notification founded");               
+            // int n = 5;
+            // var notif = Notificationn(
+            //   comment: commentId,
+            // sender: userId,       
+            // notificationType: n,
+            // receiver: receiver);
+            // widget.db.notificationnDao.insertNotif(notif);
+            // print("notif added successfully!!!!");
+            // }
             
                   }
         }));
@@ -1329,6 +1376,12 @@ class _OtherPostCardState extends State<OtherPostCard> {
                 print("you have liked this comment before!");
               }
             }));
+  }
+
+  void sharePost()async{
+    var pst = Post(PostCaption:widget.caption ,userId: widget.myid , sharedPost: widget.postId );
+    widget.db.postDao.insertPost(pst);
+    print("after inserting shared post to my post");
   }
 
   @override
@@ -1418,6 +1471,10 @@ class _OtherPostCardState extends State<OtherPostCard> {
                 commentIds.length.toString(),
                 style: TextStyle(color: Colors.white),
               ),
+              TextButton(onPressed: (){
+                return sharePost();
+              }, 
+              child: Text("share"))
             ],
           ),
 
