@@ -138,36 +138,42 @@ class _PostCardState extends State<PostCard> {
   List<String?> commentsUserNames = [];
   List<int?> commentrEPLY = [];
   List<int> temp = [];
-  void addComment(
-      int userId, int postId, String commentText, String replyto) async {
-    var comment =
-        Comment(postId: postId, userId: userId, commentText: commentText);
-    await widget.db.commentDao.insertComment(comment);
 
-    //adding notification
-    widget.db.postDao.findPostByPostId(postId).then((v) => setState(() {
-          if (v != null) {
-            print("start of sending notif by finding the reciever");
-            var receiver = v.userId;
-            if(receiver != userId){
-              print("reciever is : $receiver");
-            print("myid is : $userId");
-            print("network of notification founded");               
-            int n = 3;
-            var notif = Notificationn(
-              post: postId,
-            sender: userId,       
-            notificationType: n,
-            receiver: receiver);
-            widget.db.notificationnDao.insertNotif(notif);
-            print("notif added successfully!!!!");
-            }
-            
-                  }
+  void addComment(int userId, int postId, String commentText, int replyto) async {
+    var comment =Comment( ReplyCommentId: replyto , postId: postId, userId: userId, commentText: commentText);
+    widget.db.commentDao.insertComment(comment).then((ci) => setState(() {
+      var comid = ci ;
+       //adding notification if it is comment reply
+      if(replyto!=null){
+        widget.db.commentDao.findCommentBycommentId(replyto).then((repid) => setState(() {
+          if(repid!= null){
+            var receiver = repid.userId;
+            var notif = Notificationn(notificationType: 5, receiver: receiver, sender: userId , comment:comid );
+          }
+          
         }));
+      }//end of notif type 5
+      //adding notification for comment on post
+    widget.db.postDao.findPostByPostId(postId).then((v) => setState(() {
+      if (v != null) {
+        print("start of sending notif by finding the reciever");
+        var receiver = v.userId;
+        if(receiver != userId){
+          print("reciever is : $receiver");
+        print("myid is : $userId");
+        print("network of notification founded");               
+        var notif = Notificationn( post: postId , sender: userId , notificationType: 3 , receiver: receiver);
+        widget.db.notificationnDao.insertNotif(notif);
+        print("notif added successfully!!!!");
+        }
+        
+              }
+    }));
 
     ///end of adding notification
 
+
+    }));
     print("controller of replyto :");
     print(replyto.toString());
     //for reply
@@ -184,6 +190,8 @@ class _PostCardState extends State<PostCard> {
     newCommentController.text = "";
   }
 
+
+
   List<int> commentlikes = [];
   void allComments(int postId) async {
     commentlikes = [];
@@ -197,12 +205,10 @@ class _PostCardState extends State<PostCard> {
               temp.add(0);
               var userid = value[i].userId;
               if (userid != null) {
-                widget.db.userDao
-                    .findUserNameByUserId(userid)
-                    .then((val) => setState(() {
-                          commentsUserNames.add(val?.userName);
-                          print("username is adding to commentusernamelist");
-                        }));
+                widget.db.userDao.findUserNameByUserId(userid).then((val) => setState(() {
+                  commentsUserNames.add(val?.userName);
+                  print("username is adding to commentusernamelist");
+                  }));
               }
               //adding commentlikes ;
               var com = value[i].commentId;
@@ -219,7 +225,7 @@ class _PostCardState extends State<PostCard> {
               print(value[i].commentId);
               commentIds.add(value[i].commentId);
               commentUserIds.add(value[i].userId);
-              // commentrEPLY.add(value[i].ReplyCommentId);
+              commentrEPLY.add(value[i].ReplyCommentId);
               if (value[i] != null) {
                 commentsTexts.add(value[i].commentText);
               }
@@ -434,7 +440,7 @@ class _PostCardState extends State<PostCard> {
                                 widget.id,
                                 widget.postId,
                                 newCommentController.text,
-                                toWhomCommentController.text);
+                                int.parse(toWhomCommentController.text));
                           },
                           child: Text("Send")),
                     ),
@@ -1162,6 +1168,28 @@ class _OtherPostCardState extends State<OtherPostCard> {
             }));
   }
 
+  String sharedname = '';
+  void getSharedname()async{
+    widget.db.postDao.findPostByPostId(widget.postId).then((value) => setState((){
+      if(value != null){
+        if(value.sharedPost != null){ //so this is a shred post and we shoulf find the username
+          widget.db.postDao.findPostByPostId(value.sharedPost!).then((val) => setState(() {
+            if(val != null){
+              var shareduserid = val.userId ;
+              widget.db.userDao.findUserNameByUserId(shareduserid).then((v) => setState(() {
+                if(v!= null){
+                  sharedname = v.userName ;
+                }
+              }));
+            }
+          }));
+        }else{//this is not a shared post 
+          sharedname = " " ;
+        }
+      }
+    }));
+  }
+
   var likeNumbers;
   List<int?> likelist = [];
 
@@ -1238,37 +1266,42 @@ class _OtherPostCardState extends State<OtherPostCard> {
   List<String?> commentsUserNames = [];
   List<int?> commentrEPLY = [];
   List<int> temp = [];
-  void addComment(
-      int userId, int postId, String commentText, String replyto) async {
-    var comment =
-        Comment(postId: postId, userId: userId, commentText: commentText);
-    await widget.db.commentDao.insertComment(comment);
-
-     //adding notification
-    widget.db.postDao.findPostByPostId(postId).then((v) => setState(() {
-          if (v != null) {
-            print("start of sending notif by finding the reciever");
-            var receiver = v.userId;
-            if(receiver !=userId){
-              print("reciever is : $receiver");
-            print("myid is : $userId");
-            print("network of notification founded");               
-            int n = 3;
-            var notif = Notificationn(
-              post: postId,
-            sender: userId,       
-            notificationType: n,
-            receiver: receiver);
+  void addComment(int userId, int postId, String commentText, int replyto) async {
+    var comment =Comment( ReplyCommentId: replyto , postId: postId, userId: userId, commentText: commentText);
+    widget.db.commentDao.insertComment(comment).then((ci) => setState(() {
+      var comid = ci ;
+       //adding notification if it is comment reply
+      if(replyto!=null){
+        widget.db.commentDao.findCommentBycommentId(replyto).then((repid) => setState(() {
+          if(repid!= null){
+            var receiver = repid.userId;
+            var notif = Notificationn(notificationType: 5, receiver: receiver, sender: userId , comment:comid );
             widget.db.notificationnDao.insertNotif(notif);
-            print("notif added successfully!!!!");
-            } 
-            
-                  }
+          }
+          
         }));
+      }//end of notif type 5
+      //adding notification for comment on post
+    widget.db.postDao.findPostByPostId(postId).then((v) => setState(() {
+      if (v != null) {
+        print("start of sending notif by finding the reciever");
+        var receiver = v.userId;
+        if(receiver != userId){
+          print("reciever is : $receiver");
+        print("myid is : $userId");
+        print("network of notification founded");               
+        var notif = Notificationn( post: postId , sender: userId , notificationType: 3 , receiver: receiver);
+        widget.db.notificationnDao.insertNotif(notif);
+        print("notif added successfully!!!!");
+        }
+        
+              }
+    }));
 
     ///end of adding notification
 
 
+    }));
     print("controller of replyto :");
     print(replyto.toString());
     //for reply
@@ -1322,7 +1355,7 @@ class _OtherPostCardState extends State<OtherPostCard> {
               print(value[i].commentId);
               commentIds.add(value[i].commentId);
               commentUserIds.add(value[i].userId);
-              // commentrEPLY.add(value[i].ReplyCommentId);
+              commentrEPLY.add(value[i].ReplyCommentId);
               if (value[i] != null) {
                 commentsTexts.add(value[i].commentText);
               }
@@ -1423,6 +1456,7 @@ class _OtherPostCardState extends State<OtherPostCard> {
               ],
             ),
           ),
+          Text(sharedname),
 
           Container(
             height: MediaQuery.of(context).size.height * 0.35,
@@ -1539,7 +1573,7 @@ class _OtherPostCardState extends State<OtherPostCard> {
                                 widget.myid,
                                 widget.postId,
                                 newCommentController.text,
-                                toWhomCommentController.text);
+                                int.parse(toWhomCommentController.text));
                           },
                           child: Text("Send")),
                     ),
@@ -1657,7 +1691,7 @@ class _OtherPostCardState extends State<OtherPostCard> {
                                   Text(
                                     commentrEPLY.length > 0
                                         ? commentrEPLY[index].toString()
-                                        : "",
+                                        : " ",
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ],

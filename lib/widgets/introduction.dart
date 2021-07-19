@@ -1,5 +1,6 @@
 
 
+import 'package:dbproject/models/Network.dart';
 import 'package:dbproject/models/Notification.dart';
 import 'package:dbproject/models/User.dart';
 import 'package:dbproject/views/otherUserView.dart';
@@ -17,11 +18,12 @@ TextEditingController searchCompanyController = TextEditingController();
 
 class SearchUserCard extends StatefulWidget {
 
-  const SearchUserCard(this.db , this.username , this.id , this.myuser);
+  const SearchUserCard(this.db , this.username , this.id , this.myuser , this.mutual);
   final username ;
   final AppDatabase db ;
   final id ;
   final myuser ;
+  final mutual ;
   @override
   _SearchUserCardState createState() => _SearchUserCardState();
 }
@@ -78,8 +80,8 @@ class Intro extends StatefulWidget {
 
 class _IntroState extends State<Intro> {
   List<SearchUserCard> list = [];
-  void addSearchCard(var db  , String? username , int? id,){
-  list.add(new SearchUserCard(db , username , id , widget.user)
+  void addSearchCard(var db  , String? username , int? id,int mutualcon){
+  list.add(new SearchUserCard(db , username , id , widget.user , mutualcon)
   );
   setState((){});
 }
@@ -124,35 +126,106 @@ class _IntroState extends State<Intro> {
       return _textFromFile;
   }
 
+  List<int> parseNetwork(List<Network?> network, userId) { 
+  List<int> myNet = [];
+
+  for (var i in network){
+    if (i?.userId == userId){
+      var k = i?.userReqId;
+        myNet.add(k!);
+    } else {
+      var j = i?.userId ;
+      myNet.add(j!);
+    }
+  }
+
+  return myNet;
+}
+
+  int findNumberOfMutualConnections(List network1,List network2) { 
+  int n = 0;
+
+  for (var i in network1){
+    if (network2.contains(i)){
+      n++;
+    }
+  }
+  return n;
+}
+  
+
+
+
   List<String?> items = [] ;
   void searchUser(String text)async{
     print(text);
     var searchtext = "%"+text+"%" ;
     print(searchtext);
     print("get in searchUser function");
+
     widget.db.userDao.searchByUsername(searchtext.toString()).then((value) => setState((){
       list = [];
-      print("search started");
-      // mylist = value ;
-      if (value != null ){
-        print(value);
-        for (int i = 0 ; i < value.length ; i++){
-          if(value[i] != null){
-            print("value i is not null");
-            print(value[i]?.userName);
-            addSearchCard(widget.db , value[i]?.userName , value[i]?.userId);
-            // items.add(value[i]?.userName);
-            // print(value[i]?.userName);
-          }
-          else{
-            print("value[i] is null");
-          }
+
+    //new search by mutual connection
+    var mycons ;
+    
+    widget.db.netwokDao.allNetwork(widget.user!).then((v) => setState((){
+      print("my connections found");
+      mycons = parseNetwork(v, widget.user);
+      print("mycons $mycons");
+
+      for(int i = 0 ; i < value.length ; i++){
+      var s = value[i]?.userId ;
+      widget.db.netwokDao.allNetwork(s!).then((val) => setState((){
+        print("another network");
+        var hiscons = parseNetwork(val, s);
+        print("hiscons $hiscons");
+        int n = findNumberOfMutualConnections(mycons, hiscons);
+        print("number of mutual connection $n");
+        addSearchCard(widget.db , value[i]?.userName , value[i]?.userId , n);
+        list.sort((a,b) =>b.mutual.compareTo(a.mutual));
+        print(list);
+
+      }));
+
+    }
+
+    }));
+
+
+    //end
+
+
+
+
+
+
+
+
+      // var mmd = value ;
+      // print("search started");
+      // // mylist = value ;
+      // if (value != null ){
+      //   print(value);
+      //   for (int i = 0 ; i < value.length ; i++){
+      //     if(value[i] != null){
+      //       print("value i is not null");
+      //       print(value[i]?.userName);
+
+      //       var hiscons = parseNetwork(network, userId)
+      //       addSearchCard(widget.db , value[i]?.userName , value[i]?.userId);
+      //       // items.add(value[i]?.userName);
+      //       // print(value[i]?.userName);
+      //     }
+      //     else{
+      //       print("value[i] is null");
+      //     }
           
-      }
-      }
-      else{
-        print("value is null");
-      }
+      // }
+      // }
+      // else{
+      //   print("value is null");
+      // }
     }));
 
     for(int i = 0 ; i < items.length ; i++){
@@ -354,7 +427,7 @@ class _IntroState extends State<Intro> {
       ),
             Flexible(child: ListView.builder(
             itemCount: list.length,
-            itemBuilder: (_,index) => SearchUserCard( widget.db ,list[index].username , list[index].id , widget.user)))
+            itemBuilder: (_,index) => SearchUserCard( widget.db ,list[index].username , list[index].id , widget.user,list[index].mutual)))
 
           ],),
 

@@ -134,6 +134,16 @@ class _NotifListState extends State<NotifList> {
             widget.db.userDao.findUserNameByUserId(sender!).then((val) => setState((){
               if(val != null){
                 var compost ;
+                if(typ == 5){ //like or reply a comment
+                  var tmp = value[i]?.comment ;
+                  widget.db.commentDao.findCommentBycommentId(tmp!).then((v) => setState((){
+                    if (v!=null){
+                      compost = v.commentText ;
+                      addNotificatioCard(typ!, val.userName , compost);
+                    }
+                  }));  
+                }
+
                 if (typ == 3){//this is comment on a post
                 var tmp = value[i]?.post ;
                   widget.db.postDao.findPostByPostId(tmp!).then((v) => setState((){
@@ -202,6 +212,7 @@ class _NotifListState extends State<NotifList> {
     }
     @override
     void initState() {
+    list.clear();
     getAllNotif();
     super.initState();
   }

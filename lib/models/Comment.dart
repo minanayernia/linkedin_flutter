@@ -25,10 +25,6 @@ import 'User.dart';
       ForeignKey(childColumns: ['postId'],
      parentColumns: ['postId'],
       entity: Post ),
-      // ForeignKey(
-      // childColumns: ['ReplyCommentId'],
-      // parentColumns: ['commentId'],
-      // entity: Comment ),
 ] 
 
 )
@@ -45,10 +41,11 @@ class Comment {
   @ColumnInfo(name: 'postId')
   int postId ; 
 
-  // @ColumnInfo(name: 'ReplyCommentId')
-  // int? ReplyCommentId ;
+  int? ReplyCommentId ;
+
   Comment( {
     this.commentId ,
+    this.ReplyCommentId,
     required this.postId ,
     required this.userId ,
     required this.commentText} );
@@ -70,7 +67,7 @@ abstract class CommentDao {
 
 
   @insert
-  Future<void> insertComment(Comment comment);
+  Future<int?> insertComment(Comment comment);
 
   
 }

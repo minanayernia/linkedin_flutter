@@ -54,6 +54,10 @@ abstract class NetworkDao{
   @Query('((SELECT * FROM network WHERE userId = :userId) UNION (SELECT * FROM network WHERE userReqId = :userId))') 
   Future<List<Network?>> AllUsersInYourNetwork(int userId);
 
+  @Query('(SELECT userReq FROM network WHERE userId = :userId) UNION (SELECT userId FROM network WHERE userReqId = :userId)')
+  Future<int?> findMyNetwork(int userId);
+
+
   @Query('UPDATE Network SET networkState = 1 WHERE networkId = :networkId')
   Future<Network?> acceptInvitation(int networkId);
 

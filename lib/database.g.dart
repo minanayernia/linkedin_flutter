@@ -111,7 +111,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `CommentLike` (`commentLikeId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL, `commentId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`commentId`) REFERENCES `Comment` (`commentId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Comment` (`commentId` INTEGER PRIMARY KEY AUTOINCREMENT, `commentText` TEXT NOT NULL, `is_replied` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+            'CREATE TABLE IF NOT EXISTS `Comment` (`commentId` INTEGER PRIMARY KEY AUTOINCREMENT, `commentText` TEXT NOT NULL, `is_replied` INTEGER NOT NULL, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, `ReplyCommentId` INTEGER, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Like` (`LikeId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER NOT NULL, `postId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`postId`) REFERENCES `Post` (`postId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -685,6 +685,13 @@ class _$NetworkDao extends NetworkDao {
   }
 
   @override
+  Future<int?> findMyNetwork(int userId) async {
+    await _queryAdapter.queryNoReturn(
+        '(SELECT userReq FROM network WHERE userId = ?1) UNION (SELECT userId FROM network WHERE userReqId = ?1)',
+        arguments: [userId]);
+  }
+
+  @override
   Future<Network?> acceptInvitation(int networkId) async {
     return _queryAdapter.query(
         'UPDATE Network SET networkState = 1 WHERE networkId = ?1',
@@ -808,7 +815,8 @@ class _$CommentDao extends CommentDao {
                   'commentText': item.commentText,
                   'is_replied': item.is_replied,
                   'userId': item.userId,
-                  'postId': item.postId
+                  'postId': item.postId,
+                  'ReplyCommentId': item.ReplyCommentId
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -832,6 +840,7 @@ class _$CommentDao extends CommentDao {
         'UPDATE Comment SET ReplyCommentId = ?1 AND is_replied = 1',
         mapper: (Map<String, Object?> row) => Comment(
             commentId: row['commentId'] as int?,
+            ReplyCommentId: row['ReplyCommentId'] as int?,
             postId: row['postId'] as int,
             userId: row['userId'] as int,
             commentText: row['commentText'] as String),
@@ -843,6 +852,7 @@ class _$CommentDao extends CommentDao {
     return _queryAdapter.queryList('SELECT * FROM comment  WHERE postId = ?1',
         mapper: (Map<String, Object?> row) => Comment(
             commentId: row['commentId'] as int?,
+            ReplyCommentId: row['ReplyCommentId'] as int?,
             postId: row['postId'] as int,
             userId: row['userId'] as int,
             commentText: row['commentText'] as String),
@@ -854,6 +864,7 @@ class _$CommentDao extends CommentDao {
     return _queryAdapter.query('SELECT * From Comment WHERE commentId = ?1',
         mapper: (Map<String, Object?> row) => Comment(
             commentId: row['commentId'] as int?,
+            ReplyCommentId: row['ReplyCommentId'] as int?,
             postId: row['postId'] as int,
             userId: row['userId'] as int,
             commentText: row['commentText'] as String),
@@ -861,8 +872,9 @@ class _$CommentDao extends CommentDao {
   }
 
   @override
-  Future<void> insertComment(Comment comment) async {
-    await _commentInsertionAdapter.insert(comment, OnConflictStrategy.abort);
+  Future<int> insertComment(Comment comment) {
+    return _commentInsertionAdapter.insertAndReturnId(
+        comment, OnConflictStrategy.abort);
   }
 }
 
