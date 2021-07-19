@@ -175,18 +175,33 @@ class _InvitationCardState extends State<InvitationCard> {
 // }
 
 class PeopleYouMayKnowList extends StatefulWidget {
-  const PeopleYouMayKnowList({Key? key}) : super(key: key);
+  const PeopleYouMayKnowList(this.db , this.user);
+  final AppDatabase db ;
+  final int? user  ;
 
   @override
   _PeopleYouMayKnowListState createState() => _PeopleYouMayKnowListState();
 }
 
 class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
-  List<InvitationCard> list = [];
-  // addSkillCard() {
-  //   list.add(new InvitationCard());
+  List<PeopleCard> list = [];
+  // addPeopleCard() {
+  //   list.add(new PeopleCard());
   //   setState(() {});
   // }
+
+
+
+  void getPeopleYouMayKnow() async{
+
+    var a = widget.user ;
+    if(a != null){
+
+
+    }
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -213,23 +228,31 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
                 ],
               ),
             ),
-            Flexible(
-                child: ListView.builder(
-                    itemCount: list.length,
-                    itemBuilder: (_, index) => list[index])),
-            PeopleCard(),
+            // Flexible(
+            //     child: ListView.builder(
+            //         itemCount: list.length,
+            //         itemBuilder: (_, index) => list[index])),
+            // PeopleCard(),
           ],
         ));
   }
 }
 
-class PeopleCard extends StatelessWidget {
-  const PeopleCard({Key? key}) : super(key: key);
 
+class PeopleCard extends StatefulWidget {
+ const PeopleCard(this.id , this.username);
+  final id ;
+  final username ;
+
+  @override
+  _PeopleCardState createState() => _PeopleCardState();
+}
+
+class _PeopleCardState extends State<PeopleCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: EdgeInsets.only(top: 10),
+      margin: EdgeInsets.only(top: 10),
         height: 50,
         width: MediaQuery.of(context).size.width * 0.88,
         color: Colors.redAccent,
@@ -238,12 +261,52 @@ class PeopleCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "User Name",
+                Row(children: [
+
+                  Text(
+                  widget.id,
                   style: TextStyle(color: Colors.white),
                 ),
+
+                  Text(
+                  widget.username,
+                  style: TextStyle(color: Colors.white),
+                ),
+
+                ],),
+                
                 TextButton(onPressed: () {}, child: Text("Connect")),
               ],
-            )));
+            ))
+      
+    );
   }
 }
+
+// class PeopleCard extends StatelessWidget {
+//   const PeopleCard(this.id , this.username);
+//   final id ;
+//   final username ;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//         margin: EdgeInsets.only(top: 10),
+//         height: 50,
+//         width: MediaQuery.of(context).size.width * 0.88,
+//         color: Colors.redAccent,
+//         child: Container(
+//             margin: EdgeInsets.only(left: 5),
+//             child: Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 Text(
+//                   widget.uername,
+//                   style: TextStyle(color: Colors.white),
+//                 ),
+//                 TextButton(onPressed: () {}, child: Text("Connect")),
+//               ],
+//             ))
+//             );
+//   }
+// }
