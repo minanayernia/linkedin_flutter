@@ -679,7 +679,7 @@ class _$NetworkDao extends NetworkDao {
   @override
   Future<List<Network?>> AllUsersInYourNetwork(int userId) async {
     return _queryAdapter.queryList(
-        '((SELECT * FROM network WHERE userId = ?1) UNION (SELECT * FROM network WHERE userReqId = ?1))',
+        '((SELECT * FROM network WHERE userId = ?1 AND networkState = 1) UNION (SELECT * FROM network WHERE userReqId = ?1 AND networkState = 1))',
         mapper: (Map<String, Object?> row) => Network(networkId: row['networkId'] as int?, userReqId: row['userReqId'] as int?, userId: row['userId'] as int?),
         arguments: [userId]);
   }
