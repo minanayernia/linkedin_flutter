@@ -152,7 +152,7 @@ void conversation(int myid , String othername )async{
                 children: [
                   Container(
                     // key: dataKey,
-                    padding: EdgeInsets.only(left: 10),
+                    padding: EdgeInsets.only(left: 10 , top: 6),
                     child: Text(
                       "Conversation",
                       style: TextStyle(color: Colors.white),
@@ -167,6 +167,7 @@ void conversation(int myid , String othername )async{
                 decoration: InputDecoration(
                   fillColor: Colors.white,
                   hintStyle: TextStyle(color: Colors.white),
+                  contentPadding: EdgeInsets.only(left: 10, top: 15),
                   hintText: "Search user" ,suffixIcon: IconButton(
                     onPressed: () {
                       searchUser(searchMessageController.text);
@@ -525,7 +526,7 @@ class _NewMessageState extends State<NewMessage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    padding: EdgeInsets.only(left: 10),
+                    padding: EdgeInsets.only(left: 10 , top: 6),
                     child: Text(
                       "New message",
                       style: TextStyle(color: Colors.redAccent),

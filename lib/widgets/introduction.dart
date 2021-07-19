@@ -264,11 +264,13 @@ class _IntroState extends State<Intro> {
           width: 250,
           height: 50,
           child: TextField(
+            style: TextStyle(color: Colors.blue),
                 controller: searchUserController,
                 decoration: InputDecoration(
                   hintText: "Search user",
+                  fillColor: Colors.blue,
                   contentPadding: EdgeInsets.only(left: 10 , top: 15),
-                  hintStyle: TextStyle(color: Colors.white),
+                  hintStyle: TextStyle(color: Colors.blue),
                   suffixIcon: IconButton(
                     onPressed: () {
                       return searchUser(searchUserController.text);

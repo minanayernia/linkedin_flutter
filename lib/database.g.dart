@@ -237,7 +237,7 @@ class _$PostDao extends PostDao {
   @override
   Future<List<Post>> postCommentedByNetwork(int userId) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM post WHERE postId in (select DISTINCT postId from comments WHERE userId in (select DISTINCT userReqId from network WHERE networkState = 1 and userId = ?1))',
+        'SELECT * FROM post WHERE postId in (select DISTINCT postId from comment WHERE userId in (select DISTINCT userReqId from network WHERE networkState = 1 and userId = ?1 UNION SELECT DISTINCT userId FROM Network WHERE networkState = 1 and userReqId = ?1 ))',
         mapper: (Map<String, Object?> row) => Post(PostId: row['PostId'] as int?, PostCaption: row['PostCaption'] as String, userId: row['userId'] as int),
         arguments: [userId]);
   }

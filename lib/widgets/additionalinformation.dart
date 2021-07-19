@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 
-class AboutCard extends StatelessWidget {
-  const AboutCard({ Key ?key }) : super(key: key);
+import '../database.dart';
+class AboutCard extends StatefulWidget {
+const AboutCard(this.id , this.text);
+  final id ;
+  final text ;
+  @override
+  _AboutCardState createState() => _AboutCardState();
+}
 
+class _AboutCardState extends State<AboutCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -11,15 +18,25 @@ class AboutCard extends StatelessWidget {
       width: MediaQuery.of(context).size.width*0.88,
       color: Colors.redAccent,
       child: Container(margin: EdgeInsets.only(left: 5),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+        Visibility(
+          visible: true,
+          child: Container(
+            width: 100,
+            alignment: Alignment.center,
+            color: Colors.white,
+            child: Text("Current job" , style: TextStyle(color: Colors.redAccent),),) ),
+        
+        Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-
         Row(children: [
-            Text("1" , style: TextStyle(color: Colors.white),) ,
+            Text(widget.id , style: TextStyle(color: Colors.white),) ,
             Container(
               padding: EdgeInsets.only(left: 5),
-              child: Text("project" , style: TextStyle(color: Colors.white),),)
+              child: Text(widget.text , style: TextStyle(color: Colors.white),),)
             
 
 
@@ -28,29 +45,84 @@ class AboutCard extends StatelessWidget {
         TextButton(onPressed: (){}, child: Text("Edit")),
 
       ],)
-      )
+
+      ],),
       
+      
+      )
       
     );
   }
 }
+// class AboutCard extends StatelessWidget {
+//   const AboutCard(this.id , this.text);
+//   final id ;
+//   final text ;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: EdgeInsets.only(top: 10),
+//       height: 50,
+//       width: MediaQuery.of(context).size.width*0.88,
+//       color: Colors.redAccent,
+//       child: Container(margin: EdgeInsets.only(left: 5),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//         Visibility(
+//           visible: true,
+//           child: Container(
+//             width: 100,
+//             alignment: Alignment.center,
+//             color: Colors.white,
+//             child: Text("Current job" , style: TextStyle(color: Colors.redAccent),),) ),
+        
+//         Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//         Row(children: [
+//             Text( , style: TextStyle(color: Colors.white),) ,
+//             Container(
+//               padding: EdgeInsets.only(left: 5),
+//               child: Text("project" , style: TextStyle(color: Colors.white),),)
+            
+
+
+//         ],),
+        
+//         TextButton(onPressed: (){}, child: Text("Edit")),
+
+//       ],)
+
+//       ],),
+      
+      
+//       )
+      
+      
+//     );
+//   }
+// }
 
 
 class AdditionalInfoList extends StatefulWidget {
-  const AdditionalInfoList({ Key? key }) : super(key: key);
+  const AdditionalInfoList(this.db , this.user);
+  final AppDatabase db ;
+  final int? user  ; 
 
   @override
   _AdditionalInfoListState createState() => _AdditionalInfoListState();
 }
 
 class _AdditionalInfoListState extends State<AdditionalInfoList> {
-// List<AboutCard> list = [];
-// addSkillCard(){
+List<AboutCard> list = [];
+addSkillCard(var id , var text){
   
-//   list.add(new AboutCard()
-//   );
-//   setState((){});
-// }
+  list.add(new AboutCard(id , text)
+  );
+  setState((){});
+}
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -73,14 +145,14 @@ class _AdditionalInfoListState extends State<AdditionalInfoList> {
           style: TextStyle(color: Colors.white , fontSize: 15),
           ),
         ),
-        // TextButton(onPressed:(){}, child: Text("Add")) ,
+        TextButton(onPressed:(){}, child: Text("Add")) ,
 
       ],) ,),
         
-      AboutCard(),
-      // Flexible(child: ListView.builder(
-      //   itemCount: list.length,
-      //   itemBuilder: (_,index) => list[index]))
+      // AboutCard(),
+      Flexible(child: ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (_,index) => list[index]))
       
 
       ], 

@@ -263,7 +263,7 @@ void addSkillCard(var id , var text){
           style: TextStyle(color: Colors.white , fontSize: 15),
           ),
         ),
-        TextButton(onPressed: null, child: Text("Add skill")) ,
+        TextButton(onPressed:(){}, child: Text("Add skill")) ,
 
       ],) ,),
         // TextButton(onPressed: test, child: Text("test")),

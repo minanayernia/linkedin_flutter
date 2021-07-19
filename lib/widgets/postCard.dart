@@ -511,23 +511,28 @@ class _PostListState extends State<PostList> {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 20),
-      height: MediaQuery.of(context).size.height*1.2,
+      height: MediaQuery.of(context).size.height*1,
       width: MediaQuery.of(context).size.width*0.9,
       color: Colors.black87,
-      child : Column(children: [
+      child : Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
         Container(
-          child:Align(alignment: Alignment.centerRight,
+          margin: EdgeInsets.only(bottom: 39),
+          child:Align(alignment: Alignment.topRight,
         child: TextButton(onPressed: (){}, child: Text("NEW POST")),) ,),
         
 
 
         Container(
-        height: MediaQuery.of(context).size.height*1.1,
+        height: MediaQuery.of(context).size.height*0.9,
           child: SingleChildScrollView(
         
-        child: Column(children: [
+        child: Column(
+          
+          children: [
          NewPostCard(widget.db,widget.user),
-        NewCommentCard()
+        // NewCommentCard()
           
         ],),
       ),)
@@ -1203,7 +1208,7 @@ void likeComment(int commentId , int userId)async{
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height*1.2,
-      width: MediaQuery.of(context).size.width*0.86,
+      width: MediaQuery.of(context).size.width*0.9,
       color: Colors.redAccent,
       margin: EdgeInsets.only(top: 20 , bottom: 20),
       child: Column(
@@ -1404,21 +1409,24 @@ void likeComment(int commentId , int userId)async{
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-          Text("commentId :"),
-          Text(commentIds.length > 0 ? commentIds[index].toString() : '0'),
+          Container(
+            padding: EdgeInsets.only(left:10),
+            child:Text("commentId : " , style: TextStyle(color: Colors.white),) ,),
+          
+          Text(commentIds.length > 0 ? commentIds[index].toString() : '0', style: TextStyle(color: Colors.white),),
           Text("  "),
           // Text(commentsUserNames.length > 0 ? commentsUserNames[index]! : '0'),
-          Text("   likes:"),
-          Text(commentlikes.length > 0 ? commentlikes[index].toString() : '0'),
-          Text("   Reply to:"),
-          Text(commentrEPLY.length > 0 ? commentrEPLY[index].toString() : ""),
+          Text("   likes : ", style: TextStyle(color: Colors.white),),
+          Text(commentlikes.length > 0 ? commentlikes[index].toString() : '0', style: TextStyle(color: Colors.white),),
+          Text("   Reply to : ", style: TextStyle(color: Colors.white),),
+          Text(commentrEPLY.length > 0 ? commentrEPLY[index].toString() : "", style: TextStyle(color: Colors.white),),
 
           ],),
 
           Container(
+            padding: EdgeInsets.only(left:10),
             width: MediaQuery.of(context).size.width*0.9,
-            color: Colors.white,
-            child: Text(commentsTexts.length > 0 ? commentsTexts[index]! : '0' , style: TextStyle(color: Colors.redAccent),) ,)
+            child: Text(commentsTexts.length > 0 ? commentsTexts[index]! : '0' , style: TextStyle(color: Colors.white),) ,)
           
       ],),
         )
@@ -1659,6 +1667,7 @@ class _LikeCommentPostState extends State<LikeCommentPost> {
 }
 void getAllUserPosts()async{
   var a = widget.user ;
+  var b =widget.user ;
   if (a != null){
     print("post like by network is called");
     widget.db.postDao.postlikedByNetwork(a).then((value) => setState((){
@@ -1677,7 +1686,27 @@ void getAllUserPosts()async{
           print(value[i].userId);
         }
       }
+      widget.db.postDao.postCommentedByNetwork(b).then((val) => setState((){
+      if (val != null){
+        print("the list of posts is not empty");
+        for(int i = 0 ; i < val.length ; i++){
+          print("inside for of list posts");
+          // userPosts[i] = value[i];
+          addPostCard(val[i].PostCaption , val[i].PostId , val[i].userId);
+          print("post is added in likecomment post");
+          print("post id");
+          print(val[i].PostId);
+          print("post caption");
+          print(val[i].PostCaption);
+          print("userid of post");
+          print(val[i].userId);
+        }
+      }
+      
     }));
+    }));
+    
+
   }
 }
 @override
@@ -1701,7 +1730,7 @@ void initState(){
           height: 40,
           color: Colors.redAccent,
           child:Align(alignment: Alignment.centerLeft,
-        child: Text("HOME POSTS" , style: TextStyle(color: Colors.white),)
+        child: Text("ACTIVITIES" , style: TextStyle(color: Colors.white),)
         
         
         )
@@ -1712,9 +1741,13 @@ void initState(){
         Flexible(child: ListView.builder(
         itemCount: likeCommentPost.length,
         itemBuilder: (_,index) {
-          return Container(child: Column(children: [
-            Text("Liked by :") ,
-            Text("Commented by :") ,
+          return Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+            Text("Liked by :" , style: TextStyle(color: Colors.white),) ,
+            Text("Commented by :" , style: TextStyle(color: Colors.white),) ,
             OtherPostCard(likeCommentPost[index].caption , likeCommentPost[index].id, likeCommentPost[index].postId, widget.db , widget.user)
           ],),) 
           

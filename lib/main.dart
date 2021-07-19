@@ -103,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Intro( db : widget.db , user :widget.user),
 
           EditIntrCard( db : widget.db , user :widget.user),
-          AdditionalInfoList(),
+          AdditionalInfoList(widget.db , widget.user),
           EditInfoCard(),
           AddSkill(widget.db , widget.user),
           EditSkillCard(widget.db , widget.user),
