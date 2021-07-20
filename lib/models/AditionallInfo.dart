@@ -54,6 +54,9 @@ abstract class AdditionalInfoDao {
   
   @Query('UPDATE AdditionalInfo SET jobName = :jobname , companyName = :companyname WHERE jobId = :jobid ')
   Future <void> editAditinallInfo(String jobname , String companyname ,  int jobid);
+
+  @Query('SELECT * FROM AdditionalInfo WHERE profileId = :profid')
+  Future<List<AdditionalInfo>> findJobById(int profid);
   @insert 
   Future<void> insertAditionalInfo(AdditionalInfo additionalInfo);
 }

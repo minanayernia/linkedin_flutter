@@ -2,6 +2,7 @@
 
 import 'package:dbproject/models/Network.dart';
 import 'package:dbproject/models/User.dart';
+import 'package:dbproject/views/signUpLoginView.dart';
 import 'package:flutter/material.dart';
 
 import '../database.dart';
@@ -128,6 +129,9 @@ class _NavigationBarState extends State<NavigationBar> {
                  child:Text("Message")),
                  TextButton(onPressed: (){},
                  child:Text("My Network")),
+
+                 TextButton(onPressed: ()=>Navigator.push(context,MaterialPageRoute(builder: (context) =>  SignUpLogIn(this.widget.db )),),
+                 child:Text("LogOut")),
 
                  Visibility(
                    visible: true,

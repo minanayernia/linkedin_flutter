@@ -78,8 +78,11 @@ abstract class UserProfileDao {
   @Query('SELECT * FROM userProfile WHERE location LIKE :location')
   Future<List<UserProfile>> filterByLocation(String location);
 
-  @Query('SELECT * FROM userProfile WHERE profileId in (SELECT LAST profileId from additionalInfo where CompanyName = :CompanyName)')
-  Future<UserProfile?> filterByCompanyname(String CompanyName);
+  @Query('SELECT * FROM userProfile WHERE profileId in (SELECT  profileId from additionalInfo where CompanyName LIKE :CompanyName)')
+  Future<List<UserProfile>> filterByCompanyname(String CompanyName);
+
+  @Query('SELECT * FROM userProfile WHERE profileId in (SELECT  profileId from additionalInfo where jobId = :jobid AND CompanyName LIKE :CompanyName)')
+  Future<UserProfile?> findProfileByJobId(String CompanyName , int jobid);
 
   @insert
   Future<void> insertUserProfile(UserProfile userProfile);

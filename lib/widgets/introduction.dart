@@ -1,5 +1,7 @@
 
 
+import 'dart:math';
+
 import 'package:dbproject/models/Network.dart';
 import 'package:dbproject/models/Notification.dart';
 import 'package:dbproject/models/User.dart';
@@ -108,7 +110,7 @@ class Intro extends StatefulWidget {
 class _IntroState extends State<Intro> {
   List<SearchUserCard> list = [];
   List<LocationCompanyUserCard> listLocation = [] ;
-  List<LocationCompanyUserCard> listCompany = [] ;
+  
   void addSearchCard(var db  , String? username , int? id,int mutualcon){
   list.add(new SearchUserCard(db , username , id , widget.user , mutualcon)
   );
@@ -324,7 +326,39 @@ void getbirthday()async{
   }
 
   void searchCompany(String text)async{
+    List<int> jobid = [];
     var searchtext = "%"+text+"%" ;
+    widget.db.userProfileDao.filterByCompanyname(searchtext).then((value) => setState((){
+      if(value != null){
+        for(int i = 0 ; i <value.length ; i++){
+            var ui = value[i].ProfileId;
+            widget.db.additionalInfoDao.findJobById(ui!).then((val) => setState((){
+                      // var un = val?.userName;
+                      print("ui is : $ui");
+                      if(val != null){
+                        for(int j = 0 ; j < val.length ; j++){
+                          var ji = val[i].jobId;
+                          jobid.add(ji!);
+
+                        }
+                       int m =  jobid.reduce((a, b) => a > b ? a : b);
+                       
+                        widget.db.userProfileDao.findProfileByJobId(searchtext, m).then((v) => setState((){
+                            if(v != null){
+                              widget.db.userDao.findUserNameByUserId(v.userId!).then((vl) => setState((){
+                                      var un = vl?.userName;
+                                      addLocationCompanyCard(widget.db , un , v.userId) ;
+                              }));
+                              
+                            }
+                        }));
+                      }
+                      
+            }));
+        }
+      }
+    }));
+
   }
   
 
@@ -504,7 +538,7 @@ void getbirthday()async{
                   hintStyle: TextStyle(color: Colors.blue),
                   suffixIcon: IconButton(
                     onPressed: () {
-                      return searchUser(searchUserController.text);
+                      return searchCompany(searchCompanyController.text);
                     },
                     icon: Icon(Icons.search),
                     
@@ -522,14 +556,14 @@ void getbirthday()async{
             itemCount: list.length,
             itemBuilder: (_,index) => SearchUserCard( widget.db ,list[index].username , list[index].id , widget.user,list[index].mutual))),
 
-             Flexible(child: ListView.builder(
-            itemCount: listLocation.length,
-            itemBuilder: (_,index) => LocationCompanyUserCard( widget.db ,listLocation[index].username , listLocation[index].id , widget.user))),
+            //  Flexible(child: ListView.builder(
+            // itemCount: listLocation.length,
+            // itemBuilder: (_,index) => LocationCompanyUserCard( widget.db ,listLocation[index].username , listLocation[index].id , widget.user))),
 
 
             Flexible(child: ListView.builder(
-            itemCount: listCompany.length,
-            itemBuilder: (_,index) => LocationCompanyUserCard( widget.db ,listCompany[index].username , listCompany[index].id , widget.user)))
+            itemCount: listLocation.length,
+            itemBuilder: (_,index) => LocationCompanyUserCard( widget.db ,listLocation[index].username , listLocation[index].id , widget.user)))
 
           ],),
 

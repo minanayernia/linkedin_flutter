@@ -465,11 +465,19 @@ class _$UserProfileDao extends UserProfileDao {
   }
 
   @override
-  Future<UserProfile?> filterByCompanyname(String CompanyName) async {
-    return _queryAdapter.query(
-        'SELECT * FROM userProfile WHERE profileId in (SELECT LAST profileId from additionalInfo where CompanyName = ?1)',
+  Future<List<UserProfile>> filterByCompanyname(String CompanyName) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM userProfile WHERE profileId in (SELECT  profileId from additionalInfo where CompanyName LIKE ?1)',
         mapper: (Map<String, Object?> row) => UserProfile(ProfileId: row['ProfileId'] as int?, userId: row['userId'] as int?, location: row['location'] as String, FirstName: row['FirstName'] as String, LastName: row['LastName'] as String, UserName: row['UserName'] as String, AdditionalInfo: row['AdditionalInfo'] as String, About: row['About'] as String),
         arguments: [CompanyName]);
+  }
+
+  @override
+  Future<UserProfile?> findProfileByJobId(String CompanyName, int jobid) async {
+    return _queryAdapter.query(
+        'SELECT * FROM userProfile WHERE profileId in (SELECT  profileId from additionalInfo where jobId = ?2 AND CompanyName LIKE ?1)',
+        mapper: (Map<String, Object?> row) => UserProfile(ProfileId: row['ProfileId'] as int?, userId: row['userId'] as int?, location: row['location'] as String, FirstName: row['FirstName'] as String, LastName: row['LastName'] as String, UserName: row['UserName'] as String, AdditionalInfo: row['AdditionalInfo'] as String, About: row['About'] as String),
+        arguments: [CompanyName, jobid]);
   }
 
   @override
@@ -1134,6 +1142,18 @@ class _$AdditionalInfoDao extends AdditionalInfoDao {
     await _queryAdapter.queryNoReturn(
         'UPDATE AdditionalInfo SET jobName = ?1 , companyName = ?2 WHERE jobId = ?3',
         arguments: [jobname, companyname, jobid]);
+  }
+
+  @override
+  Future<List<AdditionalInfo>> findJobById(int profid) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM AdditionalInfo WHERE profileId = ?1',
+        mapper: (Map<String, Object?> row) => AdditionalInfo(
+            jobId: row['jobId'] as int?,
+            companyName: row['companyName'] as String,
+            jobName: row['jobName'] as String,
+            profileId: row['profileId'] as int?),
+        arguments: [profid]);
   }
 
   @override

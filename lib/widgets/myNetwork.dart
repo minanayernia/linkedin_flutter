@@ -52,7 +52,11 @@ class _InvitationListState extends State<InvitationList> {
   void allInvitations()async{
     print("we are in all invitations");
     print(list);
-    widget.db.netwokDao.invitations(widget.user).then((value) => setState((){
+    widget.db.netwokDao.invitations(widget.user).then((value) => setState((){  //ghalat ma bayad all network har kodum az invitation ro bedast biarim farda check shavad.
+    widget.db.netwokDao.allNetwork(widget.user).then((t) => setState((){
+      var cons = parseNetwork(t, widget.user);
+      print("cons is :");
+      print(cons);
       print("lets find my parsenetwork");
       var mycons = parseNetwork(value, widget.user);
       for(int i = 0 ; i < value.length ; i++){
@@ -60,7 +64,7 @@ class _InvitationListState extends State<InvitationList> {
           print("lets find invitiation networks");
           var hiscons = parseNetwork(v, mycons[i]);
           print("hiscons $hiscons");
-          var n = findNumberOfMutualConnections(mycons, hiscons);
+          var n = findNumberOfMutualConnections(cons, hiscons);
           print("number of mutual connection $n");
           if(value[i] != null){
           var userid = value[i]?.userReqId; 
@@ -84,6 +88,9 @@ class _InvitationListState extends State<InvitationList> {
         print("waht about now?");
         print(list);
       }
+
+    }));
+      
     }));
   }
   @override
@@ -310,6 +317,8 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
 
   void getPeopleYouMayKnow() async{
 
+    list.clear();
+
     var a = widget.user ;
     if(a != null){
       widget.db.netwokDao.allNetwork(a).then((value) => setState((){
@@ -343,11 +352,18 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
                                       if(va == null){
                                           widget.db.netwokDao.allNetwork(user1).then((t) => setState((){
                                             var mycons = parseNetwork(t, user1);
-                                            var hiscons = parseNetwork(val, userid);
-                                            var n =findNumberOfMutualConnections(mycons, hiscons);
-                                            addPeopleCard(ui , v.userName , n) ;
-                                            print("finding username1 :");
+                                            print("my cons ");
+                                            print(mycons);
+                                            widget.db.netwokDao.allNetwork(ui).then((p) => setState((){
+                                                var hiscons = parseNetwork(p, ui);
+                                              print("his cons");
+                                              print(hiscons);
+                                              var n =findNumberOfMutualConnections(mycons, hiscons);
+                                              addPeopleCard(ui , v.userName , n) ;
+                                              print("finding username1 :");
                                             list.sort((a,b)=> b.mutual.compareTo(a.mutual));
+                                            }));
+                                            
                                           }));
                                           
                                       }
@@ -363,11 +379,18 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
                                       if(va == null){
                                         widget.db.netwokDao.allNetwork(user1).then((t) => setState((){
                                             var mycons = parseNetwork(t, user1);
-                                            var hiscons = parseNetwork(val, userid);
+                                            print("my cons ");
+                                            print(mycons);
+                                            widget.db.netwokDao.allNetwork(ur).then((p) => setState((){
+                                                var hiscons = parseNetwork(p, ur);
+                                            print("his cons");
+                                            print(hiscons);
                                             var n =findNumberOfMutualConnections(mycons, hiscons);
                                             addPeopleCard(ur , v.userName , n) ;
-                                            print("finding username1 :");
+                                            print("finding username1 in second if:");
                                             list.sort((a,b)=> b.mutual.compareTo(a.mutual));
+                                            }));
+                                            
                                           }));
 
                                       }
@@ -402,11 +425,16 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
                                           if(va == null){
                                             widget.db.netwokDao.allNetwork(userid).then((t) => setState((){
                                             var mycons = parseNetwork(t, userid);
-                                            var hiscons = parseNetwork(vl, user1);
-                                            var n =findNumberOfMutualConnections(mycons, hiscons);
-                                            addPeopleCard(ui , v.userName , n) ;
-                                            print("finding username1 :");
-                                            list.sort((a,b)=> b.mutual.compareTo(a.mutual));
+                                            widget.db.netwokDao.allNetwork(ui).then((p) => setState((){
+                                                if(p != null){
+                                                  var hiscons = parseNetwork(p, ui);
+                                                  var n =findNumberOfMutualConnections(mycons, hiscons);
+                                                  addPeopleCard(ui , v.userName , n) ;
+                                                  print("finding username1 :");
+                                                  list.sort((a,b)=> b.mutual.compareTo(a.mutual));
+                                                }
+                                            }));
+                                            
                                           }));
                                           }
                                       }));
@@ -423,11 +451,14 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
                                         if(va == null){
                                             widget.db.netwokDao.allNetwork(userid).then((t) => setState((){
                                             var mycons = parseNetwork(t, userid);
-                                            var hiscons = parseNetwork(vl, user1);
-                                            var n =findNumberOfMutualConnections(mycons, hiscons);
-                                            addPeopleCard(ur , v.userName , n) ;
-                                            print("finding username1 :");
-                                            list.sort((a,b)=> b.mutual.compareTo(a.mutual));
+                                            widget.db.netwokDao.allNetwork(ur).then((p) => setState((){
+                                                var hiscons = parseNetwork(p, ur);
+                                                var n =findNumberOfMutualConnections(mycons, hiscons);
+                                                addPeopleCard(ur , v.userName , n) ;
+                                                print("finding username1 :");
+                                                list.sort((a,b)=> b.mutual.compareTo(a.mutual));
+                                            }));
+                                            
                                           }));
                                         }
                                       }));

@@ -39,6 +39,8 @@ class _LogInState extends State<LogIn> {
 
 
       if(findUser != null){
+        loginUserController.text = "";
+        loginPassController.text = "";
         final out = findUser.userId;
         Navigator.push(
             context,
