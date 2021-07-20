@@ -118,62 +118,113 @@ void conversation(int myid , String othername )async{
     var searchtext = "%" + text + "%";
     var a = widget.myid;
     print("get in searchUser function");
-    widget.db.netwokDao.allNetwork(a).then((value) => setState(() {
-          items = [];
-          print("search started");
-          // mylist = value ;
-          if (value != null) {
-            for (int i = 0; i < value.length; i++) {
-              if (value[i]?.userId != a) {
-                print("we are in first if");
-                // items.add(value[i]?.userName);
-                var ui = value[i]?.userId;
-                print("ui is : $ui");
-                widget.db.userDao.findUserNameByUserId(ui!).then((val) => setState((){
-                        var un = val?.userName;
-                        print("un is : $un");
-                        widget.db.userDao.searchByUsername(searchtext).then((vl) => setState((){
-                          var searchedname = vl[i]?.userName;
-                          print("vl[i] is : $vl[i].userName");
-                              if(vl != null){
-                                if( searchedname == un){
-                                  addSearchCard(widget.db, un, ui);
-                                  print(un);
-                                }
+
+    widget.db.userDao.searchByUsername(searchtext).then((value) => setState((){
+        if(value != null){
+          for(int i = 0 ; i < value.length ; i++){
+              var ui = value[i]?.userId;
+              print("ui after searchtext is $ui");
+              widget.db.netwokDao.allNetwork(a).then((val) => setState((){
+                print("finding my networks");
+                print("a i s $a");
+                    if(val != null){
+                      for(int j = 0 ; j < val.length ; j++){
+                          if(val[j]?.userId == a && val[j]?.userReqId == ui){
+                        print("enter first if");
+                          widget.db.userDao.findUserNameByUserId(ui!).then((v) => setState((){
+                            print("find user name");
+                              if(v != null){
+                                      var un = v.userName ; 
+                                      addSearchCard(widget.db, un, ui);
+                                      print("search done");
                               }
-                        }));
-                        // items.add(un!);
-                        // addSearchCard(widget.db, un, ui);
-                        
-                }));
-                
-              }
-              if (value[i]?.userReqId != a) {
-                print("we are in second if");
-                // items.add(value[i]?.userName);
-                var ui = value[i]?.userReqId;
-                print("ui is : $ui");
-                widget.db.userDao.findUserNameByUserId(ui!).then((val) => setState((){
-                        var un = val?.userName;
-                        print("un is : $un");
-                        widget.db.userDao.searchByUsername(searchtext).then((vl) => setState((){
-                          var searchedname = vl[i]?.userName;
-                          print("vl[i] is : $vl[i].userName");
-                              if(vl != null){
-                                if( searchedname == un){
-                                  addSearchCard(widget.db, un, ui);
-                                }
+                                
+                          }));
+                      }
+                      if(val[j]?.userReqId == a && val[j]?.userId == ui){
+                        print("enter second if");
+                          widget.db.userDao.findUserNameByUserId(ui!).then((v) => setState((){
+                            print("find user name");
+                              if(v != null){
+                                      var un = v.userName ; 
+                                      addSearchCard(widget.db, un, ui);
+                                      print("search done");
                               }
-                        }));
-                        // items.add(un!);
-                        // addSearchCard(widget.db, un, ui);
-                        print(un);
-                }));
-                
-              }
-            }
+                                
+                          }));
+                      }
+                      }
+                    }
+              }));
+
           }
-        }));
+        }
+
+    }));
+
+    // widget.db.netwokDao.allNetwork(a).then((value) => setState(() {
+    //       items = [];
+    //       print("search started");
+    //       // mylist = value ;
+    //       if (value != null) {
+    //         for (int i = 0; i < value.length; i++) {
+    //           if (value[i]?.userId != a) {
+    //             print("we are in first if");
+    //             // items.add(value[i]?.userName);
+    //             var ui = value[i]?.userId;
+    //             print("ui is : $ui");
+    //             widget.db.userDao.findUserNameByUserId(ui!).then((val) => setState((){
+    //                     var un = val?.userName;
+    //                     print("un is : $un");
+    //                     widget.db.userDao.searchByUsername(searchtext).then((vl) => setState((){
+    //                       var searchedname = vl[i]?.userName;
+    //                       // print("vl[i] is : $vl[i].userName");
+    //                       print("searchedname is $searchedname");
+    //                           if(vl != null){
+    //                             print("un after search is $un");
+    //                             for(int j = 0 ; j < vl.length ; j++){
+    //                               var unv = vl[j]?.userName;
+    //                               if( unv == un){
+    //                               print("un after search is $un");
+    //                               addSearchCard(widget.db, un, ui);
+    //                               print("done search");
+    //                             }
+    //                             }
+                                
+    //                           }
+    //                     }));
+    //                     // items.add(un!);
+    //                     // addSearchCard(widget.db, un, ui);
+                        
+    //             }));
+                
+    //           }
+    //           if (value[i]?.userReqId != a) {
+    //             print("we are in second if");
+    //             // items.add(value[i]?.userName);
+    //             var ui = value[i]?.userReqId;
+    //             print("ui is : $ui");
+    //             widget.db.userDao.findUserNameByUserId(ui!).then((val) => setState((){
+    //                     var un = val?.userName;
+    //                     print("un is : $un");
+    //                     widget.db.userDao.searchByUsername(searchtext).then((vl) => setState((){
+    //                       var searchedname = vl[i]?.userName;
+    //                       print("vl[i] is : $vl[i].userName");
+    //                           if(vl != null){
+    //                             if( searchedname == un){
+    //                               addSearchCard(widget.db, un, ui);
+    //                             }
+    //                           }
+    //                     }));
+    //                     // items.add(un!);
+    //                     // addSearchCard(widget.db, un, ui);
+    //                     print(un);
+    //             }));
+                
+    //           }
+    //         }
+    //       }
+    //     }));
     // items = [];
     // list = [] ;
     // var searchtext = "%" + text + "%";
@@ -476,67 +527,118 @@ class _NewMessageState extends State<NewMessage> {
 
   var items;
   void searchUser(String text) async {
-    items = [];
+
+
+    
+        items = [];
     list = [] ;
     var searchtext = "%" + text + "%";
     var a = widget.myid;
     print("get in searchUser function");
-    widget.db.netwokDao.allNetwork(a).then((value) => setState(() {
-          items = [];
-          print("search started");
-          // mylist = value ;
-          if (value != null) {
-            for (int i = 0; i < value.length; i++) {
-              if (value[i]?.userId != a) {
-                print("we are in first if");
-                // items.add(value[i]?.userName);
-                var ui = value[i]?.userId;
-                print("ui is : $ui");
-                widget.db.userDao.findUserNameByUserId(ui!).then((val) => setState((){
-                        var un = val?.userName;
-                        print("un is : $un");
-                        widget.db.userDao.searchByUsername(searchtext).then((vl) => setState((){
-                          var searchedname = vl[i]?.userName;
-                          print("vl[i] is : $vl[i].userName");
-                              if(vl != null){
-                                if( searchedname == un){
-                                  addSearchCard(widget.db, un, ui);
-                                  print(un);
-                                }
+
+    widget.db.userDao.searchByUsername(searchtext).then((value) => setState((){
+        if(value != null){
+          for(int i = 0 ; i < value.length ; i++){
+              var ui = value[i]?.userId;
+              print("ui after searchtext is $ui");
+              widget.db.netwokDao.allNetwork(a).then((val) => setState((){
+                print("finding my networks");
+                print("a i s $a");
+                    if(val != null){
+                      for(int j = 0 ; j < val.length ; j++){
+                          if(val[j]?.userId == a && val[j]?.userReqId == ui){
+                        print("enter first if");
+                          widget.db.userDao.findUserNameByUserId(ui!).then((v) => setState((){
+                            print("find user name");
+                              if(v != null){
+                                      var un = v.userName ; 
+                                      addSearchCard(widget.db, un, ui);
+                                      print("search done");
                               }
-                        }));
-                        // items.add(un!);
-                        // addSearchCard(widget.db, un, ui);
-                        
-                }));
-                
-              }
-              if (value[i]?.userReqId != a) {
-                print("we are in second if");
-                // items.add(value[i]?.userName);
-                var ui = value[i]?.userReqId;
-                print("ui is : $ui");
-                widget.db.userDao.findUserNameByUserId(ui!).then((val) => setState((){
-                        var un = val?.userName;
-                        print("un is : $un");
-                        widget.db.userDao.searchByUsername(searchtext).then((vl) => setState((){
-                          var searchedname = vl[i]?.userName;
-                          print("vl[i] is : $vl[i].userName");
-                              if(vl != null){
-                                if( searchedname == un){
-                                  addSearchCard(widget.db, un, ui);
-                                }
+                                
+                          }));
+                      }
+                      if(val[j]?.userReqId == a && val[j]?.userId == ui){
+                        print("enter second if");
+                          widget.db.userDao.findUserNameByUserId(ui!).then((v) => setState((){
+                            print("find user name");
+                              if(v != null){
+                                      var un = v.userName ; 
+                                      addSearchCard(widget.db, un, ui);
+                                      print("search done");
                               }
-                        }));
-                        // items.add(un!);
-                        // addSearchCard(widget.db, un, ui);
-                        print(un);
-                }));
-                
-              }
-            }
+                                
+                          }));
+                      }
+                      }
+                    }
+              }));
+
           }
-        }));
+        }
+
+    }));
+    // items = [];
+    // list = [] ;
+    // var searchtext = "%" + text + "%";
+    // var a = widget.myid;
+    // print("get in searchUser function");
+    // widget.db.netwokDao.allNetwork(a).then((value) => setState(() {
+    //       items = [];
+    //       print("search started");
+    //       // mylist = value ;
+    //       if (value != null) {
+    //         for (int i = 0; i < value.length; i++) {
+    //           if (value[i]?.userId != a) {
+    //             print("we are in first if");
+    //             // items.add(value[i]?.userName);
+    //             var ui = value[i]?.userId;
+    //             print("ui is : $ui");
+    //             widget.db.userDao.findUserNameByUserId(ui!).then((val) => setState((){
+    //                     var un = val?.userName;
+    //                     print("un is : $un");
+    //                     widget.db.userDao.searchByUsername(searchtext).then((vl) => setState((){
+    //                       var searchedname = vl[i]?.userName;
+    //                       print("vl[i] is : $vl[i].userName");
+    //                           if(vl != null){
+    //                             if( searchedname == un){
+    //                               addSearchCard(widget.db, un, ui);
+    //                               print(un);
+    //                             }
+    //                           }
+    //                     }));
+    //                     // items.add(un!);
+    //                     // addSearchCard(widget.db, un, ui);
+                        
+    //             }));
+                
+    //           }
+    //           if (value[i]?.userReqId != a) {
+    //             print("we are in second if");
+    //             // items.add(value[i]?.userName);
+    //             var ui = value[i]?.userReqId;
+    //             print("ui is : $ui");
+    //             widget.db.userDao.findUserNameByUserId(ui!).then((val) => setState((){
+    //                     var un = val?.userName;
+    //                     print("un is : $un");
+    //                     widget.db.userDao.searchByUsername(searchtext).then((vl) => setState((){
+    //                       var searchedname = vl[i]?.userName;
+    //                       print("vl[i] is : $vl[i].userName");
+    //                           if(vl != null){
+    //                             if( searchedname == un){
+    //                               addSearchCard(widget.db, un, ui);
+    //                             }
+    //                           }
+    //                     }));
+    //                     // items.add(un!);
+    //                     // addSearchCard(widget.db, un, ui);
+    //                     print(un);
+    //             }));
+                
+    //           }
+    //         }
+    //       }
+    //     }));
 
         // for(int j = 0 ; j < items.length ; j++){
         //     widget.db.userDao.findeUserByUserName(items[j]).then((vl) => setState((){

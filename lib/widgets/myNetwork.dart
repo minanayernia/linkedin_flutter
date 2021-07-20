@@ -227,7 +227,7 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
                                   }
                             }));
                             }
-                            if(ur != user1 && ui == userid){
+                            else if(ur != user1 && ui == userid){
                               widget.db.userDao.findUserNameByUserId(ur!).then((v) => setState((){
                                 print("finding username2 :");
                                   if (v != null){
@@ -257,10 +257,11 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
                               print("finding username1 :");
                                   if (v != null){
                                       addPeopleCard(ui , v.userName) ;
+                                      
                                   }
                             }));
                             }
-                            if(ur != userid && ui == user1){
+                            else if(ur != userid && ui == user1){
                               widget.db.userDao.findUserNameByUserId(ur!).then((v) => setState((){
                                 print("finding username2 :");
                                   if (v != null){
@@ -278,13 +279,36 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
 
       }));
 
+
+
+      
+
     }
+    
+
+
+  }
+
+  void clearList()async{
+    print("clear is called");
+    for(int k = 0 ; k < list.length ; k++){
+          print("im in loop");
+          var b = widget.user;
+          widget.db.netwokDao.findNetwork(b! , list[k].id).then((value) => setState((){
+                if(value != null){
+                  print("k is $k");
+                  list.removeAt(k);
+                }
+
+          }));
+      }
 
 
   }
   @override
   void initState() {
     getPeopleYouMayKnow();
+    clearList();
     super.initState();
   }
 
@@ -355,7 +379,7 @@ class _PeopleCardState extends State<PeopleCard> {
                 ),
 
                   Text(
-                  widget.username,
+                  "  " + widget.username,
                   style: TextStyle(color: Colors.white),
                 ),
 
