@@ -221,18 +221,31 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
 
                             if(ui != user1 && ur == userid){
                             widget.db.userDao.findUserNameByUserId(ui!).then((v) => setState((){
-                              print("finding username1 :");
+                              
                                   if (v != null){
-                                      addPeopleCard(ui , v.userName) ;
+                                    widget.db.netwokDao.findNetwork(user1!, ui).then((va) => setState((){
+                                      if(va == null){
+                                          addPeopleCard(ui , v.userName) ;
+                                          print("finding username1 :");
+                                      }
+                                    }));
+                                      
                                   }
                             }));
                             }
                             else if(ur != user1 && ui == userid){
                               widget.db.userDao.findUserNameByUserId(ur!).then((v) => setState((){
-                                print("finding username2 :");
-                                  if (v != null){
+                                if(v != null){
+                                widget.db.netwokDao.findNetwork(user1!, ur).then((va) => setState((){
+                                      if(va == null){
+                                        print("finding username2 :");
                                       addPeopleCard(ur , v.userName) ;
-                                  }
+
+                                      }
+                                }));
+                              }
+                                
+                                  
                             }));
 
                             }
@@ -256,7 +269,12 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
                             widget.db.userDao.findUserNameByUserId(ui!).then((v) => setState((){
                               print("finding username1 :");
                                   if (v != null){
-                                      addPeopleCard(ui , v.userName) ;
+                                      widget.db.netwokDao.findNetwork(userid!, ui).then((va) => setState((){
+                                          if(va == null){
+                                              addPeopleCard(ui , v.userName) ;
+                                          }
+                                      }));
+                                      
                                       
                                   }
                             }));
@@ -265,7 +283,12 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
                               widget.db.userDao.findUserNameByUserId(ur!).then((v) => setState((){
                                 print("finding username2 :");
                                   if (v != null){
-                                      addPeopleCard(ur , v.userName) ;
+                                      widget.db.netwokDao.findNetwork(userid!, ur).then((va) => setState((){
+                                        if(va == null){
+                                              addPeopleCard(ur , v.userName) ;
+                                        }
+                                      }));
+                                      
                                   }
                             }));
 
@@ -289,26 +312,30 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
 
   }
 
-  void clearList()async{
-    print("clear is called");
-    for(int k = 0 ; k < list.length ; k++){
-          print("im in loop");
-          var b = widget.user;
-          widget.db.netwokDao.findNetwork(b! , list[k].id).then((value) => setState((){
-                if(value != null){
-                  print("k is $k");
-                  list.removeAt(k);
-                }
+  // void sortByMutualConnection(List<PeopleCard> list1)async{
+  //   var a = widget.user;
+  //   widget.db.netwokDao.allNetwork(a!).then((value) => setState((){
+  //       if(value != null){
+  //         for(int i = 0 ; i < list1.length ; i++){
+  //           var otherid = list1[i].id;
+  //           var user1 = value[i]?.userId;
+  //           var user2 = value[i]?.userReqId;
+  //           widget.db.netwokDao.allNetwork(otherid).then((val) => setState((){
+  //             if(val != null){
 
-          }));
-      }
+  //             }
 
+  //           }));
+  //         }
+  //       }
 
-  }
+  //   }));
+
+  // }
   @override
   void initState() {
     getPeopleYouMayKnow();
-    clearList();
+    
     super.initState();
   }
 
