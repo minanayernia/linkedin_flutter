@@ -39,11 +39,12 @@ class UserProfile {
   String About ;
   String AdditionalInfo;
   String location ;
-  // final Uint8List picture;
+  // Uint8List? background;
 
   UserProfile({
     // this.picture = "not_fileed" ,
     this.ProfileId ,
+    // this.background ,
     required this.userId ,
     
     this.location = "not_filled" ,

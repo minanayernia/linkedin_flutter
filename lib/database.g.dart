@@ -121,7 +121,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Post` (`PostId` INTEGER PRIMARY KEY AUTOINCREMENT, `PostCaption` TEXT NOT NULL, `sharedPost` INTEGER, `userId` INTEGER NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `User` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT, `password` TEXT NOT NULL, `userName` TEXT NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `User` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT, `birthday` INTEGER NOT NULL, `password` TEXT NOT NULL, `userName` TEXT NOT NULL)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `UserProfile` (`ProfileId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER, `FirstName` TEXT NOT NULL, `LastName` TEXT NOT NULL, `UserName` TEXT NOT NULL, `About` TEXT NOT NULL, `AdditionalInfo` TEXT NOT NULL, `location` TEXT NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -298,6 +298,7 @@ class _$UserDao extends UserDao {
             'User',
             (User item) => <String, Object?>{
                   'userId': item.userId,
+                  'birthday': _dateTimeConverter.encode(item.birthday),
                   'password': item.password,
                   'userName': item.userName
                 });
@@ -315,6 +316,7 @@ class _$UserDao extends UserDao {
     return _queryAdapter.queryList('SELECT * FROM User WHERE userName LIKE ?1',
         mapper: (Map<String, Object?> row) => User(
             userId: row['userId'] as int?,
+            birthday: _dateTimeConverter.decode(row['birthday'] as int),
             password: row['password'] as String,
             userName: row['userName'] as String),
         arguments: [userName]);
@@ -330,6 +332,7 @@ class _$UserDao extends UserDao {
     return _queryAdapter.query('SELECT * FROM User where userId = ?1',
         mapper: (Map<String, Object?> row) => User(
             userId: row['userId'] as int?,
+            birthday: _dateTimeConverter.decode(row['birthday'] as int),
             password: row['password'] as String,
             userName: row['userName'] as String),
         arguments: [userId]);
@@ -342,6 +345,7 @@ class _$UserDao extends UserDao {
         'SELECT * FROM User where password = ?1 and userName = ?2',
         mapper: (Map<String, Object?> row) => User(
             userId: row['userId'] as int?,
+            birthday: _dateTimeConverter.decode(row['birthday'] as int),
             password: row['password'] as String,
             userName: row['userName'] as String),
         arguments: [password, userName]);
@@ -352,6 +356,7 @@ class _$UserDao extends UserDao {
     return _queryAdapter.query('SELECT * FROM User WHERE userName = ?1',
         mapper: (Map<String, Object?> row) => User(
             userId: row['userId'] as int?,
+            birthday: _dateTimeConverter.decode(row['birthday'] as int),
             password: row['password'] as String,
             userName: row['userName'] as String),
         arguments: [userName]);
@@ -362,6 +367,7 @@ class _$UserDao extends UserDao {
     return _queryAdapter.queryList('SELECT * FROM User',
         mapper: (Map<String, Object?> row) => User(
             userId: row['userId'] as int?,
+            birthday: _dateTimeConverter.decode(row['birthday'] as int),
             password: row['password'] as String,
             userName: row['userName'] as String));
   }
@@ -1170,3 +1176,6 @@ class _$EndorseDao extends EndorseDao {
     await _endorseInsertionAdapter.insert(endorse, OnConflictStrategy.abort);
   }
 }
+
+// ignore_for_file: unused_element
+final _dateTimeConverter = DateTimeConverter();

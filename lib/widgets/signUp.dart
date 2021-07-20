@@ -161,6 +161,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  DateTime? _dateTime;
   bool checkUser = false ;
   bool checkPass = false ;
   bool checkCopyUser = false ; 
@@ -208,7 +209,7 @@ class _SignUpState extends State<SignUp> {
     });
 
     if (username != "" && password != "" && checkUserName == null ){
-   final user = User( password : password , userName: username );
+   final user = User( password : password , userName: username  , birthday : _dateTime!);
    var useid = user.userId ;
    print("this is my user id before inserting to database : $useid");
     // print(username + password);
@@ -225,7 +226,7 @@ class _SignUpState extends State<SignUp> {
     final userProfile ;
     var profid ;
     if (result != null ){
-      userProfile = UserProfile(userId : result.userId);
+      userProfile = UserProfile(userId : result.userId , );
       print("this is my profileid in sign up page before adding to database : $profid");
       await userProfileDao.insertUserProfile(userProfile) ;
       print("profile added!");
@@ -322,6 +323,22 @@ class _SignUpState extends State<SignUp> {
         Visibility(
           visible: checkPass,
           child: Container(child: Text("password can't be an empty field" , style: TextStyle(color: Colors.redAccent),),),),
+          //for adding birthday
+          // Container(
+          // color: Colors.redAccent,
+          // child:InputDatePickerFormField(firstDate: DateTime.now(), lastDate:  DateTime.now(),)),
+          Text(_dateTime == null ? "pick your birthday ": _dateTime.toString()),
+          RaisedButton(
+            child: Text("date"),
+            onPressed: (){
+              showDatePicker(context: context,
+               initialDate: DateTime.now(),
+                firstDate: DateTime(1990), 
+              lastDate: DateTime.now()).then((date) => setState((){
+                _dateTime = date ;
+              }));
+            }),
+
         
       ButtonTheme(
           height: 40,

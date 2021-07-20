@@ -1,4 +1,6 @@
 import 'package:dbproject/database.dart';
+import 'package:dbproject/models/Network.dart';
+import 'package:dbproject/models/Notification.dart';
 import 'package:dbproject/widgets/accomplishments.dart';
 import 'package:flutter/material.dart';
 
@@ -119,6 +121,61 @@ class _NotifListState extends State<NotifList> {
       list.add(new NotificatioCard(nt, d , compost));
     }
 
+    List<int> parseNetwork(List<Network?> network, userId) { 
+  List<int> myNet = [];
+
+  for (var i in network){
+    if (i?.userId == userId){
+      var k = i?.userReqId;
+        myNet.add(k!);
+    } else {
+      var j = i?.userId ;
+      myNet.add(j!);
+    }
+  }
+
+  return myNet;
+}
+
+    void getbirthday()async{
+      print("we are in get birthday");
+      print(widget.myid);
+  widget.db.netwokDao.allNetwork(widget.myid!).then((value) => setState((){
+    print("hi from birthday");
+    if(value != null){
+      print("kokoooooooooooo");
+      var mycons = parseNetwork(value, widget.myid);
+    print("mycons in birthday is : $mycons");
+    for(var i in mycons){
+      widget.db.userDao.findUserNameByUserId(i).then((val) => setState((){
+        var bir = val?.birthday ;
+        print("connection birthday $bir");
+        var bd = bir?.day;
+        var bm = bir?.month;
+        print("bd is : $bd and bm is :$bm");
+
+        DateTime today = DateTime.now();
+        print("today : $today");
+        var td = today.day;
+        var tm = today.month;
+        print("td is : $td and tm is :$tm");
+        if(today.day == bir?.day){
+          print("day is checked");
+          if(today.month == bir?.month){
+            print("month is checked");
+            var notif = Notificationn(notificationType: 1, receiver: widget.myid, sender: val?.userId);
+            widget.db.notificationnDao.insertNotif(notif);
+            print("birth day notif send!");
+
+          }
+        }
+      }));
+    }
+    }
+    
+  }));
+}
+
     void getAllNotif()async{
       list.clear();
       widget.db.notificationnDao.showNotif(widget.myid).then((value) => setState((){
@@ -212,8 +269,9 @@ class _NotifListState extends State<NotifList> {
 
     }
     @override
-    void initState() {
+    void initState(){
     list.clear();
+    getbirthday();
     getAllNotif();
     super.initState();
   }
