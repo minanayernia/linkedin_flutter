@@ -188,41 +188,41 @@ class AdditionalInfoList extends StatefulWidget {
 
 class _AdditionalInfoListState extends State<AdditionalInfoList> {
 
-List<int> parseNetwork(List network, userId) { 
-  List<int> myNet = [];
+// List<int> parseNetwork(List network, userId) { 
+//   List<int> myNet = [];
 
-  for (var i in network){
-    if (i.userId == userId){
-        myNet.add(i.userReq);
-    } else {
-      myNet.add(i.userId);
-    }
-  }
+//   for (var i in network){
+//     if (i.userId == userId){
+//         myNet.add(i.userReq);
+//     } else {
+//       myNet.add(i.userId);
+//     }
+//   }
 
-  return myNet;
-}
+//   return myNet;
+// }
 
-int findNumberOfMutualConnections(List network1,List network2) { 
-  int n = 0;
+// int findNumberOfMutualConnections(List network1,List network2) { 
+//   int n = 0;
 
-  for (var i in network1){
-    if (network2.contains(i)){
-      n++;
-    }
-  }
-  return n;
-}
+//   for (var i in network1){
+//     if (network2.contains(i)){
+//       n++;
+//     }
+//   }
+//   return n;
+// }
 
 
-  void findmynet()async{
-    print("we are in findmynet");
-    widget.db.netwokDao.allNetwork(widget.user!).then((value) => setState((){
-      print("we are finding users of my network!!");
-      print(value);
-      var x = parseNetwork(value , widget.user);
-      print("mamad's $x");
-    }));
-  }
+  // void findmynet()async{
+  //   print("we are in findmynet");
+  //   widget.db.netwokDao.allNetwork(widget.user!).then((value) => setState((){
+  //     print("we are finding users of my network!!");
+  //     print(value);
+  //     var x = parseNetwork(value , widget.user);
+  //     print("mamad's $x");
+  //   }));
+  // }
 
 addInfoCard(var job , var company , var id){
   
@@ -267,7 +267,7 @@ addInfoCard(var job , var company , var id){
   }
  @override
   void initState() {
-    findmynet();
+    // findmynet();
     getAdditionalInfo();
     super.initState();
   }

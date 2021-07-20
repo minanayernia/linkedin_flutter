@@ -250,7 +250,8 @@ class _SignUpState extends State<SignUp> {
       }));
     }
     
-    
+    signupUserController.text = "";
+    signupPassController.text = "";
     Navigator.push(
             context,
             MaterialPageRoute(builder: (context) =>  MyHomePage(this.widget.db , out)),);
