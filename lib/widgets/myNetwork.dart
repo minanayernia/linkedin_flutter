@@ -142,7 +142,7 @@ class _InvitationCardState extends State<InvitationCard> {
 
   void acceptinvitation()async{
     print("we are in acceot invitation");
-    widget.db.netwokDao.findNetwork(widget.myid, widget.userid).then((value) => setState((){
+    widget.db.netwokDao.findUnAcceptedNetwork(widget.myid, widget.userid).then((value) => setState((){
       if(value != null){
         var netid = value.networkId ;
         print("netid is : $netid");

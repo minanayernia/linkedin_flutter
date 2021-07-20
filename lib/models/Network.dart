@@ -64,8 +64,11 @@ abstract class NetworkDao{
   @Query('SELECT * FROM Network WHERE networkState = 0 and userId = :yourId')
   Future<List<Network?>> invitations(int yourId);
 
-  @Query('SELECT * FROM Network WHERE (userId = :myuser and userReqId = :anotheruser) or (userId = :anotheruser and userReqId = :myuser)')
+  @Query('SELECT * FROM Network WHERE (userId = :myuser and userReqId = :anotheruser AND networkState = 1) or (userId = :anotheruser and userReqId = :myuser AND networkState = 1)')
   Future<Network?> findNetwork(int myuser , int anotheruser);
+
+    @Query('SELECT * FROM Network WHERE (userId = :myuser and userReqId = :anotheruser AND networkState = 0) or (userId = :anotheruser and userReqId = :myuser AND networkState = 0)')
+  Future<Network?> findUnAcceptedNetwork(int myuser , int anotheruser);
 
   @Query('DELETE FROM Network WHERE userReqId = :anotheruser and userId = :myid')
   Future<void> deletNetwork(int anotheruser , int myid);
