@@ -35,9 +35,9 @@ class UserProfile {
 
   String FirstName ;
   String LastName ;
-  String UserName ;
+  // String UserName ;
   String About ;
-  String AdditionalInfo;
+  // String AdditionalInfo;
   String location ;
   // Uint8List? background;
 
@@ -50,8 +50,8 @@ class UserProfile {
     this.location = "not_filled" ,
     this.FirstName = "not_filled" ,
     this.LastName = "not_filled", 
-    this.UserName = "not_filled" , 
-    this.AdditionalInfo = "not_filled", 
+    // this.UserName = "not_filled" , 
+    // this.AdditionalInfo = "not_filled", 
     this.About = "not_filled",
   }
    );

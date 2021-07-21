@@ -119,7 +119,7 @@ class _IntroState extends State<Intro> {
 
 void getbirthday()async{
 
-  widget.db.netwokDao.AllUsersInYourNetwork(widget.user!).then((value) => setState((){
+  widget.db.netwokDao.allNetwork(widget.user!).then((value) => setState((){
     var mycons = parseNetwork(value, widget.user);
     for(var i in mycons){
       widget.db.userDao.findUserNameByUserId(i).then((val) => setState((){
