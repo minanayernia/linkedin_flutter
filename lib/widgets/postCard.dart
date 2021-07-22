@@ -3,6 +3,7 @@ import 'dart:ffi';
 
 import 'package:dbproject/models/Comment.dart';
 import 'package:dbproject/models/CommentLike.dart';
+import 'package:dbproject/models/Featured.dart';
 import 'package:dbproject/models/Like.dart';
 import 'package:dbproject/models/User.dart';
 import 'package:dbproject/models/Notification.dart';
@@ -27,7 +28,24 @@ class _PostCardState extends State<PostCard> {
   TextEditingController newCommentController = TextEditingController();
   TextEditingController toWhomCommentController = TextEditingController();
   TextEditingController likeCommentController = TextEditingController();
-  
+  void addtofeatured()async{
+    widget.db.featuredDao.findFeatureByPostid(widget.postId).then((v) => setState(() {
+      if(v == null){//the post is not featured untill now
+        
+    widget.db.postDao.findPostByPostId(widget.postId).then((value) => setState((){
+      var userid = value?.userId ;
+      widget.db.userProfileDao.findProfileByUserId(userid!).then((val) => setState(() {
+        var profid = val?.ProfileId ;
+        var featured = Featured( profileId: profid , postId: widget.postId);
+        widget.db.featuredDao.insertFeatured(featured);
+        print("post featured added successfully!");
+      }));
+    }));
+      }
+    }));
+
+    
+  }
 
   String username = '';
   
@@ -367,7 +385,9 @@ class _PostCardState extends State<PostCard> {
                   margin: EdgeInsets.only(bottom:4),
                   child:Text("Post shared from :  " + sharedname , style: TextStyle(color: Colors.white),),
                   ),
-                TextButton(onPressed: () {}, child: Text("Add to featured"))
+                TextButton(onPressed: () {
+                  addtofeatured();
+                }, child: Text("Add to featured"))
               ],
             ),
           ),

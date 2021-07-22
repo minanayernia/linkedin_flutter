@@ -129,7 +129,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Accomplishment` (`AcomplishmentId` INTEGER PRIMARY KEY AUTOINCREMENT, `profileId` INTEGER NOT NULL, `AccomplishmentText` TEXT NOT NULL, FOREIGN KEY (`profileId`) REFERENCES `UserProfile` (`profileId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Featured` (`featuredId` INTEGER PRIMARY KEY AUTOINCREMENT, `profileId` INTEGER, `featuredText` TEXT NOT NULL, FOREIGN KEY (`profileId`) REFERENCES `UserProfile` (`ProfileId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+            'CREATE TABLE IF NOT EXISTS `Featured` (`featuredId` INTEGER PRIMARY KEY AUTOINCREMENT, `profileId` INTEGER, `featuredText` TEXT, `postId` INTEGER, FOREIGN KEY (`profileId`) REFERENCES `UserProfile` (`ProfileId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Network` (`networkId` INTEGER PRIMARY KEY AUTOINCREMENT, `userReqId` INTEGER, `userId` INTEGER, `networkState` INTEGER, FOREIGN KEY (`userReqId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -636,7 +636,8 @@ class _$FeaturedDao extends FeaturedDao {
             (Featured item) => <String, Object?>{
                   'featuredId': item.featuredId,
                   'profileId': item.profileId,
-                  'featuredText': item.featuredText
+                  'featuredText': item.featuredText,
+                  'postId': item.postId
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -653,9 +654,21 @@ class _$FeaturedDao extends FeaturedDao {
         'SELECT * FROM Featured WHERE profileId = ?1',
         mapper: (Map<String, Object?> row) => Featured(
             featuredId: row['featuredId'] as int?,
-            featuredText: row['featuredText'] as String,
+            postId: row['postId'] as int?,
+            featuredText: row['featuredText'] as String?,
             profileId: row['profileId'] as int?),
         arguments: [profileId]);
+  }
+
+  @override
+  Future<Featured?> findFeatureByPostid(int postId) async {
+    return _queryAdapter.query('SELECT * FROM Featured WHERE postId = ?1',
+        mapper: (Map<String, Object?> row) => Featured(
+            featuredId: row['featuredId'] as int?,
+            postId: row['postId'] as int?,
+            featuredText: row['featuredText'] as String?,
+            profileId: row['profileId'] as int?),
+        arguments: [postId]);
   }
 
   @override
@@ -664,7 +677,8 @@ class _$FeaturedDao extends FeaturedDao {
         'SELECT * FROM Featured WHERE featuredId = ?1 and profileId = ?2',
         mapper: (Map<String, Object?> row) => Featured(
             featuredId: row['featuredId'] as int?,
-            featuredText: row['featuredText'] as String,
+            postId: row['postId'] as int?,
+            featuredText: row['featuredText'] as String?,
             profileId: row['profileId'] as int?),
         arguments: [featuredId, profid]);
   }
@@ -675,7 +689,8 @@ class _$FeaturedDao extends FeaturedDao {
         'SELECT * FROM Featured WHERE featuredText = ?1 and profileId = ?2',
         mapper: (Map<String, Object?> row) => Featured(
             featuredId: row['featuredId'] as int?,
-            featuredText: row['featuredText'] as String,
+            postId: row['postId'] as int?,
+            featuredText: row['featuredText'] as String?,
             profileId: row['profileId'] as int?),
         arguments: [featuredText, profid]);
   }
@@ -686,7 +701,8 @@ class _$FeaturedDao extends FeaturedDao {
         'UPDATE Featured SET featuredText = ?1 WHERE featuredId = ?2',
         mapper: (Map<String, Object?> row) => Featured(
             featuredId: row['featuredId'] as int?,
-            featuredText: row['featuredText'] as String,
+            postId: row['postId'] as int?,
+            featuredText: row['featuredText'] as String?,
             profileId: row['profileId'] as int?),
         arguments: [featuredText, featuredId]);
   }

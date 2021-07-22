@@ -27,13 +27,13 @@ class Featured{
   @ColumnInfo(name: 'profileId')
   int? profileId;
 
-  String featuredText;
+  String? featuredText;
   int? postId ;
 
   Featured({
     this.featuredId ,
     this.postId ,
-    required this.featuredText,
+    this.featuredText,
     required this.profileId
   }
     
@@ -45,6 +45,9 @@ class Featured{
 abstract class FeaturedDao {
   @Query('SELECT * FROM Featured WHERE profileId = :profileId')
   Future<List<Featured?>> allAdditionalInfo(int profileId);
+
+  @Query('SELECT * FROM Featured WHERE postId = :postId')
+  Future<Featured?> findFeatureByPostid(int postId) ;
 
   @Query('SELECT * FROM Featured WHERE featuredId = :featuredId and profileId = :profid')
   Future<Featured?> findFeaturedById(int featuredId , int profid);

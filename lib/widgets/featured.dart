@@ -4,6 +4,7 @@ import 'package:dbproject/models/Featured.dart';
 import 'package:flutter/material.dart';
 import 'package:dbproject/widgets/postCard.dart';
 import '../database.dart';
+import 'postCard.dart';
 
 
 bool checkFeatureField = false ; 
@@ -28,6 +29,9 @@ addSkillCard(var id , var text){
   setState((){});
   }
 }
+addPostFeaturedCard(var caption , var id , int postId ){
+  featuredPost.add(new PostCard(caption, id, postId, widget.db));
+}
 var feature ;
 void getFeatures()async{
     var a = widget.user;
@@ -41,16 +45,29 @@ void getFeatures()async{
           // print("this profileid in test card $profileId");
           // skill = Skill(SkillText: "android" ,profileId: profileId);
           // widget.db.skillDao.insertSkill(skill);q
+
           widget.db.featuredDao.allAdditionalInfo(profileId).then((value) => setState((){
              if (value != null){
               for (int i = 0 ; i < value.length ; i++){
                 if (value[i] != null){
-                  print(value[i]?.featuredText);
-                  print("this is the skillid :");
-                  print(value[i]?.featuredId);
-                  addSkillCard(value[i]?.featuredId , value[i]?.featuredText );
-                  var li = list[i].text;
-                  print("$i , $li");
+                  if(value[i]?.postId ==null){
+                    print(value[i]?.featuredText);
+                    print("this is the skillid :");
+                    print(value[i]?.featuredId);
+                    addSkillCard(value[i]?.featuredId , value[i]?.featuredText );
+                    var li = list[i].text;
+                    print("$i , $li");
+                  }
+                  if(value[i]?.postId !=null){
+                    var postid =value[i]?.postId;
+                    widget.db.postDao.findPostByPostId(postid!).then((v) => setState((){
+                      addPostFeaturedCard(v?.PostCaption, widget.user, postid);
+                      print("post feature added successfully");
+                    }));
+                    // addPostFeaturedCard(value)
+
+                  }
+                  
                 }
                 
               }
@@ -119,7 +136,7 @@ void getFeatures()async{
        ListView.builder(
         itemCount: featuredPost.length,
         itemBuilder: (_,index) { 
-          return FeaturedCard(list[index].id.toString(), list[index].text);
+          return PostCard(featuredPost[index].caption, featuredPost[index].id, featuredPost[index].postId, widget.db);
           })),
       ],),) 
       
