@@ -367,7 +367,7 @@ class _PostCardState extends State<PostCard> {
                   margin: EdgeInsets.only(bottom:4),
                   child:Text("Post shared from :  " + sharedname , style: TextStyle(color: Colors.white),),
                   ),
-                TextButton(onPressed: () {}, child: Text("..."))
+                TextButton(onPressed: () {}, child: Text("Add to featured"))
               ],
             ),
           ),
