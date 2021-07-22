@@ -10,6 +10,7 @@ import 'package:dbproject/models/post.dart';
 import 'package:dbproject/widgets/direct.dart';
 import 'package:dbproject/widgets/skillsAndEndorsement.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker_cross/file_picker_cross.dart';
 
 import '../database.dart';
 
@@ -27,6 +28,7 @@ class _PostCardState extends State<PostCard> {
   TextEditingController newCommentController = TextEditingController();
   TextEditingController toWhomCommentController = TextEditingController();
   TextEditingController likeCommentController = TextEditingController();
+  
 
   String username = '';
   

@@ -117,6 +117,29 @@ class _IntroState extends State<Intro> {
   setState((){});
 }
 
+void getbirthday()async{
+
+  widget.db.netwokDao.AllUsersInYourNetwork(widget.user!).then((value) => setState((){
+    var mycons = parseNetwork(value, widget.user);
+    for(var i in mycons){
+      widget.db.userDao.findUserNameByUserId(i).then((val) => setState((){
+        var bir = val?.birthday ;
+        DateTime today = DateTime.now();
+        if(today.day == bir?.day){
+          print("day is checked");
+          if(today.month == bir?.month){
+            print("month is checked");
+            var notif = Notificationn(notificationType: 1, receiver: widget.user, sender: val?.userId);
+            widget.db.notificationnDao.insertNotif(notif);
+            print("birth day notif send!");
+
+          }
+        }
+      }));
+    }
+  }));
+}
+
   void addLocationCompanyCard(var db  , String? username , int? id){
   listLocation.add(new LocationCompanyUserCard(db , username , id , widget.user)
   );
@@ -346,6 +369,7 @@ class _IntroState extends State<Intro> {
   @override
   void initState() {
     username = giveme();
+    getbirthday();
     super.initState();
   }
 

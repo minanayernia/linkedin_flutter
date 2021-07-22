@@ -22,8 +22,10 @@ import 'models/Accomplishment.dart';
 import 'models/User.dart';
 import 'models/post.dart'; 
 import 'models/Featured.dart';
+import 'package:dbproject/models/TypeConverter.dart';
 part 'database.g.dart'; // 
 
+@TypeConverters([DateTimeConverter])
 @Database(version: 1, entities: [ Endorse, Notificationn ,Messagee ,CommentLike , Comment ,Like ,Post , User , UserProfile , Skill , Accomplishment , Featured , Network , AdditionalInfo])
 
 abstract class AppDatabase extends FloorDatabase {

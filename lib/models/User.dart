@@ -2,6 +2,8 @@ import 'dart:ffi';
 
 import 'package:floor/floor.dart';
 import 'package:flutter/cupertino.dart';
+
+import 'TypeConverter.dart';
 // import 'package:intl/intl.dart';
 
 // CREATE TABLE users (
@@ -12,12 +14,15 @@ import 'package:flutter/cupertino.dart';
 // )
 
 
-
+@TypeConverters([DateTimeConverter])
 @entity
 class  User {
     
   @PrimaryKey (autoGenerate: true , ) 
   int? userId ;
+
+  DateTime birthday ;
+
   // DateTime createdAt = DateTime.now() ;
   // var milliseconds = DateTime.now().millisecondsSinceEpoch ;
   // var createdAt = DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch) ;
@@ -27,6 +32,7 @@ class  User {
 
   User( {
     this.userId  , 
+    required this.birthday ,
     required this.password ,
     required this.userName ,
     // this.userId
@@ -34,7 +40,7 @@ class  User {
   );
   
 }
-
+@TypeConverters([DateTimeConverter])
 @dao
 abstract class UserDao {
 
@@ -56,6 +62,7 @@ abstract class UserDao {
 
   @Query('SELECT * FROM User')
   Future<List<User>>findAllusers();
+
 
   @insert
   Future<void> insertUser(User user);
