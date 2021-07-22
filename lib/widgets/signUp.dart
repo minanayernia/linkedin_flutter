@@ -328,9 +328,15 @@ class _SignUpState extends State<SignUp> {
           // Container(
           // color: Colors.redAccent,
           // child:InputDatePickerFormField(firstDate: DateTime.now(), lastDate:  DateTime.now(),)),
-          Text(_dateTime == null ? "pick your birthday ": _dateTime.toString()),
-          RaisedButton(
-            child: Text("date"),
+  
+          Text(_dateTime == null ? "pick your birthday ": _dateTime.toString() , style: TextStyle(color:Colors.white),),
+
+          ButtonTheme(
+            height: 40,
+          minWidth: MediaQuery.of(context).size.width*0.2,
+          buttonColor: Colors.redAccent,
+            child: RaisedButton(
+            child: Text("Pick date" , style: TextStyle(color:Colors.white),),
             onPressed: (){
               showDatePicker(context: context,
                initialDate: DateTime.now(),
@@ -338,7 +344,8 @@ class _SignUpState extends State<SignUp> {
               lastDate: DateTime.now()).then((date) => setState((){
                 _dateTime = date ;
               }));
-            }),
+            }),),
+          
 
         
       ButtonTheme(

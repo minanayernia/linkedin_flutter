@@ -7,7 +7,7 @@ import 'package:dbproject/models/Notification.dart';
 import 'package:dbproject/models/User.dart';
 import 'package:dbproject/views/otherUserView.dart';
 import 'package:dbproject/widgets/accomplishments.dart';
-import 'package:dbproject/widgets/direct.dart';
+// import 'package:dbproject/widgets/direct.dart';
 import 'package:dbproject/widgets/editintro.dart';
 import 'package:flutter/material.dart';
 import '../database.dart';
@@ -40,7 +40,7 @@ class _LocationCompanyUserCardState extends State<LocationCompanyUserCard> {
     );
   }
 }
-
+TextEditingController searchUserController = TextEditingController();
 TextEditingController searchLocationController = TextEditingController();
 
 TextEditingController searchCompanyController = TextEditingController();
