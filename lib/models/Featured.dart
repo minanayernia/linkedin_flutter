@@ -28,9 +28,11 @@ class Featured{
   int? profileId;
 
   String featuredText;
+  int? postId ;
 
   Featured({
     this.featuredId ,
+    this.postId ,
     required this.featuredText,
     required this.profileId
   }
