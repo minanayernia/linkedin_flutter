@@ -341,11 +341,15 @@ void getbirthday()async{
                       print("ui is : $ui");
                       if(val != null){
                         for(int j = 0 ; j < val.length ; j++){
-                          var ji = val[i].jobId;
+                          var ji = val[j].jobId;
+                          var t = val[j].companyName;
+                          print("t is :$t");
+                          print("ji is $ji");
                           jobid.add(ji!);
 
                         }
                        int m =  jobid.reduce((a, b) => a > b ? a : b);
+                       print("m : $m");
                        
                         widget.db.userProfileDao.findProfileByJobId(searchtext, m).then((v) => setState((){
                             if(v != null){
