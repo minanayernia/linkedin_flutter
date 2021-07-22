@@ -27,11 +27,6 @@ dependencies:
   floor: ^1.1.0
   path:
   datetime_picker_formfield: ^0.1.8
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 08f9e4141db8ee41e1d94b8c73390cd9318aec98
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
