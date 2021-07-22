@@ -1186,6 +1186,15 @@ class _$EndorseDao extends EndorseDao {
   }
 
   @override
+  Future<Endorse?> findEndoseByUserAndSkill(int skillid, int userid) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Endorse WHERE skillId = ?1 AND userId = ?2',
+        mapper: (Map<String, Object?> row) =>
+            Endorse(row['userId'] as int, row['skillId'] as int),
+        arguments: [skillid, userid]);
+  }
+
+  @override
   Future<void> insertEndorse(Endorse endorse) async {
     await _endorseInsertionAdapter.insert(endorse, OnConflictStrategy.abort);
   }

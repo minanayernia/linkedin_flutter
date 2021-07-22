@@ -193,6 +193,8 @@ class _IntroState extends State<Intro> {
 
   List<String?> items = [] ;
   void searchUser(String text)async{
+    list.clear();
+    listLocation.clear();
     print(text);
     var searchtext = "%"+text+"%" ;
     print(searchtext);
@@ -303,6 +305,8 @@ class _IntroState extends State<Intro> {
   }
 
   void searchCompany(String text)async{
+    listLocation.clear();
+    list.clear();
     List<int> jobid = [];
     var searchtext = "%"+text+"%" ;
     widget.db.userProfileDao.filterByCompanyname(searchtext).then((value) => setState((){

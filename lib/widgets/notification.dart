@@ -55,7 +55,9 @@ class _NotificatioCardState extends State<NotificatioCard> {
       width: MediaQuery.of(context).size.width*0.88,
       color: Colors.redAccent,
       margin: EdgeInsets.only(top: 10),
-      child: Column(children: [
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
         Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
         Container(
@@ -67,7 +69,11 @@ class _NotificatioCardState extends State<NotificatioCard> {
         TextButton(onPressed: (){}, child: Text("..."))
 
       ],),
-      Text(widget.compost)
+      Container(
+        color: Colors.white,
+        margin: EdgeInsets.only(left: 10),
+        child:Text(widget.compost , style: TextStyle(color: Colors.redAccent),))
+      
       ],)
        
       

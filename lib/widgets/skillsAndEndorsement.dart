@@ -77,7 +77,9 @@ void getindorse()async{
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             Row(children: [
               Text(widget.id , style: TextStyle(color: Colors.white),) ,
               Container(
@@ -87,7 +89,7 @@ void getindorse()async{
 
 
           ],),
-          Text("ENDORSED BY :"),
+          Text("ENDORSED BY :" , style: TextStyle(color: Colors.white),),
           Container(
             height: 20,
             width: MediaQuery.of(context).size.width*0.86,
@@ -96,7 +98,13 @@ void getindorse()async{
          scrollDirection: Axis.horizontal,
         itemCount: endorseName.length,
         itemBuilder: (_,index) { 
-          return Container(child: Text(endorseName[index].toString()),);
+          return Container(
+            child: Container(
+              // alignment: Alignment.center,
+              color: Colors.white,
+              child:Text(endorseName[index].toString() + "  " , style: TextStyle(color: Colors.redAccent),) ,)
+            
+            );
           ;}))
         ],)
           
@@ -492,16 +500,24 @@ class _OtherSkillCardState extends State<OtherSkillCard> {
 
   void addendorsementToDatabase()async{
     if(widget.myid != widget.otheruserid){
-      print("addendorsementToDatabase if");
+      widget.db.endorseDao.findEndoseByUserAndSkill(int.parse(widget.id), widget.myid).then((value) => setState((){
+        if(value == null){
+          print("addendorsementToDatabase if");
       var endorse = Endorse(widget.myid, int.parse(widget.id));
       print("endorse : $endorse");
-      await widget.db.endorseDao.insertEndorse(endorse);
+      widget.db.endorseDao.insertEndorse(endorse);
       print("endorse inserted successfuly!");
       //add endorse notif
         var notif = Notificationn(notificationType: 6, receiver: widget.otheruserid, sender: widget.myid);
         widget.db.notificationnDao.insertNotif(notif);
         print("notif endorsement sent!");
-      //end
+        //end
+        }
+
+      }));
+
+      
+      
     }
     
     

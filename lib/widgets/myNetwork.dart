@@ -310,6 +310,7 @@ class _PeopleYouMayKnowListState extends State<PeopleYouMayKnowList> {
   List<PeopleCard> list = [];
   addPeopleCard(var id , var username , int mutual) {
     list.add(new PeopleCard(id , username , mutual));
+    list = list.toSet().toList();
     setState(() {});
   }
 

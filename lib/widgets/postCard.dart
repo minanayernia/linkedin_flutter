@@ -534,7 +534,7 @@ class _PostCardState extends State<PostCard> {
                                       ? commentIds[index].toString()
                                       : '0'),
                                   Text("  "),
-                                  // Text(commentsUserNames.length > 0 ? commentsUserNames[index]! : '0'),
+                                  Text(commentsUserNames.length > 0 ? commentsUserNames[index]! : '0'),
                                   Text("   likes:"),
                                   Text(commentlikes.length > 0
                                       ? commentlikes[index].toString()
@@ -1270,13 +1270,24 @@ class _OtherPostCardState extends State<OtherPostCard> {
   List<String?> commentsUserNames = [];
   List<int?> commentrEPLY = [];
   List<int> temp = [];
-  void addComment(int userId, int postId, String commentText, int replyto) async {
-    var comment =Comment( ReplyCommentId: replyto , postId: postId, userId: userId, commentText: commentText);
+  void addComment(int userId, int postId, String commentText, String replyto) async {
+    print("we are in add comment");
+    var comment ;
+    if(replyto == ""){
+      print("reply is empty");
+      comment =Comment(postId: postId, userId: userId, commentText: commentText);
+
+    }
+    if(replyto != ""){
+      print("reply is not empty");
+      comment =Comment(ReplyCommentId: int.parse(replyto) , postId: postId, userId: userId, commentText: commentText);
+    }
     widget.db.commentDao.insertComment(comment).then((ci) => setState(() {
+      print("coment inserted");
       var comid = ci ;
        //adding notification if it is comment reply
-      if(replyto!=null){
-        widget.db.commentDao.findCommentBycommentId(replyto).then((repid) => setState(() {
+      if(replyto!= ""){
+        widget.db.commentDao.findCommentBycommentId(int.parse(replyto)).then((repid) => setState(() {
           if(repid!= null){
             var receiver = repid.userId;
             var notif = Notificationn(notificationType: 5, receiver: receiver, sender: userId , comment:comid );
@@ -1577,7 +1588,7 @@ class _OtherPostCardState extends State<OtherPostCard> {
                                 widget.myid,
                                 widget.postId,
                                 newCommentController.text,
-                                int.parse(toWhomCommentController.text));
+                                toWhomCommentController.text);
                           },
                           child: Text("Send")),
                     ),
@@ -1677,7 +1688,7 @@ class _OtherPostCardState extends State<OtherPostCard> {
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   Text("  "),
-                                  // Text(commentsUserNames.length > 0 ? commentsUserNames[index]! : '0'),
+                                  Text(commentsUserNames.length > 0 ? commentsUserNames[index]! : '0' , style: TextStyle(color: Colors.white),),
                                   Text(
                                     "   likes : ",
                                     style: TextStyle(color: Colors.white),
