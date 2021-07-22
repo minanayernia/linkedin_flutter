@@ -140,13 +140,41 @@ class _PostCardState extends State<PostCard> {
   List<int?> commentrEPLY = [];
   List<int> temp = [];
 
-  void addComment(int userId, int postId, String commentText, int replyto) async {
-    var comment =Comment( ReplyCommentId: replyto , postId: postId, userId: userId, commentText: commentText);
+  void addComment(int userId, int postId, String commentText, String replyto) async {
+    var comment;
+    if(replyto == ""){
+      comment =Comment(  postId: postId, userId: userId, commentText: commentText);
+      widget.db.commentDao.insertComment(comment).then((ci) => setState(() {
+      //adding notification for comment on post
+    widget.db.postDao.findPostByPostId(postId).then((v) => setState(() {
+      if (v != null) {
+        print("start of sending notif by finding the reciever");
+        var receiver = v.userId;
+        if(receiver != userId){
+          print("reciever is : $receiver");
+        print("myid is : $userId");
+        print("network of notification founded");               
+        var notif = Notificationn( post: postId , sender: userId , notificationType: 3 , receiver: receiver);
+        widget.db.notificationnDao.insertNotif(notif);
+        print("notif added successfully!!!!");
+        }
+        
+              }
+    }));
+
+    ///end of adding notification
+
+
+    }));
+
+
+    }else{
+    comment =Comment( ReplyCommentId: int.parse(replyto) , postId: postId, userId: userId, commentText: commentText);
     widget.db.commentDao.insertComment(comment).then((ci) => setState(() {
       var comid = ci ;
        //adding notification if it is comment reply
-      if(replyto!=null){
-        widget.db.commentDao.findCommentBycommentId(replyto).then((repid) => setState(() {
+      if(replyto!=""){
+        widget.db.commentDao.findCommentBycommentId(int.parse(replyto)).then((repid) => setState(() {
           if(repid!= null){
             var receiver = repid.userId;
             var notif = Notificationn(notificationType: 5, receiver: receiver, sender: userId , comment:comid );
@@ -175,6 +203,9 @@ class _PostCardState extends State<PostCard> {
 
 
     }));
+    }
+
+    
     print("controller of replyto :");
     print(replyto.toString());
     //for reply
@@ -445,7 +476,7 @@ class _PostCardState extends State<PostCard> {
                                 widget.id,
                                 widget.postId,
                                 newCommentController.text,
-                                int.parse(toWhomCommentController.text));
+                                toWhomCommentController.text);
                           },
                           child: Text("Send")),
                     ),
