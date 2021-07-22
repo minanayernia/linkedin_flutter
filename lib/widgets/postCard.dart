@@ -51,12 +51,15 @@ class _PostCardState extends State<PostCard> {
               widget.db.userDao.findUserNameByUserId(shareduserid).then((v) => setState(() {
                 if(v!= null){
                   sharedname = v.userName ;
+
+                  
                 }
               }));
             }
           }));
         }else{//this is not a shared post 
           sharedname = " " ;
+          print("shared post is nulllllllll");
         }
       }
     }));
@@ -178,6 +181,8 @@ class _PostCardState extends State<PostCard> {
           if(repid!= null){
             var receiver = repid.userId;
             var notif = Notificationn(notificationType: 5, receiver: receiver, sender: userId , comment:comid );
+            widget.db.notificationnDao.insertNotif(notif);
+            print("notif comment reply added ");
           }
           
         }));
@@ -272,15 +277,17 @@ class _PostCardState extends State<PostCard> {
     var commentLike = CommentLike(userId: userId, commentId: commentId);
     widget.db.commentLikeDao.findCommentLikeBYUseridCommentId(userId, commentId).then((value) => setState(() {
               if (value == null) {
+                print("this isnt found");
                 widget.db.commentLikeDao.insertCommentLike(commentLike);
             //adding notification
-
           widget.db.commentDao.findCommentBycommentId(commentId).then((val) => setState((){
             if(val != null){
+
               var reciever = val.userId ;
-              var compost = val.commentText ;
-              var notif = Notificationn(notificationType: 5, receiver: reciever, sender: userId);
+              // var compost = val.commentText ;
+              var notif = Notificationn(notificationType: 5, receiver: reciever, sender: userId , comment: commentId);
               widget.db.notificationnDao.insertNotif(notif);
+              print("commentid in lkecomment: $commentId");
               print("notif comment like added successfully!!!!");
 
             }
@@ -319,9 +326,10 @@ class _PostCardState extends State<PostCard> {
   void initState() {
     print("we are in init");
     print(widget.id);
-
+    
     getUserName();
     getSharedname();
+    print("hey what is your sharedname : $sharedname");
     countLike(widget.postId);
     allComments(widget.postId);
     super.initState();
@@ -448,7 +456,7 @@ class _PostCardState extends State<PostCard> {
                             decoration: InputDecoration(
                                 fillColor: Colors.white,
                                 border: OutlineInputBorder(),
-                                hintText: 'To whom ?',
+                                hintText: 'To which comment ?',
                                 hintStyle: TextStyle(color: Colors.white)),
                           ),
                         ),
@@ -579,12 +587,12 @@ class _PostCardState extends State<PostCard> {
                               ),
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.9,
-                                color: Colors.white,
+                                // color: Colors.white,
                                 child: Text(
                                   commentsTexts.length > 0
                                       ? commentsTexts[index]!
                                       : '0',
-                                  style: TextStyle(color: Colors.redAccent),
+                                  style: TextStyle(color: Colors.black , fontWeight: FontWeight.bold),
                                 ),
                               )
                             ],
@@ -1205,26 +1213,56 @@ class _OtherPostCardState extends State<OtherPostCard> {
   }
 
   String sharedname = '';
+
   void getSharedname()async{
+    var m = widget.postId;
+    print("this is fuck : $m");
     widget.db.postDao.findPostByPostId(widget.postId).then((value) => setState((){
       if(value != null){
+        print("bahara");
         if(value.sharedPost != null){ //so this is a shred post and we shoulf find the username
+        print("jenaba");
           widget.db.postDao.findPostByPostId(value.sharedPost!).then((val) => setState(() {
             if(val != null){
+              print("bahar jenaba");
               var shareduserid = val.userId ;
               widget.db.userDao.findUserNameByUserId(shareduserid).then((v) => setState(() {
                 if(v!= null){
                   sharedname = v.userName ;
+                  print("this shared name in otherpostcardd : $sharedname");
                 }
               }));
             }
           }));
         }else{//this is not a shared post 
           sharedname = " " ;
+          print("yohoooo");
         }
       }
     }));
   }
+
+
+  // void getSharedname()async{
+  //   widget.db.postDao.findPostByPostId(widget.postId).then((value) => setState((){
+  //     if(value != null){
+  //       if(value.sharedPost != null){ //so this is a shred post and we shoulf find the username
+  //         widget.db.postDao.findPostByPostId(value.sharedPost!).then((val) => setState(() {
+  //           if(val != null){
+  //             var shareduserid = val.userId ;
+  //             widget.db.userDao.findUserNameByUserId(shareduserid).then((v) => setState(() {
+  //               if(v!= null){
+  //                 sharedname = v.userName ;
+  //               }
+  //             }));
+  //           }
+  //         }));
+  //       }else{//this is not a shared post 
+  //         sharedname = " " ;
+  //       }
+  //     }
+  //   }));
+  // }
 
   var likeNumbers;
   List<int?> likelist = [];
@@ -1425,8 +1463,8 @@ class _OtherPostCardState extends State<OtherPostCard> {
             widget.db.commentDao.findCommentBycommentId(commentId).then((val) => setState((){
             if(val != null){
               var reciever = val.userId ;
-              var compost = val.commentText ;
-              var notif = Notificationn(notificationType: 5, receiver: reciever, sender: userId);
+              // var compost = val.commentText;
+              var notif = Notificationn(notificationType: 5, receiver: reciever, sender: userId , comment: commentId);
               widget.db.notificationnDao.insertNotif(notif);
               print("notif comment like added successfully!!!!");
             // widget.db.commentLikeDao.findCommentLikeBYUseridCommentId(userId, commentId).then((v) => setState(() {
@@ -1470,7 +1508,7 @@ class _OtherPostCardState extends State<OtherPostCard> {
     print(widget.myid);
     print(widget.id);
     print("end of init");
-
+    getSharedname();
     getUserName();
     countLike(widget.postId);
     allComments(widget.postId);
@@ -1499,11 +1537,15 @@ class _OtherPostCardState extends State<OtherPostCard> {
                     style: TextStyle(color: Colors.white, fontSize: 13),
                   ),
                 ),
+                Container(
+                  margin: EdgeInsets.only(bottom:4),
+                  child:Text("Post shared from :  " + sharedname , style: TextStyle(color: Colors.white),),
+                  ),
                 TextButton(onPressed: () {}, child: Text("..."))
               ],
             ),
           ),
-          Text(sharedname),
+          // Text(sharedname),
 
           Container(
             height: MediaQuery.of(context).size.height * 0.35,

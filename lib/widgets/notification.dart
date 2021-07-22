@@ -240,11 +240,12 @@ class _NotifListState extends State<NotifList> {
                     }
                     
                   }));
-                }else{
+                }else if (typ == 1 || typ == 2 || typ == 6 || typ == 7 ){
                   compost = " " ;
                   addNotificatioCard(typ!, val.userName , compost);
                 print("after adding notif card");
                 }
+                print("lllllllllliiiiist $list");
                 
               }
             }));
@@ -279,6 +280,7 @@ class _NotifListState extends State<NotifList> {
     list.clear();
     getbirthday();
     getAllNotif();
+    print(" of notif in allnotif :$list");
     super.initState();
   }
 

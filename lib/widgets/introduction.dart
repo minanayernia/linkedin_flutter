@@ -84,7 +84,12 @@ class _SearchUserCardState extends State<SearchUserCard> {
         child: Container(
         alignment: Alignment.centerLeft,
         padding: EdgeInsets.only(left: 10),
-        child: Text(widget.username),),)
+        child: Row(children: [
+          Text(widget.username),
+          Text(widget.mutual.toString())
+        ],)
+        
+        ,),)
       
       
       
@@ -232,14 +237,15 @@ void getbirthday()async{
     widget.db.netwokDao.allNetwork(widget.user!).then((v) => setState((){
       print("my connections found");
       mycons = parseNetwork(v, widget.user);
-      print("mycons $mycons");
+
+      print("mycons in search $mycons");
 
       for(int i = 0 ; i < value.length ; i++){
       var s = value[i]?.userId ;
       widget.db.netwokDao.allNetwork(s!).then((val) => setState((){
         print("another network");
         var hiscons = parseNetwork(val, s);
-        print("hiscons $hiscons");
+        print("hiscons in search $hiscons");
         int n = findNumberOfMutualConnections(mycons, hiscons);
         print("number of mutual connection $n");
         addSearchCard(widget.db , value[i]?.userName , value[i]?.userId , n);
