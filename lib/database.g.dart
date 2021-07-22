@@ -736,11 +736,7 @@ class _$NetworkDao extends NetworkDao {
   @override
   Future<int?> findMyNetwork(int userId) async {
     await _queryAdapter.queryNoReturn(
-<<<<<<< HEAD
-        'SELECT userReq FROM network WHERE userId = ?1 UNION SELECT userId FROM network WHERE userReqId = ?1',
-=======
         '(SELECT userReq FROM network WHERE userId = ?1 UNION SELECT userId FROM network WHERE userReqId = ?1)',
->>>>>>> 08f9e4141db8ee41e1d94b8c73390cd9318aec98
         arguments: [userId]);
   }
 

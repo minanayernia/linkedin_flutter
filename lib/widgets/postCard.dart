@@ -10,11 +10,6 @@ import 'package:dbproject/models/post.dart';
 import 'package:dbproject/widgets/direct.dart';
 import 'package:dbproject/widgets/skillsAndEndorsement.dart';
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-// import 'package:file_picker_cross/file_picker_cross.dart';
-=======
-
->>>>>>> 08f9e4141db8ee41e1d94b8c73390cd9318aec98
 
 import '../database.dart';
 
