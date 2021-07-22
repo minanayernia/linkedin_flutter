@@ -123,7 +123,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `User` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT, `birthday` INTEGER NOT NULL, `password` TEXT NOT NULL, `userName` TEXT NOT NULL)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `UserProfile` (`ProfileId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER, `FirstName` TEXT NOT NULL, `LastName` TEXT NOT NULL, `UserName` TEXT NOT NULL, `About` TEXT NOT NULL, `AdditionalInfo` TEXT NOT NULL, `location` TEXT NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+            'CREATE TABLE IF NOT EXISTS `UserProfile` (`ProfileId` INTEGER PRIMARY KEY AUTOINCREMENT, `userId` INTEGER, `FirstName` TEXT NOT NULL, `LastName` TEXT NOT NULL, `About` TEXT NOT NULL, `location` TEXT NOT NULL, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Skill` (`SkillId` INTEGER PRIMARY KEY AUTOINCREMENT, `SkillText` TEXT NOT NULL, `profileId` INTEGER NOT NULL, FOREIGN KEY (`profileId`) REFERENCES `UserProfile` (`profileId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
@@ -389,9 +389,7 @@ class _$UserProfileDao extends UserProfileDao {
                   'userId': item.userId,
                   'FirstName': item.FirstName,
                   'LastName': item.LastName,
-                  'UserName': item.UserName,
                   'About': item.About,
-                  'AdditionalInfo': item.AdditionalInfo,
                   'location': item.location
                 });
 
@@ -412,8 +410,6 @@ class _$UserProfileDao extends UserProfileDao {
             location: row['location'] as String,
             FirstName: row['FirstName'] as String,
             LastName: row['LastName'] as String,
-            UserName: row['UserName'] as String,
-            AdditionalInfo: row['AdditionalInfo'] as String,
             About: row['About'] as String),
         arguments: [userId]);
   }
@@ -433,8 +429,6 @@ class _$UserProfileDao extends UserProfileDao {
             location: row['location'] as String,
             FirstName: row['FirstName'] as String,
             LastName: row['LastName'] as String,
-            UserName: row['UserName'] as String,
-            AdditionalInfo: row['AdditionalInfo'] as String,
             About: row['About'] as String),
         arguments: [userId, about]);
   }
@@ -444,7 +438,7 @@ class _$UserProfileDao extends UserProfileDao {
       String lastname, String about, String location) async {
     return _queryAdapter.query(
         'UPDATE UserProfile SET firstName = ?2 , lastName = ?3, about =  ?4 , location = ?5   WHERE userId =  ?1',
-        mapper: (Map<String, Object?> row) => UserProfile(ProfileId: row['ProfileId'] as int?, userId: row['userId'] as int?, location: row['location'] as String, FirstName: row['FirstName'] as String, LastName: row['LastName'] as String, UserName: row['UserName'] as String, AdditionalInfo: row['AdditionalInfo'] as String, About: row['About'] as String),
+        mapper: (Map<String, Object?> row) => UserProfile(ProfileId: row['ProfileId'] as int?, userId: row['userId'] as int?, location: row['location'] as String, FirstName: row['FirstName'] as String, LastName: row['LastName'] as String, About: row['About'] as String),
         arguments: [userId, firstname, lastname, about, location]);
   }
 
@@ -458,8 +452,6 @@ class _$UserProfileDao extends UserProfileDao {
             location: row['location'] as String,
             FirstName: row['FirstName'] as String,
             LastName: row['LastName'] as String,
-            UserName: row['UserName'] as String,
-            AdditionalInfo: row['AdditionalInfo'] as String,
             About: row['About'] as String),
         arguments: [location]);
   }
@@ -468,7 +460,7 @@ class _$UserProfileDao extends UserProfileDao {
   Future<List<UserProfile>> filterByCompanyname(String CompanyName) async {
     return _queryAdapter.queryList(
         'SELECT * FROM userProfile WHERE profileId in (SELECT  profileId from additionalInfo where CompanyName LIKE ?1)',
-        mapper: (Map<String, Object?> row) => UserProfile(ProfileId: row['ProfileId'] as int?, userId: row['userId'] as int?, location: row['location'] as String, FirstName: row['FirstName'] as String, LastName: row['LastName'] as String, UserName: row['UserName'] as String, AdditionalInfo: row['AdditionalInfo'] as String, About: row['About'] as String),
+        mapper: (Map<String, Object?> row) => UserProfile(ProfileId: row['ProfileId'] as int?, userId: row['userId'] as int?, location: row['location'] as String, FirstName: row['FirstName'] as String, LastName: row['LastName'] as String, About: row['About'] as String),
         arguments: [CompanyName]);
   }
 
@@ -476,7 +468,7 @@ class _$UserProfileDao extends UserProfileDao {
   Future<UserProfile?> findProfileByJobId(String CompanyName, int jobid) async {
     return _queryAdapter.query(
         'SELECT * FROM userProfile WHERE profileId in (SELECT  profileId from additionalInfo where jobId = ?2 AND CompanyName LIKE ?1)',
-        mapper: (Map<String, Object?> row) => UserProfile(ProfileId: row['ProfileId'] as int?, userId: row['userId'] as int?, location: row['location'] as String, FirstName: row['FirstName'] as String, LastName: row['LastName'] as String, UserName: row['UserName'] as String, AdditionalInfo: row['AdditionalInfo'] as String, About: row['About'] as String),
+        mapper: (Map<String, Object?> row) => UserProfile(ProfileId: row['ProfileId'] as int?, userId: row['userId'] as int?, location: row['location'] as String, FirstName: row['FirstName'] as String, LastName: row['LastName'] as String, About: row['About'] as String),
         arguments: [CompanyName, jobid]);
   }
 
@@ -744,7 +736,11 @@ class _$NetworkDao extends NetworkDao {
   @override
   Future<int?> findMyNetwork(int userId) async {
     await _queryAdapter.queryNoReturn(
+<<<<<<< HEAD
         'SELECT userReq FROM network WHERE userId = ?1 UNION SELECT userId FROM network WHERE userReqId = ?1',
+=======
+        '(SELECT userReq FROM network WHERE userId = ?1 UNION SELECT userId FROM network WHERE userReqId = ?1)',
+>>>>>>> 08f9e4141db8ee41e1d94b8c73390cd9318aec98
         arguments: [userId]);
   }
 
