@@ -91,7 +91,11 @@ class _MyHomePageState extends State<MyHomePage> {
     var a = widget.user;
     print('this is userid in myhome: $a');
     void refresh() {
-      initState();
+      if (this.mounted) {
+      setState(() {
+    // Your state change code goes here
+  });
+}
     }
   
     return Scaffold(
@@ -103,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
     children: [
       NavigationBar(widget.db , widget.user , widget.user, refresh),
           
-          Intro( db : widget.db , user :widget.user),
+          Intro( db : widget.db , user :widget.user ,notifyParent: refresh,),
           EditIntrCard( db : widget.db , user :widget.user),
           AdditionalInfoList(widget.db , widget.user),
           EditInfoCard(widget.db , widget.user),

@@ -99,9 +99,10 @@ class _SearchUserCardState extends State<SearchUserCard> {
 
 
 class Intro extends StatefulWidget {
-  const Intro( { Key? key,required this.db ,required this.user}): super(key: key) ;
+  const Intro( { Key? key,required this.db ,required this.user ,required this.notifyParent}): super(key: key) ;
   final AppDatabase db ;
   final int? user  ;
+  final Function() notifyParent;
 
   
 
@@ -401,6 +402,7 @@ void getbirthday()async{
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          TextButton(onPressed: () => widget.notifyParent(), child: Text("refresh")),
         
         Container(
 

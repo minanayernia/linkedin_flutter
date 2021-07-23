@@ -1033,6 +1033,14 @@ class _$MessageeDao extends MessageeDao {
   final InsertionAdapter<Messagee> _messageeInsertionAdapter;
 
   @override
+  Future<List<Messagee?>> searchMessage(int myid, String text) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Messagee WHERE (senderId =?1 OR recieverId = ?1) AND messageText LIKE ?2',
+        mapper: (Map<String, Object?> row) => Messagee(messageId: row['messageId'] as int?, recieverId: row['recieverId'] as int, senderId: row['senderId'] as int, messageText: row['messageText'] as String),
+        arguments: [myid, text]);
+  }
+
+  @override
   Future<List<Messagee?>> showMessage(int myid, int otherId) async {
     return _queryAdapter.queryList(
         'SELECT * FROM Messagee WHERE (senderId = ?1 and recieverId = ?2) or (senderId = ?2 and recieverId = ?1)',

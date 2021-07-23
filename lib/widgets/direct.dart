@@ -108,6 +108,8 @@ void conversation(int myid , String othername )async{
     ));
     setState(() {});
   }
+  // List<>
+
 
   var items;
   void searchUser(String text) async {
@@ -651,7 +653,23 @@ class _NewMessageState extends State<NewMessage> {
 
     // for (int i = 0; i < items.length; i++) {
     //   items[i] = items[i].toString();
-    
+    List<pm> searchMsg =[];
+    void searchMessage(String txt){
+    var searchtext = "%" + txt + "%";
+    widget.db.messageeDao.searchMessage(widget.myid, searchtext).then((value) => setState((){
+      print("we are in searching message");
+      for(var m in value){
+        print(m);
+        var senderid = m?.senderId;
+        widget.db.userDao.findUserNameByUserId(senderid!).then((val) => setState((){
+          print("we find the name");
+          var name = val?.userName ;
+          var searchPM =pm(m?.messageText , name);
+          searchMsg.add(searchPM);
+        }));
+      }
+    }));
+  }  
   
 
   void sendMessage(String username, String msg) async {
@@ -712,13 +730,13 @@ class _NewMessageState extends State<NewMessage> {
                 style: TextStyle(color: Colors.white),
                 controller: searchNewMessageController,
                 decoration: InputDecoration(
-                  hintText: "Search user",
+                  hintText: "Search message",
                   fillColor: Colors.white,
                   contentPadding: EdgeInsets.only(left: 10, top: 15),
                   hintStyle: TextStyle(color: Colors.white),
                   suffixIcon: IconButton(
                     onPressed: () {
-                      searchUser(searchNewMessageController.text);
+                      searchMessage(searchNewMessageController.text);
                     },
                     icon: Icon(
                       Icons.search,
@@ -730,9 +748,8 @@ class _NewMessageState extends State<NewMessage> {
               Container(
                 height: 500,
                 child: ListView.builder(
-                    itemCount: list.length,
-                    itemBuilder: (_, index) => UserCard(
-                        widget.db, list[index].username, list[index].id)),
+                    itemCount: searchMsg.length,
+                    itemBuilder: (_, index) => pm( searchMsg[index].msg ,searchMsg[index].name ,)),
               ),
             ]),
           ),

@@ -46,6 +46,9 @@ class Messagee {
 
 @dao 
 abstract class MessageeDao {
+  @Query('SELECT * FROM Messagee WHERE (senderId =:myid OR recieverId = :myid) AND messageText LIKE :text')
+  Future<List<Messagee?>> searchMessage(int myid , String text);
+
   @Query('SELECT * FROM Messagee WHERE (senderId = :myid and recieverId = :otherId) or (senderId = :otherId and recieverId = :myid)')
   Future<List<Messagee?>> showMessage(int myid , int otherId);
 
