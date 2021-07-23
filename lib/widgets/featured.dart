@@ -2,7 +2,7 @@
 
 import 'package:dbproject/models/Featured.dart';
 import 'package:flutter/material.dart';
-
+import 'package:dbproject/widgets/postCard.dart';
 import '../database.dart';
 
 
@@ -19,8 +19,7 @@ class FeaturedList extends StatefulWidget {
 
 class _FeaturedListState extends State<FeaturedList> {
 
-  List featuredsText = [] ;
-  List featuredsId = [] ;
+  
 
 addSkillCard(var id , var text){
   
@@ -75,7 +74,7 @@ void getFeatures()async{
 
               margin: EdgeInsets.only(top: 20),
 
-      height: 200,
+      height: 400,
       width: MediaQuery.of(context).size.width*0.9,
       color: Colors.black87,
       child: 
@@ -95,14 +94,36 @@ void getFeatures()async{
         TextButton(onPressed: (){}, child: Text("Add")) ,
 
       ],) ,),
-        
+       Container(
+         height: 300,
+         width: MediaQuery.of(context).size.width*0.9,
+         child: 
+       Row(children: [
 
-      Flexible(child:
+        Container(
+          height: 300,
+          width: MediaQuery.of(context).size.width*0.45,
+          child: 
        ListView.builder(
         itemCount: list.length,
         itemBuilder: (_,index) { 
           return FeaturedCard(list[index].id.toString(), list[index].text);
-          ;}))
+          })),
+    
+       
+
+       // post for features :
+        Container(
+          width: MediaQuery.of(context).size.width*0.45,
+          child:
+       ListView.builder(
+        itemCount: featuredPost.length,
+        itemBuilder: (_,index) { 
+          return FeaturedCard(list[index].id.toString(), list[index].text);
+          })),
+      ],),) 
+      
+      
       
 
       ], 
@@ -114,6 +135,7 @@ void getFeatures()async{
 }
 
 List<FeaturedCard> list = [];
+List<PostCard> featuredPost = [];
 class FeaturedCard extends StatefulWidget {
   const FeaturedCard(this.id , this.text);
   final id ;
