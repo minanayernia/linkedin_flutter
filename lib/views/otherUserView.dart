@@ -30,7 +30,9 @@ class OtherUserView extends StatefulWidget {
 
 class _OtherUserViewState extends State<OtherUserView> {
 
-
+  void refresh() {
+      setState(() {});
+    }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +42,7 @@ class _OtherUserViewState extends State<OtherUserView> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // TextButton(onPressed: () => Navigator.of(context).pop(true), child: Text("back")),
-            NavigationBar(widget.db,widget.user , widget.myuser),
+            NavigationBar(widget.db,widget.user , widget.myuser , refresh),
 
             
             Container(

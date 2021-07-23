@@ -90,6 +90,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     var a = widget.user;
     print('this is userid in myhome: $a');
+    void refresh() {
+      initState();
+    }
   
     return Scaffold(
       backgroundColor: Colors.white,
@@ -98,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       crossAxisAlignment: CrossAxisAlignment.center,
     children: [
-      NavigationBar(widget.db,widget.user , widget.user),
+      NavigationBar(widget.db , widget.user , widget.user, refresh),
           
           Intro( db : widget.db , user :widget.user),
           EditIntrCard( db : widget.db , user :widget.user),

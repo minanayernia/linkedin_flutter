@@ -12,10 +12,11 @@ TextEditingController searchUserController = TextEditingController();
 
   // var items = ['Working a lot harder', 'Being a lot smarter', 'Being a self-starter', 'Placed in charge of trading charter'];
 class NavigationBar extends StatefulWidget {
-  const NavigationBar(this.db, this.user , this.myuser) ;
+  const NavigationBar(this.db, this.user , this.myuser ,this.notifyParent) ;
   final AppDatabase db ;
   final user ;
   final myuser ;
+  final Function() notifyParent;
   @override
   _NavigationBarState createState() => _NavigationBarState();
 }
@@ -121,14 +122,18 @@ class _NavigationBarState extends State<NavigationBar> {
               // ),
               // ),
 
-                TextButton(onPressed: (){},
-                 child:Text("Home")),
-                 TextButton(onPressed: (){},
-                 child:Text("Notification")),
-                 TextButton(onPressed: (){},
-                 child:Text("Message")),
-                 TextButton(onPressed: (){},
-                 child:Text("My Network")),
+                // TextButton(onPressed: (){},
+                //  child:Text("Home")),
+                //  TextButton(onPressed: (){},
+                //  child:Text("Notification")),
+                //  TextButton(onPressed: (){},
+                //  child:Text("Message")),
+                //  TextButton(onPressed: (){},
+                //  child:Text("My Network")),
+                TextButton(onPressed: (){
+                  return widget.notifyParent();
+                },
+                 child:Text("refresh")),
 
                  TextButton(onPressed: ()=>Navigator.push(context,MaterialPageRoute(builder: (context) =>  SignUpLogIn(this.widget.db )),),
                  child:Text("LogOut")),

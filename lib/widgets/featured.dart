@@ -20,7 +20,9 @@ class FeaturedList extends StatefulWidget {
 
 class _FeaturedListState extends State<FeaturedList> {
 
-  
+ void refresh() {
+    setState(() {});
+  }
 
 addSkillCard(var id , var text){
   
@@ -30,7 +32,7 @@ addSkillCard(var id , var text){
   }
 }
 addPostFeaturedCard(var caption , var id , int postId ){
-  featuredPost.add(new PostCard(caption, id, postId, widget.db));
+  featuredPost.add(new PostCard(caption, widget.user, postId, widget.db));
   setState((){});
 }
 var feature ;
@@ -319,6 +321,7 @@ class NewFeature extends StatefulWidget {
   const NewFeature(this.db , this.user);
   final AppDatabase db ;
   final int? user  ;
+  
 
   @override
   _NewFeatureState createState() => _NewFeatureState();
