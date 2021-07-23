@@ -58,7 +58,7 @@ class _OtherUserViewState extends State<OtherUserView> {
             OtherAdditionalInfo(widget.db , widget.user) ,
             OtherAccomplish(widget.db , widget.user),
             OtherSkill(widget.db , widget.user , widget.myuser) ,
-            OtherFeature(widget.db , widget.user),
+            OtherFeature(widget.db , widget.user , widget.myuser),
             OtherLanguage(),
             OtherPost(widget.db,widget.user,widget.myuser) ,
             // AddPost(widget.db , widget.user),
