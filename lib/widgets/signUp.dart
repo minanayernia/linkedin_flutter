@@ -255,7 +255,7 @@ class _SignUpState extends State<SignUp> {
     signupPassController.text = "";
     Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>  MyHomePage(this.widget.db , out)),);
+            MaterialPageRoute(builder: (context) =>  MyHomePage(widget.db , out)),);
 
     }
     

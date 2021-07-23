@@ -75,6 +75,7 @@ class _NavigationBarState extends State<NavigationBar> {
 
   @override
   Widget build(BuildContext context) {
+    print("rebuilding navigation bar");
     return Container(
       height: 50,
       color: Colors.redAccent,

@@ -375,6 +375,13 @@ void getbirthday()async{
     }));
 
   }
+
+  // @override
+  // void setState(VoidCallback fn) {
+  //   username = giveme();
+  //   getbirthday();
+  //   super.setState(fn);
+  // }
   
 
   @override
@@ -388,6 +395,8 @@ void getbirthday()async{
 
   @override
   Widget build(BuildContext context) {
+    makemy();
+    print("rebuilding intro");
     return Align(
       alignment: Alignment.center,
       child: Container(

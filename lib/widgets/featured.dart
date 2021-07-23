@@ -67,7 +67,7 @@ void getFeatures()async{
                var postid = f?.postId ;
                 widget.db.postDao.findPostByPostId(postid!).then((po) => setState((){
                   var cap = po?.PostCaption ;
-                addPostFeaturedCard(cap,f?.featuredId, postid);
+                addPostFeaturedCard(cap,widget.user, postid);
                 }));
                }
                 

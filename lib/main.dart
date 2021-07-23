@@ -66,7 +66,7 @@ class MyHomePage extends StatefulWidget {
   final int? user ;
   final AppDatabase db ;
 
-  MyHomePage(this.db , this.user);
+  MyHomePage(this.db ,this.user  );
 
   // final String title;
 
@@ -86,8 +86,18 @@ class _MyHomePageState extends State<MyHomePage> {
     //   print(widget.user);
     // }
   }
+   void rebuildAllChildren(BuildContext context) {
+      void rebuild(Element el) {
+        el.markNeedsBuild();
+        el.visitChildren(rebuild);
+      }
+      (context as Element).visitChildren(rebuild);
+    }
+    int test = 0 ;
   @override
   Widget build(BuildContext context) {
+
+    print("rebuilding home");
     var a = widget.user;
     print('this is userid in myhome: $a');
     void refresh() {
@@ -97,16 +107,25 @@ class _MyHomePageState extends State<MyHomePage> {
   });
 }
     }
+
+   
   
     return Scaffold(
+      // appBar: AppBar(actions: [TextButton(onPressed: () => setState((){rebuildAllChildren(context);}) , child: Text("rebuild" , style: TextStyle(color: Colors.red),))],),
       backgroundColor: Colors.white,
   body: SingleChildScrollView(
     child: Column(
 
       crossAxisAlignment: CrossAxisAlignment.center,
     children: [
-      NavigationBar(widget.db , widget.user , widget.user, refresh),
-          
+          // RaisedButton(
+          //   key: UniqueKey(),
+          //     child: Text('Click me'),
+          //     onPressed: () {
+          //       setState(() {});
+          //     },
+          //   ),
+          NavigationBar(widget.db , widget.user , widget.user, refresh),
           Intro( db : widget.db , user :widget.user ,notifyParent: refresh,),
           EditIntrCard( db : widget.db , user :widget.user),
           AdditionalInfoList(widget.db , widget.user),
