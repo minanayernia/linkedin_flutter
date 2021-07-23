@@ -31,6 +31,7 @@ addSkillCard(var id , var text){
 }
 addPostFeaturedCard(var caption , var id , int postId ){
   featuredPost.add(new PostCard(caption, id, postId, widget.db));
+  setState((){});
 }
 var feature ;
 void getFeatures()async{
@@ -45,35 +46,26 @@ void getFeatures()async{
           // print("this profileid in test card $profileId");
           // skill = Skill(SkillText: "android" ,profileId: profileId);
           // widget.db.skillDao.insertSkill(skill);q
+          
+          print(val);
 
           widget.db.featuredDao.allAdditionalInfo(profileId).then((value) => setState((){
              if (value != null){
-              for (int i = 0 ; i < value.length ; i++){
-                if (value[i] != null){
-                  if(value[i]?.postId ==null){
-                    print(value[i]?.featuredText);
-                    print("this is the skillid :");
-                    print(value[i]?.featuredId);
-                    addSkillCard(value[i]?.featuredId , value[i]?.featuredText );
-                    var li = list[i].text;
-                    print("$i , $li");
-                  }
-                  if(value[i]?.postId !=null){
-                    var postid =value[i]?.postId;
-                    widget.db.postDao.findPostByPostId(postid!).then((v) => setState((){
-                      addPostFeaturedCard(v?.PostCaption, widget.user, postid);
-                      print("post feature added successfully");
-                    }));
-                    // addPostFeaturedCard(value)
-
-                  }
-                  
-                }
+               print("all of features!!!!!!!!!!!!!!!");print(value);
+              for ( var f in value){
+               if(f?.postId ==null){//textfeature
+                addSkillCard(f?.featuredId, f?.featuredText);
+               }else if(f?.postId != null){//postfeature
+               var postid = f?.postId ;
+                widget.db.postDao.findPostByPostId(postid!).then((po) => setState((){
+                  var cap = po?.PostCaption ;
+                addPostFeaturedCard(cap,f?.featuredId, postid);
+                }));
+               }
                 
               }
              }
           }));
-          print(feature);
           }
       }));
     }

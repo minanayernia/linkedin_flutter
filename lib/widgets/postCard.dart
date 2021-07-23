@@ -2047,6 +2047,8 @@ class LikeCommentPost extends StatefulWidget {
 
 class _LikeCommentPostState extends State<LikeCommentPost> {
   List<OtherPostCard> likeCommentPost = [];
+  List<String> networkCommentedLike = [];
+
   void addPostCard(String text, var postId, var userId) {
     likeCommentPost
         .add(new OtherPostCard(text, userId, postId, widget.db, widget.user));
@@ -2063,8 +2065,13 @@ class _LikeCommentPostState extends State<LikeCommentPost> {
               for (int i = 0; i < value.length; i++) {
                 print("inside for of list posts");
                 // userPosts[i] = value[i];
-                addPostCard(
-                    value[i].PostCaption, value[i].PostId, value[i].userId);
+                // var x = value[i]?.
+                addPostCard(value[i].PostCaption, value[i].PostId, value[i].userId);
+                widget.db.userDao.findUserNameByUserId(a).then((u) => setState((){
+                  var name = u?.userName ;
+                  networkCommentedLike.add(name!);
+                }));
+                
                 print("post is added in likecomment post");
                 print("post id");
                 print(value[i].PostId);
@@ -2074,26 +2081,27 @@ class _LikeCommentPostState extends State<LikeCommentPost> {
                 print(value[i].userId);
               }
             }
-            widget.db.postDao
-                .postCommentedByNetwork(b)
-                .then((val) => setState(() {
-                      if (val != null) {
-                        print("the list of posts is not empty");
-                        for (int i = 0; i < val.length; i++) {
-                          print("inside for of list posts");
-                          // userPosts[i] = value[i];
-                          addPostCard(
-                              val[i].PostCaption, val[i].PostId, val[i].userId);
-                          print("post is added in likecomment post");
-                          print("post id");
-                          print(val[i].PostId);
-                          print("post caption");
-                          print(val[i].PostCaption);
-                          print("userid of post");
-                          print(val[i].userId);
-                        }
-                      }
-                    }));
+            widget.db.postDao.postCommentedByNetwork(b).then((val) => setState(() {
+              if (val != null) {
+                print("the list of posts is not empty");
+                for (int i = 0; i < val.length; i++) {
+                  print("inside for of list posts");
+                  // userPosts[i] = value[i];
+                  addPostCard(val[i].PostCaption, val[i].PostId, val[i].userId);
+                  widget.db.userDao.findUserNameByUserId(b).then((u) => setState((){
+                  var name = u?.userName ;
+                  networkCommentedLike.add(name!);
+                }));
+                  print("post is added in likecomment post");
+                  print("post id");
+                  print(val[i].PostId);
+                  print("post caption");
+                  print(val[i].PostCaption);
+                  print("userid of post");
+                  print(val[i].userId);
+                }
+              }
+            }));
           }));
     }
   }
@@ -2143,6 +2151,7 @@ class _LikeCommentPostState extends State<LikeCommentPost> {
                             "Commented by :",
                             style: TextStyle(color: Colors.white),
                           ),
+                          // Text(networkCommentedLike[index]),
                           OtherPostCard(
                               likeCommentPost[index].caption,
                               likeCommentPost[index].id,
