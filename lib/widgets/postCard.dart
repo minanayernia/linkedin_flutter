@@ -718,7 +718,7 @@ class _PostListState extends State<PostList> {
   Widget build(BuildContext context) {
     return Container(
         margin: EdgeInsets.only(top: 20),
-        height: MediaQuery.of(context).size.height * 1,
+        height: MediaQuery.of(context).size.height * 1.1,
         width: MediaQuery.of(context).size.width * 0.9,
         color: Colors.black87,
         child: Column(
@@ -937,7 +937,7 @@ class _NewPostCardState extends State<NewPostCard> {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 20),
-      height: MediaQuery.of(context).size.height * 0.8,
+      height: MediaQuery.of(context).size.height * 0.7,
       width: MediaQuery.of(context).size.width * 0.9,
       color: Colors.redAccent,
       child: Column(

@@ -195,35 +195,35 @@ class _EditIntrCardState extends State<EditIntrCard> {
           color: Colors.redAccent,
           child: Column(
             children: [
-              Container(
-                margin: EdgeInsets.only(left: 10),
-                alignment: Alignment.centerLeft,
-                child: Text("BirthDate" , style: TextStyle(color: Colors.white),),),
-              TextField(
-            controller: birthDateController,
-            style: TextStyle(color: Colors.white),
-          decoration: InputDecoration(
-            fillColor: Colors.white,
-          border: OutlineInputBorder(),
-          hintText: "Enter Date",
-          suffixIcon: IconButton(
-            onPressed: (){},
-         // onPressed: () => _controller.clear(),
-          icon: Icon(Icons.calendar_today),
-    ),
-          hintStyle: TextStyle(color: Colors.white)
-  ),
-          //readOnly: true,
-          /*onTap: () async{
-            DateTime pickedDate = await showDatePicker(
-                      context: context, initialDate: DateTime.now(),
-                      firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
-                      lastDate: DateTime(2101)
-                  );
+              // Container(
+              //   margin: EdgeInsets.only(left: 10),
+              //   alignment: Alignment.centerLeft,
+              //   child: Text("BirthDate" , style: TextStyle(color: Colors.white),),),
+  //             TextField(
+  //           controller: birthDateController,
+  //           style: TextStyle(color: Colors.white),
+  //         decoration: InputDecoration(
+  //           fillColor: Colors.white,
+  //         border: OutlineInputBorder(),
+  //         hintText: "Enter Date",
+  //         suffixIcon: IconButton(
+  //           onPressed: (){},
+  //        // onPressed: () => _controller.clear(),
+  //         icon: Icon(Icons.calendar_today),
+  //   ),
+  //         hintStyle: TextStyle(color: Colors.white)
+  // ),
+  //         //readOnly: true,
+  //         /*onTap: () async{
+  //           DateTime pickedDate = await showDatePicker(
+  //                     context: context, initialDate: DateTime.now(),
+  //                     firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
+  //                     lastDate: DateTime(2101)
+  //                 );
 
-          },*/
+  //         },*/
           
-        ) ,
+  //       ) ,
             ],
           )
         ),
