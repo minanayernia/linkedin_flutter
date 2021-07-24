@@ -33,7 +33,10 @@ class Endorse  {
   int skillId;
 
 
-  Endorse( this.userId , this.skillId);
+  Endorse( {
+    this.endorseId,
+    required this.userId , 
+    required this.skillId});
 }
 
 @dao 
@@ -44,6 +47,9 @@ abstract class EndorseDao {
 
   @Query('SELECT * FROM Endorse WHERE skillId = :skillid AND userId = :userid')
   Future<Endorse?> findEndoseByUserAndSkill(int skillid , int userid);
+
+  @Query('DELETE From Endorse WHERE endorseId = :endorseId')
+  Future<void> deleteEndorse(int endorseId);
 
   @insert
   Future<void> insertEndorse(Endorse endorse);

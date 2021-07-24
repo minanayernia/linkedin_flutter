@@ -395,7 +395,7 @@ void getbirthday()async{
 
   @override
   Widget build(BuildContext context) {
-    makemy();
+    // makemy();
     print("rebuilding intro");
     return Align(
       alignment: Alignment.center,
@@ -411,7 +411,7 @@ void getbirthday()async{
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextButton(onPressed: () => widget.notifyParent(), child: Text("refresh")),
+          // TextButton(onPressed: () => widget.notifyParent(), child: Text("refresh")),
         
         Container(
 

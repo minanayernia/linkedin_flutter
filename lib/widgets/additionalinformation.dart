@@ -66,15 +66,22 @@ class _CurrentJobState extends State<CurrentJob> {
   }
 }
 class AboutCard extends StatefulWidget {
-const AboutCard(this.job , this.company , this.id);
+const AboutCard(this.job , this.company , this.id , this.db);
   final id ;
   final company ;
   final job ;
+  final AppDatabase db ;
   @override
   _AboutCardState createState() => _AboutCardState();
 }
 
 class _AboutCardState extends State<AboutCard> {
+
+  void deleteJob()async{
+    await widget.db.additionalInfoDao.deleteJobByjobid(int.parse(widget.id));
+    print("job deleted successfully");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -108,7 +115,9 @@ class _AboutCardState extends State<AboutCard> {
         Container(
           // margin: EdgeInsets.only(bottom: 20),
           alignment: Alignment.bottomRight,
-          child: TextButton(onPressed: (){}, child: Text("Edit")),),
+          child: TextButton(onPressed: (){
+            return deleteJob();
+          }, child: Text("delete")),),
         
 
       ],)
@@ -227,7 +236,7 @@ class _AdditionalInfoListState extends State<AdditionalInfoList> {
 addInfoCard(var job , var company , var id){
   
   if(company != "" && job != ""){
-  list.add(new AboutCard(job , company , id));
+  list.add(new AboutCard(job , company , id , widget.db));
   setState((){});
   }
 }
@@ -236,7 +245,7 @@ addInfoCard(var job , var company , var id){
     var a = widget.user;
     var profileId ;
    
-
+    list.clear();
     if (a != null){
       widget.db.userProfileDao.findProfileByUserId(a).then((val) => setState((){
         if (val != null) {
@@ -274,6 +283,7 @@ addInfoCard(var job , var company , var id){
 
   @override
   Widget build(BuildContext context) {
+    // getAdditionalInfo();
     return Container(
       margin: EdgeInsets.only(top: 20),
 
@@ -304,7 +314,7 @@ addInfoCard(var job , var company , var id){
        ListView.builder(
         itemCount: list.length,
         itemBuilder: (_,index) { 
-          return AboutCard(list[index].job, list[index].company , list[index].id.toString());
+          return AboutCard(list[index].job, list[index].company , list[index].id.toString() , widget.db);
           }))
 
       ], 
@@ -463,7 +473,7 @@ class _NewInfoState extends State<NewInfo> {
 
     void addInfoCard(var job , var company , var id){
     if(company != "" && job != ""){
-    list.add(new AboutCard(job , company , id));
+    list.add(new AboutCard(job , company , id , widget.db));
     setState((){});
     }
   }

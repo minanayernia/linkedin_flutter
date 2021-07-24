@@ -17,15 +17,22 @@ import 'package:dbproject/models/Accomplishment.dart';
 // }
 
 class AccomplishCard extends StatefulWidget {
-  const AccomplishCard(this.id , this.text);
+  const AccomplishCard(this.id , this.text , this.db);
   final id ;
   final text ;
+  final AppDatabase db ;
 
   @override
   _AccomplishCardState createState() => _AccomplishCardState();
 }
 
 class _AccomplishCardState extends State<AccomplishCard> {
+
+  void deleteAccomplishment()async{
+    widget.db.accomplishmentDao.deleteAccomplishmentById(int.parse(widget.id));
+    print("accomplishment deleted seccessfully");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -46,7 +53,9 @@ class _AccomplishCardState extends State<AccomplishCard> {
 
 
         ],),
-        TextButton(onPressed: (){}, child: Text("Edit")),
+        TextButton(onPressed: (){
+          return deleteAccomplishment();
+        }, child: Text("delete")),
 
       ],)
       )
@@ -106,7 +115,7 @@ class _AddAccomplishState extends State<AddAccomplish> {
 void addSkillCard(var id , var text){
   
   if(text != "" && checkCopy == false){
-  list.add(new AccomplishCard(id , text));
+  list.add(new AccomplishCard(id , text , widget.db));
   setState((){});
   }
 }
@@ -188,7 +197,7 @@ void addSkillCard(var id , var text){
        ListView.builder(
         itemCount: list.length,
         itemBuilder: (_,index) { 
-          return AccomplishCard(list[index].id.toString(), list[index].text);
+          return AccomplishCard(list[index].id.toString(), list[index].text , widget.db);
           ;}))
       
 
@@ -318,7 +327,7 @@ class _NewAccomplishState extends State<NewAccomplish> {
     
     void addSkillCard(var id , var text){
     if(text != ""){
-    list.add(new AccomplishCard(id , text));
+    list.add(new AccomplishCard(id , text , widget.db));
     setState((){});
     }
   }

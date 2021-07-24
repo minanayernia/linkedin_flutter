@@ -57,6 +57,10 @@ abstract class AdditionalInfoDao {
 
   @Query('SELECT * FROM AdditionalInfo WHERE profileId = :profid')
   Future<List<AdditionalInfo>> findJobById(int profid);
+
+  @Query('DELETE FROM AdditionalInfo WHERE jobId = :jobId')
+  Future<void> deleteJobByjobid(int jobId);
+  
   @insert 
   Future<void> insertAditionalInfo(AdditionalInfo additionalInfo);
 }

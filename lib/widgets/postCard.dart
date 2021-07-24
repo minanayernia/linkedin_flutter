@@ -46,6 +46,9 @@ class _PostCardState extends State<PostCard> {
 
     
   }
+  void deleteFeaturedPost()async{
+    
+  }
 
   String username = '';
   
