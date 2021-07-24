@@ -538,16 +538,41 @@ class _OtherSkillCardState extends State<OtherSkillCard> {
     
     
   }
+  List<String?> endorseName =[];
+  void getindorse()async{
+  print("get indorse ");
+  print(widget.id);
+      widget.db.endorseDao.findAllEndorse(int.parse(widget.id)).then((value) => setState((){
+        if(value!=null){
+          for(int i = 0 ; i< value.length ; i++){
+            print("finding each endorsement");
+            var us = value[i]?.userId;
+            widget.db.userDao.findUserNameByUserId(us!).then((val) => setState((){
+              var name = val?.userName ;
+              endorseName.add(name);
+              print("endorsement added to list");
+            }));
+
+          }
+        }
+      }));
+    }
+    @override
+    void initState() {
+    getindorse();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 10 , bottom: 5),
-      height: 50,
+      height: 70,
       width: MediaQuery.of(context).size.width*0.88,
       color: Colors.redAccent,
       child: Container(margin: EdgeInsets.only(left: 5),
-      child: Row(
+      child:Column(children: [
+            Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
         Row(children: [
@@ -566,6 +591,27 @@ class _OtherSkillCardState extends State<OtherSkillCard> {
         ],)
 
       ],),
+
+
+        Text("ENDORSED BY :" , style: TextStyle(color: Colors.white),),
+          Container(
+            height: 20,
+            width: MediaQuery.of(context).size.width*0.86,
+            child:
+       ListView.builder(
+         scrollDirection: Axis.horizontal,
+        itemCount: endorseName.length,
+        itemBuilder: (_,index) { 
+          return Container(
+            child: Container(
+              // alignment: Alignment.center,
+              color: Colors.white,
+              child:Text(endorseName[index].toString() + "  " , style: TextStyle(color: Colors.redAccent),) ,)
+            
+            );
+          ;})
+      )],)
+      
       )
       
     );
