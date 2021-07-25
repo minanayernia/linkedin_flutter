@@ -655,6 +655,7 @@ class _NewMessageState extends State<NewMessage> {
     //   items[i] = items[i].toString();
     List<pm> searchMsg =[];
     void searchMessage(String txt){
+      searchMsg.clear();
     var searchtext = "%" + txt + "%";
     widget.db.messageeDao.searchMessage(widget.myid, searchtext).then((value) => setState((){
       print("we are in searching message");
