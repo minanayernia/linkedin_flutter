@@ -278,7 +278,7 @@ class _NotifListState extends State<NotifList> {
     @override
     void initState(){
     list.clear();
-    getbirthday();
+    // getbirthday();
     getAllNotif();
     print(" of notif in allnotif :$list");
     super.initState();

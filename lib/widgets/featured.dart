@@ -1417,15 +1417,18 @@ class _OtherFeaturePostState extends State<OtherFeaturePost> {
 
   String username = '';
   void getUserName() async {
-    widget.db.userDao
-        .findUserNameByUserId(widget.id)
-        .then((value) => setState(() {
-              print("entered the query");
-              if (value != null) {
-                username = value.userName;
-                print("the username is : $username");
-              }
-            }));
+    widget.db.postDao.findPostByPostId(widget.postId).then((val) => setState((){
+      var userid = val?.userId ;
+      widget.db.userDao.findUserNameByUserId(userid!).then((value) => setState(() {
+        print("entered the query");
+        if (value != null) {
+        username = value.userName;
+        print("the username is : $username");
+    }
+  }));
+    }));
+
+  
   }
 
   String sharedname = '';
