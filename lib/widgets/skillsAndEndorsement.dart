@@ -40,6 +40,9 @@ class SkillCard extends StatefulWidget {
 
 
 class _SkillCardState extends State<SkillCard> {
+
+  
+
 List<String?> endorseName =[];
 void getindorse()async{
   print("get indorse ");
@@ -59,6 +62,18 @@ void getindorse()async{
         }
       }));
     }
+  void deleteSkill()async{
+    widget.db.endorseDao.findAllEndorse(int.parse(widget.id)).then((value) => setState((){
+      for (var end in value){
+        var endId = end?.endorseId ;
+        print("we find the endorse :$endId");
+        widget.db.endorseDao.deleteEndorse(endId!);
+        print("endorse deleted successfully");
+      }
+      widget.db.skillDao.deleteSkillById(int.parse(widget.id));
+      print("skill deleted successfully");
+    }));
+  }
     
   @override
   void initState() {
@@ -84,7 +99,8 @@ void getindorse()async{
               Text(widget.id , style: TextStyle(color: Colors.white),) ,
               Container(
                 padding: EdgeInsets.only(left: 5),
-                child: Text(widget.text , style: TextStyle(color: Colors.white),),)
+                child: Text(widget.text , style: TextStyle(color: Colors.white),),),
+            TextButton(onPressed: () => deleteSkill(), child: Text("DELETE"))
               
 
 
@@ -503,7 +519,7 @@ class _OtherSkillCardState extends State<OtherSkillCard> {
       widget.db.endorseDao.findEndoseByUserAndSkill(int.parse(widget.id), widget.myid).then((value) => setState((){
         if(value == null){
           print("addendorsementToDatabase if");
-      var endorse = Endorse(widget.myid, int.parse(widget.id));
+      var endorse = Endorse(userId :widget.myid,skillId: int.parse(widget.id));
       print("endorse : $endorse");
       widget.db.endorseDao.insertEndorse(endorse);
       print("endorse inserted successfuly!");
@@ -522,16 +538,41 @@ class _OtherSkillCardState extends State<OtherSkillCard> {
     
     
   }
+  List<String?> endorseName =[];
+  void getindorse()async{
+  print("get indorse ");
+  print(widget.id);
+      widget.db.endorseDao.findAllEndorse(int.parse(widget.id)).then((value) => setState((){
+        if(value!=null){
+          for(int i = 0 ; i< value.length ; i++){
+            print("finding each endorsement");
+            var us = value[i]?.userId;
+            widget.db.userDao.findUserNameByUserId(us!).then((val) => setState((){
+              var name = val?.userName ;
+              endorseName.add(name);
+              print("endorsement added to list");
+            }));
+
+          }
+        }
+      }));
+    }
+    @override
+    void initState() {
+    getindorse();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(top: 10 , bottom: 5),
-      height: 50,
+      height: 70,
       width: MediaQuery.of(context).size.width*0.88,
       color: Colors.redAccent,
       child: Container(margin: EdgeInsets.only(left: 5),
-      child: Row(
+      child:Column(children: [
+            Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
         Row(children: [
@@ -550,6 +591,27 @@ class _OtherSkillCardState extends State<OtherSkillCard> {
         ],)
 
       ],),
+
+
+        Text("ENDORSED BY :" , style: TextStyle(color: Colors.white),),
+          Container(
+            height: 20,
+            width: MediaQuery.of(context).size.width*0.86,
+            child:
+       ListView.builder(
+         scrollDirection: Axis.horizontal,
+        itemCount: endorseName.length,
+        itemBuilder: (_,index) { 
+          return Container(
+            child: Container(
+              // alignment: Alignment.center,
+              color: Colors.white,
+              child:Text(endorseName[index].toString() + "  " , style: TextStyle(color: Colors.redAccent),) ,)
+            
+            );
+          ;})
+      )],)
+      
       )
       
     );

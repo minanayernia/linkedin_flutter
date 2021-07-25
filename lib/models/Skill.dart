@@ -39,6 +39,9 @@ abstract class SkillDao {
   @Query('DELETE FROM Skill')
   Future<void> deleteSkills();
 
+  @Query('DELETE FROM Skill WHERE skillId = :skillId')
+  Future<void> deleteSkillById(int skillId);
+
   @Query('SELECT * FROM Skill WHERE skillText = :skillText and profileId = :profid')
   Future<Skill?> findSkillByName(String skillText , int profid);
 

@@ -131,10 +131,10 @@ class _NavigationBarState extends State<NavigationBar> {
                 //  child:Text("Message")),
                 //  TextButton(onPressed: (){},
                 //  child:Text("My Network")),
-                TextButton(onPressed: (){
-                  return widget.notifyParent();
-                },
-                 child:Text("refresh")),
+                // TextButton(onPressed: (){
+                //   return widget.notifyParent();
+                // },
+                //  child:Text("refresh")),
 
                  TextButton(onPressed: ()=>Navigator.push(context,MaterialPageRoute(builder: (context) =>  SignUpLogIn(this.widget.db )),),
                  child:Text("LogOut")),

@@ -1,3 +1,5 @@
+import 'package:dbproject/models/Network.dart';
+import 'package:dbproject/models/Notification.dart';
 import 'package:dbproject/views/homeView.dart';
 import 'package:dbproject/views/otherUserView.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,45 @@ class LogIn extends StatefulWidget {
 
 class _LogInState extends State<LogIn> {
   bool userExist = false ;
+
+  List<int> parseNetwork(List<Network?> network, userId) { 
+  List<int> myNet = [];
+
+  for (var i in network){
+    if (i?.userId == userId){
+      var k = i?.userReqId;
+        myNet.add(k!);
+    } else {
+      var j = i?.userId ;
+      myNet.add(j!);
+    }
+  }
+
+  return myNet;
+}
+
+  void getbirthday(int user)async{
+
+  widget.db.netwokDao.allNetwork(user).then((value) => setState((){
+    var mycons = parseNetwork(value, user);
+    for(var i in mycons){
+      widget.db.userDao.findUserNameByUserId(i).then((val) => setState((){
+        var bir = val?.birthday ;
+        DateTime today = DateTime.now();
+        if(today.day == bir?.day){
+          print("day is checked");
+          if(today.month == bir?.month){
+            print("month is checked");
+            var notif = Notificationn(notificationType: 1, receiver: user, sender: val?.userId);
+            widget.db.notificationnDao.insertNotif(notif);
+            print("birth day notif send!");
+
+          }
+        }
+      }));
+    }
+  }));
+}
 
 
   @override
@@ -42,6 +83,7 @@ class _LogInState extends State<LogIn> {
         loginUserController.text = "";
         loginPassController.text = "";
         final out = findUser.userId;
+        // getbirthday(out!);
         Navigator.push(
             context,
             MaterialPageRoute(builder: (context) =>  MyHomePage(this.widget.db , out)),);

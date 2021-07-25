@@ -58,6 +58,12 @@ abstract class FeaturedDao {
   @Query('UPDATE Featured SET featuredText = :featuredText WHERE featuredId = :featuredId')
   Future<Featured?> editFeatured(String featuredText , int featuredId);
 
+  @Query('DELETE FROM Featured WHERE featuredId = :featuredId')
+  Future<void> deleteFeatureById(int featuredId);
+
+  @Query('DELETE FROM Featured WHERE postId = :postId')
+  Future<void> deletePostFeature(int postId);
+
   @insert 
   Future<void> insertFeatured(Featured featured);
   

@@ -524,6 +524,12 @@ class _$SkillDao extends SkillDao {
   }
 
   @override
+  Future<void> deleteSkillById(int skillId) async {
+    await _queryAdapter.queryNoReturn('DELETE FROM Skill WHERE skillId = ?1',
+        arguments: [skillId]);
+  }
+
+  @override
   Future<Skill?> findSkillByName(String skillText, int profid) async {
     return _queryAdapter.query(
         'SELECT * FROM Skill WHERE skillText = ?1 and profileId = ?2',
@@ -630,6 +636,13 @@ class _$AccomplishmentDao extends AccomplishmentDao {
   }
 
   @override
+  Future<void> deleteAccomplishmentById(int AcomplishmentId) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE FROM Accomplishment WHERE AcomplishmentId = ?1',
+        arguments: [AcomplishmentId]);
+  }
+
+  @override
   Future<void> insertAccomplishment(Accomplishment accomplishment) async {
     await _accomplishmentInsertionAdapter.insert(
         accomplishment, OnConflictStrategy.abort);
@@ -714,6 +727,19 @@ class _$FeaturedDao extends FeaturedDao {
             featuredText: row['featuredText'] as String?,
             profileId: row['profileId'] as int?),
         arguments: [featuredText, featuredId]);
+  }
+
+  @override
+  Future<void> deleteFeatureById(int featuredId) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE FROM Featured WHERE featuredId = ?1',
+        arguments: [featuredId]);
+  }
+
+  @override
+  Future<void> deletePostFeature(int postId) async {
+    await _queryAdapter.queryNoReturn('DELETE FROM Featured WHERE postId = ?1',
+        arguments: [postId]);
   }
 
   @override
@@ -1182,6 +1208,13 @@ class _$AdditionalInfoDao extends AdditionalInfoDao {
   }
 
   @override
+  Future<void> deleteJobByjobid(int jobId) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE FROM AdditionalInfo WHERE jobId = ?1',
+        arguments: [jobId]);
+  }
+
+  @override
   Future<void> insertAditionalInfo(AdditionalInfo additionalInfo) async {
     await _additionalInfoInsertionAdapter.insert(
         additionalInfo, OnConflictStrategy.abort);
@@ -1211,8 +1244,10 @@ class _$EndorseDao extends EndorseDao {
   @override
   Future<List<Endorse?>> findAllEndorse(int skillid) async {
     return _queryAdapter.queryList('SELECT * FROM Endorse WHERE skillId = ?1',
-        mapper: (Map<String, Object?> row) =>
-            Endorse(row['userId'] as int, row['skillId'] as int),
+        mapper: (Map<String, Object?> row) => Endorse(
+            endorseId: row['endorseId'] as int?,
+            userId: row['userId'] as int,
+            skillId: row['skillId'] as int),
         arguments: [skillid]);
   }
 
@@ -1220,9 +1255,18 @@ class _$EndorseDao extends EndorseDao {
   Future<Endorse?> findEndoseByUserAndSkill(int skillid, int userid) async {
     return _queryAdapter.query(
         'SELECT * FROM Endorse WHERE skillId = ?1 AND userId = ?2',
-        mapper: (Map<String, Object?> row) =>
-            Endorse(row['userId'] as int, row['skillId'] as int),
+        mapper: (Map<String, Object?> row) => Endorse(
+            endorseId: row['endorseId'] as int?,
+            userId: row['userId'] as int,
+            skillId: row['skillId'] as int),
         arguments: [skillid, userid]);
+  }
+
+  @override
+  Future<void> deleteEndorse(int endorseId) async {
+    await _queryAdapter.queryNoReturn(
+        'DELETE From Endorse WHERE endorseId = ?1',
+        arguments: [endorseId]);
   }
 
   @override

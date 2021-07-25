@@ -33,7 +33,7 @@ class _FeaturedListState extends State<FeaturedList> {
 addSkillCard(var id , var text){
   
     if(text != "" && checkCopy == false){
-  list.add(new FeaturedCard(id , text));
+  list.add(new FeaturedCard(id , text , widget.db));
   setState((){});
   }
 }
@@ -126,7 +126,7 @@ void getFeatures()async{
        ListView.builder(
         itemCount: list.length,
         itemBuilder: (_,index) { 
-          return FeaturedCard(list[index].id.toString(), list[index].text);
+          return FeaturedCard(list[index].id.toString(), list[index].text , widget.db);
           })),
     
        
@@ -481,6 +481,11 @@ class _FeaturePostState extends State<FeaturePost> {
             }));
   }
 
+  void deletePostFeature(){
+    widget.db.featuredDao.deletePostFeature(widget.postId);
+    print("post feature deleted");
+  }
+
   @override
   void initState() {
     print("we are in init");
@@ -526,8 +531,8 @@ class _FeaturePostState extends State<FeaturePost> {
                   child:Text("Post shared from :  " + sharedname , style: TextStyle(color: Colors.white),),
                   ),
                 TextButton(onPressed: () {
-                  addtofeatured();
-                }, child: Text("Add to featured"))
+                  deletePostFeature();
+                }, child: Text("delete from featured"))
               ],
             ),
           ),
@@ -775,15 +780,22 @@ class _FeaturePostState extends State<FeaturePost> {
 List<FeaturedCard> list = [];
 List<FeaturePost> featuredPost = [];
 class FeaturedCard extends StatefulWidget {
-  const FeaturedCard(this.id , this.text);
+  const FeaturedCard(this.id , this.text , this.db);
   final id ;
   final text ;
+  final AppDatabase db ;
 
   @override
   _FeaturedCardState createState() => _FeaturedCardState();
 }
 
 class _FeaturedCardState extends State<FeaturedCard> {
+
+  void deleteFeatured(){
+    widget.db.featuredDao.deleteFeatureById(int.parse(widget.id));
+    print("feature deleted successfully");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -804,7 +816,9 @@ class _FeaturedCardState extends State<FeaturedCard> {
 
 
         ],),
-        TextButton(onPressed: (){}, child: Text("Edit")),
+        TextButton(onPressed: (){
+          return deleteFeatured();
+        }, child: Text("delete")),
 
       ],)
       )
@@ -959,7 +973,7 @@ class _NewFeatureState extends State<NewFeature> {
 
     void addFeatureCard(var id , var text){
     if(text != ""&& checkCopy == false){
-    list.add(new FeaturedCard(id , text));
+    list.add(new FeaturedCard(id , text , widget.db));
     setState((){});
     }
   }
