@@ -395,7 +395,7 @@ void getbirthday()async{
 
   @override
   Widget build(BuildContext context) {
-    makemy();
+    // makemy();
     print("rebuilding intro");
     return Align(
       alignment: Alignment.center,

@@ -22,13 +22,16 @@ class Language  {
   int? LanguageId ;
 
   @ColumnInfo(name: 'profileId')
-  int? profileId ;
+  int profileId ;
 
-  String languageType;
+  String? languageType;
   String LanguageName  ;
-  final int ProfileId ;
 
-  Language(this.languageType ,this.LanguageId , this.LanguageName , this.ProfileId );
+
+  Language({this.languageType ,
+  this.LanguageId , 
+   required this.LanguageName , 
+  required this.profileId });
 }
 
 @dao 
@@ -37,8 +40,15 @@ abstract class LanguageDao {
   @Query('SELECT * FROM Language WHERE profileId = :profileId')
   Future<List<Language>> allAdditionalInfo(int profileId);
 
-  @Query('UPDATE language SET languageName = :languageName WHERE profileId in (SELECT profileId From userProfile WHERE userId = :userId')
-  Future<Language> editLanguage(String LanguageName , int userId);
+
+  @Query('SELECT * FROM Language WHERE LanguageName = :languageText and profileId = :profid')
+  Future<Language?> findLanguageByName(String languageText , int profid);
+
+   @Query('SELECT * FROM Language WHERE LanguageId = :id and profileId = :profid')
+  Future<Language?> findLanguageById(int id , int profid);
+
+  @Query('UPDATE language SET LanguageName = :LanguageName WHERE LanguageId = :languageId')
+  Future<void> editLanguage(String LanguageName , int languageId);
 
   @insert 
   Future<void> insertLanguage(Language language);

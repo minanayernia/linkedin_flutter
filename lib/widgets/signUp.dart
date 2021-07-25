@@ -165,6 +165,7 @@ class _SignUpState extends State<SignUp> {
   bool checkUser = false ;
   bool checkPass = false ;
   bool checkCopyUser = false ; 
+  bool checkDate = false ; 
   @override
   Widget build(BuildContext context) {
    void _signUp(String username , String password ) async {
@@ -177,6 +178,18 @@ class _SignUpState extends State<SignUp> {
     final checkUserName = await userDao.findeUserByUserName(username) ;
     print("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
     print(username);
+
+    setState(() {
+      if (_dateTime == null ){
+        checkDate = true ;  
+
+        
+    }
+    if (_dateTime != null){
+        checkDate = false ;  
+        
+    }
+    });
     setState(() {
       if (username == "" && password == ""){
         checkUser = true ;
@@ -208,7 +221,7 @@ class _SignUpState extends State<SignUp> {
       }
     });
 
-    if (username != "" && password != "" && checkUserName == null ){
+    if (username != "" && password != "" && checkUserName == null && _dateTime != null ){
    final user = User( password : password , userName: username  , birthday : _dateTime!);
    var useid = user.userId ;
    print("this is my user id before inserting to database : $useid");
@@ -330,6 +343,9 @@ class _SignUpState extends State<SignUp> {
           // child:InputDatePickerFormField(firstDate: DateTime.now(), lastDate:  DateTime.now(),)),
   
           Text(_dateTime == null ? "pick your birthday ": _dateTime.toString() , style: TextStyle(color:Colors.white),),
+          Visibility(
+          visible: checkDate,
+          child: Container(child: Text("Birthday field can't be empty!" , style: TextStyle(color: Colors.redAccent),),),),
 
           ButtonTheme(
             height: 40,

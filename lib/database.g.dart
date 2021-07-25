@@ -88,6 +88,8 @@ class _$AppDatabase extends AppDatabase {
 
   EndorseDao? _endorseDaoInstance;
 
+  LanguageDao? _languageDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -134,6 +136,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `Network` (`networkId` INTEGER PRIMARY KEY AUTOINCREMENT, `userReqId` INTEGER, `userId` INTEGER, `networkState` INTEGER, FOREIGN KEY (`userReqId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION, FOREIGN KEY (`userId`) REFERENCES `User` (`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `AdditionalInfo` (`jobId` INTEGER PRIMARY KEY AUTOINCREMENT, `profileId` INTEGER, `companyName` TEXT NOT NULL, `jobName` TEXT NOT NULL, FOREIGN KEY (`profileId`) REFERENCES `UserProfile` (`profileId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Language` (`LanguageId` INTEGER PRIMARY KEY AUTOINCREMENT, `profileId` INTEGER NOT NULL, `languageType` TEXT, `LanguageName` TEXT NOT NULL, FOREIGN KEY (`profileId`) REFERENCES `UserProfile` (`profileId`) ON UPDATE NO ACTION ON DELETE NO ACTION)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -214,6 +218,11 @@ class _$AppDatabase extends AppDatabase {
   @override
   EndorseDao get endorseDao {
     return _endorseDaoInstance ??= _$EndorseDao(database, changeListener);
+  }
+
+  @override
+  LanguageDao get languageDao {
+    return _languageDaoInstance ??= _$LanguageDao(database, changeListener);
   }
 }
 
@@ -1219,6 +1228,76 @@ class _$EndorseDao extends EndorseDao {
   @override
   Future<void> insertEndorse(Endorse endorse) async {
     await _endorseInsertionAdapter.insert(endorse, OnConflictStrategy.abort);
+  }
+}
+
+class _$LanguageDao extends LanguageDao {
+  _$LanguageDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _languageInsertionAdapter = InsertionAdapter(
+            database,
+            'Language',
+            (Language item) => <String, Object?>{
+                  'LanguageId': item.LanguageId,
+                  'profileId': item.profileId,
+                  'languageType': item.languageType,
+                  'LanguageName': item.LanguageName
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Language> _languageInsertionAdapter;
+
+  @override
+  Future<List<Language>> allAdditionalInfo(int profileId) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM Language WHERE profileId = ?1',
+        mapper: (Map<String, Object?> row) => Language(
+            languageType: row['languageType'] as String?,
+            LanguageId: row['LanguageId'] as int?,
+            LanguageName: row['LanguageName'] as String,
+            profileId: row['profileId'] as int),
+        arguments: [profileId]);
+  }
+
+  @override
+  Future<Language?> findLanguageByName(String languageText, int profid) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Language WHERE LanguageName = ?1 and profileId = ?2',
+        mapper: (Map<String, Object?> row) => Language(
+            languageType: row['languageType'] as String?,
+            LanguageId: row['LanguageId'] as int?,
+            LanguageName: row['LanguageName'] as String,
+            profileId: row['profileId'] as int),
+        arguments: [languageText, profid]);
+  }
+
+  @override
+  Future<Language?> findLanguageById(int id, int profid) async {
+    return _queryAdapter.query(
+        'SELECT * FROM Language WHERE LanguageId = ?1 and profileId = ?2',
+        mapper: (Map<String, Object?> row) => Language(
+            languageType: row['languageType'] as String?,
+            LanguageId: row['LanguageId'] as int?,
+            LanguageName: row['LanguageName'] as String,
+            profileId: row['profileId'] as int),
+        arguments: [id, profid]);
+  }
+
+  @override
+  Future<void> editLanguage(String LanguageName, int languageId) async {
+    await _queryAdapter.queryNoReturn(
+        'UPDATE language SET LanguageName = ?1 WHERE LanguageId = ?2',
+        arguments: [LanguageName, languageId]);
+  }
+
+  @override
+  Future<void> insertLanguage(Language language) async {
+    await _languageInsertionAdapter.insert(language, OnConflictStrategy.abort);
   }
 }
 
